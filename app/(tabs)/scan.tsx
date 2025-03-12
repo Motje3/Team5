@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
 
 const Scan = () => {
@@ -12,12 +12,6 @@ const Scan = () => {
       setHasPermission(status === 'granted');
     })();
   }, []);
-
-  const handleBarCodeScanned = ({ type, data }: { type: string; data: string }) => {
-    setScanned(true);
-    alert(`Scanned code:\nType: ${type}\nData: ${data}`);
-    // Here you might navigate or do any logic with `data`
-  };
 
   if (hasPermission === null) {
     return (
