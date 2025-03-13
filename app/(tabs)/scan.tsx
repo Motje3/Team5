@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, AppState, Linking } from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
+import { useRouter } from 'expo-router';
+
 
 const Scan = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const appState = useRef(AppState.currentState);
   const qrLock = useRef(false); // Prevent multiple scans
+  const router = useRouter();
+
     
   useEffect(() => {
     (async () => {
@@ -50,13 +54,15 @@ const Scan = () => {
         style={StyleSheet.absoluteFillObject}
         facing="back"
         onBarcodeScanned={({ data }) => {
-            if (data && !qrLock.current) {
-              qrLock.current = true;
-              setTimeout(async () => {
-                await Linking.openURL(data);
-              }, 500);
-            }
-          }}
+          if (data && !qrLock.current) {
+            qrLock.current = true;
+            setTimeout(() => {
+              router.push(`/shipment/shipmentdetails?qrData=${encodeURIComponent(data)}`); 
+            }, 500);
+          }
+        }}
+        
+        
           
       />
     </View>
