@@ -1,21 +1,26 @@
 import { icons } from "@/constants/icons";
+import { images } from "@/constants/images"; // Import background image
 import { Text, View, Image, StatusBar } from "react-native";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 
 export default function Index() {
   return (
-    <View className="bg-primary flex-1 px-10">
+    <View className="flex-1">
       {/* Hide the status bar */}
       <ExpoStatusBar hidden />
       <StatusBar hidden />
 
-      <View className="flex justify-center items-center flex-1 flex-col gap-5">
-        <Image 
-          source={icons.home} 
-          style={{ width: 40, height: 40, tintColor: "#fff" }}
-        />
-        <Text className="text-gray-500 text-base">Home</Text>
-      </View>
+      {/* Background Image */}
+      <Image 
+        source={images.bg} 
+        style={{
+          position: "absolute",
+          width: "100%", // Full width
+          height: "100%", // Full height
+          resizeMode: "cover", // Makes it fit the screen properly
+        }} 
+      />
+
     </View>
   );
 }

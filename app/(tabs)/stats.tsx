@@ -3,6 +3,7 @@ import React from 'react';
 import { icons } from '@/constants/icons';
 import { BlurView } from 'expo-blur';
 
+
 const Stats = () => {
   // Dummy shipment stats
   const shipmentStats = {
@@ -21,7 +22,7 @@ const Stats = () => {
   ];
 
   return (
-    <View className="bg-gray-900 flex-1 px-6 py-6">
+    <View className="bg-primary flex-1 px-6 py-6">
       
       {/* 🔹 Page Header */}
       <View className="flex items-center mb-6">
