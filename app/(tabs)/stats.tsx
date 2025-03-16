@@ -1,7 +1,7 @@
 import { View, Text, Image, FlatList } from 'react-native';
 import React from 'react';
 import { icons } from '@/constants/icons';
-import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const Stats = () => {
@@ -30,54 +30,75 @@ const Stats = () => {
           source={icons.stats}  
           style={{ width: 50, height: 50, tintColor: "#A970FF", marginTop: 25 }} 
         />
-        <Text className="text-white text-2xl font-bold mt-2">Your Stats</Text>
+        <Text className="text-white text-2xl font-bold mt-2">Your Shipments</Text>
       </View>
 
-      {/* 📦 Shipment Overview with Glass Effect */}
-      <BlurView intensity={50} tint="dark" className="rounded-lg overflow-hidden mb-6">
-        <View className="p-5 border border-purple-500 rounded-lg">
-          <Text className="text-white text-lg font-bold mb-4">📦 Shipment Overview</Text>
-          
-          <View className="flex-row justify-between">
-            <View className="items-center">
-              <Text className="text-purple-400 text-3xl font-bold">{shipmentStats.total}</Text>
-              <Text className="text-gray-300">Total</Text>
-            </View>
+      {/* 📦 Shipment Overview with Gradient Effect */}
+      <LinearGradient
+        colors={["#17144F", "#090723"]} // Dark smooth gradient
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+        style={{
+          padding: 20,
+          borderRadius: 20, // More rounded corners for a modern feel
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 5 },
+          shadowRadius: 10,
+          elevation: 8, // Android shadow effect
+          marginBottom: 15,
+        }}
+      >
+        <Text className="text-white text-lg font-bold mb-4">Shipment Overview</Text>
+        
+        <View className="flex-row justify-between w-full px-4">
+          <View className="items-center">
+            <Text className="text-purple-400 text-3xl font-bold">{shipmentStats.total}</Text>
+            <Text className="text-gray-300">Total</Text>
+          </View>
 
-            <View className="items-center">
-              <Text className="text-green-400 text-3xl font-bold">{shipmentStats.completed}</Text>
-              <Text className="text-gray-300">Completed</Text>
-            </View>
+          <View className="items-center">
+            <Text className="text-green-400 text-3xl font-bold">{shipmentStats.completed}</Text>
+            <Text className="text-gray-300">Completed</Text>
+          </View>
 
-            <View className="items-center">
-              <Text className="text-yellow-400 text-3xl font-bold">{shipmentStats.pending}</Text>
-              <Text className="text-gray-300">Pending</Text>
-            </View>
+          <View className="items-center">
+            <Text className="text-yellow-400 text-3xl font-bold">{shipmentStats.pending}</Text>
+            <Text className="text-gray-300">Pending</Text>
           </View>
         </View>
-      </BlurView>
+      </LinearGradient>
 
-      {/* 🕒 Recent Activity with Glass Effect */}
-      <BlurView intensity={50} tint="dark" className="rounded-lg overflow-hidden">
-        <View className="p-5 border border-purple-500 rounded-lg">
-          <Text className="text-white text-lg font-bold mb-4">🕒 Recent Activity</Text>
+      {/* 🕒 Recent Activity with Gradient Effect */}
+      <LinearGradient
+        colors={["#17144F", "#090723"]} // Dark smooth gradient
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+        style={{
+          padding: 20,
+          borderRadius: 20, 
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 5 },
+          shadowOpacity: 0.4,
+          shadowRadius: 10,
+          elevation: 8,
+        }}
+      >
+        <Text className="text-white text-lg font-bold mb-4">Recent Activity</Text>
 
-          <FlatList
-            data={recentShipments}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View className="flex-row justify-between py-2 border-b border-gray-700">
-                <Text className="text-gray-300">{item.id}</Text>
-                <Text className={`text-lg ${item.status === "Completed" ? "text-green-400" : "text-yellow-400"}`}>
-                  {item.status}
-                </Text>
-                <Text className="text-gray-500">{item.time}</Text>
-              </View>
-            )}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      </BlurView>
+        <FlatList
+          data={recentShipments}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View className="flex-row justify-between py-2 border-b border-gray-700">
+              <Text className="text-gray-300">{item.id}</Text>
+              <Text className={`text-lg ${item.status === "Completed" ? "text-green-400" : "text-yellow-400"}`}>
+                {item.status}
+              </Text>
+              <Text className="text-gray-500">{item.time}</Text>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      </LinearGradient>
 
     </View>
   );

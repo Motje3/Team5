@@ -25,8 +25,8 @@ const Profile = () => {
                     source={images.tyron} // Replace with actual profile picture
                     style={{ width: 90, height: 90, borderRadius: 50 }}
                 />
-                <Text className="text-white text-lg font-bold mt-2">Tyron Woodly</Text>
-                <Text className="text-gray-400 text-sm">TyronWood@gmail.com</Text>
+                <Text className="text-white text-lg font-bold mt-2">Tyrone Woodly</Text>
+                <Text className="text-gray-400 text-sm">TyroneWood@gmail.com</Text>
             </View>
 
             {/* Profile Options */}

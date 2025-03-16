@@ -8,6 +8,9 @@ import edit from "@/assets/icons/edit.png";
 import lock from "@/assets/icons/lock.png";
 import logout from "@/assets/icons/logout.png";
 import setting from "@/assets/icons/setting.png";
+import orders from "@/assets/icons/orders.png";
+import scaninfo from "@/assets/icons/scaninfo.png";
+
 
 
 
@@ -24,4 +27,7 @@ export const icons = {
   lock,
   logout,
   setting,
+  orders,
+  scaninfo,
+  
 };
