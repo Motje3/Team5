@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
 import { icons } from '@/constants/icons'; // Import icons
 
 const ShipmentDetails = () => {
@@ -24,10 +25,15 @@ const ShipmentDetails = () => {
   }
 
   return (
-    <View className="flex-1 bg-gray-900 p-6 justify-center items-center">
+    <LinearGradient
+      colors={["#17144F", "#090723"]} // Dark gradient background
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      className="flex-1 p-6 justify-center items-center"
+    >
       <StatusBar hidden />
 
-      {/* ✅ Big Check Icon */}
+      {/* ✅ Check Icon */}
       <Image 
         source={icons.checked}  
         style={{ width: 80, height: 80, marginBottom: 10 }}
@@ -36,35 +42,59 @@ const ShipmentDetails = () => {
       {/* ✅ Scanned Successfully Text */}
       <Text className="text-green-400 text-2xl font-bold mb-4">Scanned Successfully</Text>
 
-      {/* ✅ Shipment Details */}
-      <View className="w-full bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700">
+      {/* ✅ Shipment Details Card */}
+      <LinearGradient
+        colors={["#1E1B4B", "#13112D"]} // Matching card style
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          width: "100%",
+          padding: 20,
+          borderRadius: 20,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.5,
+          shadowRadius: 10,
+          elevation: 10, // Android shadow
+          borderWidth: 1,
+          borderColor: "#2D2A5A",
+        }}
+      >
         <Text className="text-white text-xl font-bold mb-4">Shipment Details</Text>
-        <Text className="text-gray-300 text-lg">🚚 Status: {shipment.status}</Text>
-        <Text className="text-gray-300 text-lg">📍 Destination: {shipment.destination}</Text>
-        <Text className="text-gray-300 text-lg">⏳ Expected Delivery: {shipment.expectedDelivery}</Text>
-        <Text className="text-gray-300 text-lg">⚖️ Weight: {shipment.weight}</Text>
-      </View>
+        <Text className="text-gray-300 text-lg">🚚 Status: <Text className="text-yellow-400">{shipment.status}</Text></Text>
+        <Text className="text-gray-300 text-lg">📍 Destination: <Text className="text-blue-400">{shipment.destination}</Text></Text>
+        <Text className="text-gray-300 text-lg">⏳ Expected Delivery: <Text className="text-purple-400">{shipment.expectedDelivery}</Text></Text>
+        <Text className="text-gray-300 text-lg">⚖️ Weight: <Text className="text-red-400">{shipment.weight}</Text></Text>
+      </LinearGradient>
 
-      {/* ✅ Scan Again Button + Issue Icon */}
+      {/* ✅ Scan Again Button & Issue Icon */}
       <View className="flex-row mt-6 items-center">
         <TouchableOpacity
-          className="bg-blue-500 flex-row items-center px-6 py-3 rounded-lg"
+          className="flex-row items-center px-6 py-3 rounded-lg"
+          style={{
+            backgroundColor: "#6C5CE7",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 6,
+            elevation: 6,
+          }}
           onPress={() => router.push('/(tabs)/scan')}
         >
           <Image 
             source={icons.qrcode}  
             style={{ width: 24, height: 24, tintColor: "#fff", marginRight: 8 }}
           />
-          <Text className="text-white text-lg">Scan Again</Text>
+          <Text className="text-white text-lg font-semibold">Scan Again</Text>
         </TouchableOpacity>
 
-        {/* Small Red Issue Icon */}
+        {/* 🔴 Issue Icon */}
         <Image 
           source={icons.issue}  
-          style={{ width: 45, height: 46, marginLeft: 12 }}
+          style={{ width: 54, height: 49, marginLeft: 12 }}
         />
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
