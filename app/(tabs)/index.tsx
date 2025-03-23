@@ -24,7 +24,7 @@ const Home = () => {
       {/* 🔹 Welcome Header */}
       <View className="flex-row justify-between items-center">
         <View>
-          <Text className="text-gray-400 text-lg mt-2">Welcome back,</Text>
+          <Text className="text-gray-400 text-lg mt-2">Welkom terug,</Text>
           <Text className="text-white text-2xl font-bold">Tyrone</Text>
         </View>
       </View>
@@ -40,7 +40,7 @@ const Home = () => {
             style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center" }} // Used style instead of className
           >
             <Image source={icons.orders} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text className="text-white text-lg mt-2">Today's Orders</Text>
+            <Text className="text-white text-lg mt-2">Geplande zendingen</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -53,7 +53,7 @@ const Home = () => {
             style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center" }} // Fixed styling
           >
             <Image source={icons.scaninfo} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text className="text-white text-lg mt-2">Scan for Info</Text>
+            <Text className="text-white text-lg mt-2">Scannen voor Info</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -64,7 +64,7 @@ const Home = () => {
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start & end
             style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center", opacity: 0.5 }} // Fixed styling
           >
-            <Text className="text-gray-400 text-lg">Coming Soon</Text>
+            <Text className="text-gray-400 text-lg">Binnenkort beschikbaar</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -75,7 +75,7 @@ const Home = () => {
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start & end
             style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center", opacity: 0.5 }} // Fixed styling
           >
-            <Text className="text-gray-400 text-lg">Coming Soon</Text>
+            <Text className="text-gray-400 text-lg">Binnenkort beschikbaar</Text>
           </LinearGradient>
         </TouchableOpacity>
 

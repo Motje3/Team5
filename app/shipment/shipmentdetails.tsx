@@ -40,7 +40,7 @@ const ShipmentDetails = () => {
       />
 
       {/* ✅ Scanned Successfully Text */}
-      <Text className="text-green-400 text-2xl font-bold mb-4">Scanned Successfully</Text>
+      <Text className="text-green-400 text-2xl font-bold mb-4">Succesvol gescand</Text>
 
       {/* ✅ Shipment Details Card */}
       <LinearGradient
@@ -60,11 +60,11 @@ const ShipmentDetails = () => {
           borderColor: "#2D2A5A",
         }}
       >
-        <Text className="text-white text-xl font-bold mb-4">Shipment Details</Text>
+        <Text className="text-white text-xl font-bold mb-4">Zendingdetails</Text>
         <Text className="text-gray-300 text-lg">🚚 Status: <Text className="text-yellow-400">{shipment.status}</Text></Text>
-        <Text className="text-gray-300 text-lg">📍 Destination: <Text className="text-blue-400">{shipment.destination}</Text></Text>
-        <Text className="text-gray-300 text-lg">⏳ Expected Delivery: <Text className="text-purple-400">{shipment.expectedDelivery}</Text></Text>
-        <Text className="text-gray-300 text-lg">⚖️ Weight: <Text className="text-red-400">{shipment.weight}</Text></Text>
+        <Text className="text-gray-300 text-lg">📍 Bestemming: <Text className="text-blue-400">{shipment.destination}</Text></Text>
+        <Text className="text-gray-300 text-lg">⏳ Verwachte leveringtijd: <Text className="text-purple-400">{shipment.expectedDelivery}</Text></Text>
+        <Text className="text-gray-300 text-lg">⚖️ Gewicht: <Text className="text-red-400">{shipment.weight}</Text></Text>
       </LinearGradient>
 
       {/* ✅ Scan Again Button & Issue Icon */}
@@ -85,7 +85,7 @@ const ShipmentDetails = () => {
             source={icons.qrcode}  
             style={{ width: 24, height: 24, tintColor: "#fff", marginRight: 8 }}
           />
-          <Text className="text-white text-lg font-semibold">Scan Again</Text>
+          <Text className="text-white text-lg font-semibold">Opnieuw scannen</Text>
         </TouchableOpacity>
 
         {/* 🔴 Issue Icon */}

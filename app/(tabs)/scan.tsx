@@ -35,7 +35,7 @@ const Scan = () => {
   if (hasPermission === null) {
     return (
       <View style={styles.container}>
-        <Text>Requesting camera permission...</Text>
+        <Text>Camera toestemming wordt aangevraagd...</Text>
       </View>
     );
   }
@@ -43,7 +43,7 @@ const Scan = () => {
   if (hasPermission === false) {
     return (
       <View style={styles.container}>
-        <Text>No access to camera</Text>
+        <Text>Geen toegang tot de camera</Text>
       </View>
     );
   }

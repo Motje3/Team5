@@ -16,7 +16,7 @@ const Profile = () => {
                 alignItems: "center",
             }}>
                 
-                <Text className="text-white text-xl font-bold mt-6">Profile</Text>
+                <Text className="text-white text-xl font-bold mt-6">Profiel</Text>
             </View>
 
             {/* Profile Info */}

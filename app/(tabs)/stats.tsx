@@ -30,7 +30,7 @@ const Stats = () => {
           source={icons.stats}  
           style={{ width: 50, height: 50, tintColor: "#A970FF", marginTop: 25 }} 
         />
-        <Text className="text-white text-2xl font-bold mt-2">Your Shipments</Text>
+        <Text className="text-white text-2xl font-bold mt-2">Jouw zendingen</Text>
       </View>
 
       {/* 📦 Shipment Overview with Gradient Effect */}
@@ -48,22 +48,22 @@ const Stats = () => {
           marginBottom: 15,
         }}
       >
-        <Text className="text-white text-lg font-bold mb-4">Shipment Overview</Text>
+        <Text className="text-white text-lg font-bold mb-4">Jouw zendingen</Text>
         
         <View className="flex-row justify-between w-full px-4">
           <View className="items-center">
             <Text className="text-purple-400 text-3xl font-bold">{shipmentStats.total}</Text>
-            <Text className="text-gray-300">Total</Text>
+            <Text className="text-gray-300">Totaal</Text>
           </View>
 
           <View className="items-center">
             <Text className="text-green-400 text-3xl font-bold">{shipmentStats.completed}</Text>
-            <Text className="text-gray-300">Completed</Text>
+            <Text className="text-gray-300">Voltooid</Text>
           </View>
 
           <View className="items-center">
             <Text className="text-yellow-400 text-3xl font-bold">{shipmentStats.pending}</Text>
-            <Text className="text-gray-300">Pending</Text>
+            <Text className="text-gray-300">In behandeling</Text>
           </View>
         </View>
       </LinearGradient>
@@ -82,7 +82,7 @@ const Stats = () => {
           elevation: 8,
         }}
       >
-        <Text className="text-white text-lg font-bold mb-4">Recent Activity</Text>
+        <Text className="text-white text-lg font-bold mb-4">Recente activiteit</Text>
 
         <FlatList
           data={recentShipments}
