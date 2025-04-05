@@ -14,11 +14,11 @@ const Stats = () => {
 
   // Dummy recent activity data
   const recentShipments = [
-    { id: "SHIP-101", status: "Completed", time: "10:30 AM" },
-    { id: "SHIP-102", status: "Pending", time: "11:00 AM" },
-    { id: "SHIP-103", status: "Completed", time: "11:45 AM" },
-    { id: "SHIP-104", status: "Pending", time: "12:15 PM" },
-    { id: "SHIP-105", status: "Completed", time: "01:00 PM" },
+    { id: "SHIP-101", status: "Afgerond", time: "10:30 AM" },
+    { id: "SHIP-102", status: "In afwachting", time: "11:00 AM" },
+    { id: "SHIP-103", status: "Afgerond", time: "11:45 AM" },
+    { id: "SHIP-104", status: "In afwachting", time: "12:15 PM" },
+    { id: "SHIP-105", status: "Afgerond", time: "01:00 PM" },
   ];
 
   return (
