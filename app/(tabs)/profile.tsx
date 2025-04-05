@@ -8,19 +8,19 @@ const Profile = () => {
     const router = useRouter();
 
     const handleEditProfile = () => {
-        router.replace("/profile/editprofile"); // Redirect to edit profile page
+        //router.replace("/profile/editprofile"); // Redirect to edit profile page
     };
 
     const handleChangePassword = () => {
-        router.replace("/profile/changepassword"); // Redirect to change password page
+        //router.replace("/profile/changepassword"); // Redirect to change password page
     };
 
     const handleSettings = () => {
-        router.replace("/profile/appsettings"); // Redirect to settings page
+        //router.replace("/profile/appsettings"); // Redirect to settings page
     };
 
     const handleLogout = () => {
-        router.replace("/login/loginpage"); // Redirect to login page
+        //router.replace("/login/loginpage"); // Redirect to login page
     };
 
     return (
