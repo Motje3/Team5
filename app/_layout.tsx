@@ -9,8 +9,16 @@ export default function RootLayout() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="shipment/shipmentdetails"
-        options={{ headerShown: false }} // Hide header for shipment pages
+        name="shipment"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="login/loginpage"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="profile"
+        options={{ headerShown: false }}
       />
     </Stack>
   );
