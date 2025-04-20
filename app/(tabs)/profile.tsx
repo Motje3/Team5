@@ -1,13 +1,15 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { icons } from '@/constants/icons';
 import { images } from '@/constants/images';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import ThemeContext from '../profile/ThemeContext'; // ✅ accentkleur context
 
 const Profile = () => {
     const router = useRouter();
+    const { accentColor } = useContext(ThemeContext); // ✅ accentkleur ophalen
 
     const [name, setName] = useState<string>('Laden...');
     const [email, setEmail] = useState<string>('Laden...');
@@ -51,9 +53,10 @@ const Profile = () => {
 
     return (
         <View className="bg-primary flex-1">
+            {/* Header */}
             <View
                 style={{
-                    backgroundColor: "#3E1F92",
+                    backgroundColor: accentColor, // ✅ accentkleur toegepast
                     height: 110,
                     borderBottomLeftRadius: 30,
                     borderBottomRightRadius: 30,
@@ -64,6 +67,7 @@ const Profile = () => {
                 <Text className="text-white text-xl font-bold mt-6">Profiel</Text>
             </View>
 
+            {/* Gebruikersinfo */}
             <View className="items-center mt-20">
                 {image ? (
                     <Image
@@ -80,12 +84,13 @@ const Profile = () => {
                 <Text className="text-gray-400 text-sm">{email}</Text>
             </View>
 
+            {/* Menu items */}
             <View className="mt-6 px-8">
                 {[
                     { title: "Profiel bewerken", icon: icons.edit, action: handleEditProfile },
                     { title: "Wachtwoord aanpassen", icon: icons.lock, action: handleChangePassword },
                     { title: "App instellingen", icon: icons.setting, action: handleSettings },
-                    { title: "Uitloggen", icon: icons.logout, color: "text-red-500", action: handleLogout },
+                    { title: "Uitloggen", icon: icons.logout, color: "#EF4444", action: handleLogout },
                 ].map((item, index) => (
                     <TouchableOpacity
                         key={index}
@@ -97,11 +102,14 @@ const Profile = () => {
                             style={{
                                 width: 24,
                                 height: 24,
-                                tintColor: "#A970FF",
+                                tintColor: item.color || accentColor, // ✅ hier wordt accentkleur toegepast
                                 marginRight: 12,
                             }}
                         />
-                        <Text className={`text-gray-300 text-lg ${item.color || ""}`}>
+                        <Text
+                            className="text-lg"
+                            style={{ color: item.color || "#D1D5DB" }}
+                        >
                             {item.title}
                         </Text>
                     </TouchableOpacity>
