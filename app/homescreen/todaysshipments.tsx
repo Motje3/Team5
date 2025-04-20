@@ -55,6 +55,12 @@ const Todaysshipment = () => {
                     <Text className="text-white text-2xl font-bold">Zendingen van vandaag</Text>
                 </View>
             </View>
+
+            <View style={{ marginBottom: 12 }}>
+                <Text style={{ color: "gray", fontSize: 14 }}>
+                    Totale openstaande zendingen vandaag: {todaysShipments.length}
+                </Text> 
+            </View>
             
             {/* Shipment List */}
             {todaysShipments.length > 0 ? (
