@@ -4,7 +4,9 @@ import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar as ExpoStatusBar } from "expo-status-bar"; // Import Expo Status Bar
+import { useRouter } from 'expo-router';
 
+const router = useRouter();
 
 const Home = () => {
   return (
@@ -33,7 +35,7 @@ const Home = () => {
       <View className="mt-6 grid grid-cols-2 gap-4">
         
         {/* 📦 Today's Shipments */}
-        <TouchableOpacity className="rounded-lg overflow-hidden">
+        <TouchableOpacity className="rounded-lg overflow-hidden" onPress={() => router.push('/homescreen/todaysshipments')}>
           <LinearGradient
             colors={["#9124BD", "#320042"]} // Purple Gradient
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start/end values
