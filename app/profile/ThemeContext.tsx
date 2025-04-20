@@ -1,22 +1,26 @@
-import React, { createContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ThemeContext = createContext<any>(null);
 
-const ThemeProvider = ({ children }: any) => {
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [accentColor, setAccentColor] = useState('#A970FF');
+  const [accentColor, setAccentColor] = useState("#A970FF");
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   useEffect(() => {
     const loadSettings = async () => {
-      const dark = await AsyncStorage.getItem('setting_darkMode');
-      const color = await AsyncStorage.getItem('setting_accentColor');
-      const notif = await AsyncStorage.getItem('setting_notifications');
+      try {
+        const dark = await AsyncStorage.getItem("setting_darkMode");
+        const color = await AsyncStorage.getItem("setting_accentColor");
+        const notif = await AsyncStorage.getItem("setting_notifications");
 
-      if (dark !== null) setIsDarkMode(dark === 'true');
-      if (color) setAccentColor(color);
-      if (notif !== null) setNotificationsEnabled(notif === 'true');
+        if (dark !== null) setIsDarkMode(dark === "true");
+        if (color) setAccentColor(color);
+        if (notif !== null) setNotificationsEnabled(notif === "true");
+      } catch (error) {
+        console.error("Fout bij laden van instellingen:", error);
+      }
     };
 
     loadSettings();
@@ -24,27 +28,27 @@ const ThemeProvider = ({ children }: any) => {
 
   const updateDarkMode = async (value: boolean) => {
     setIsDarkMode(value);
-    await AsyncStorage.setItem('setting_darkMode', value.toString());
+    await AsyncStorage.setItem("setting_darkMode", value.toString());
   };
 
   const updateAccentColor = async (color: string) => {
     setAccentColor(color);
-    await AsyncStorage.setItem('setting_accentColor', color);
+    await AsyncStorage.setItem("setting_accentColor", color);
   };
 
   const updateNotifications = async (value: boolean) => {
     setNotificationsEnabled(value);
-    await AsyncStorage.setItem('setting_notifications', value.toString());
+    await AsyncStorage.setItem("setting_notifications", value.toString());
   };
 
   const resetAll = async () => {
     await AsyncStorage.multiRemove([
-      'setting_darkMode',
-      'setting_accentColor',
-      'setting_notifications',
+      "setting_darkMode",
+      "setting_accentColor",
+      "setting_notifications",
     ]);
     setIsDarkMode(false);
-    setAccentColor('#A970FF');
+    setAccentColor("#A970FF");
     setNotificationsEnabled(true);
   };
 
