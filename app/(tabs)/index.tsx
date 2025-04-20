@@ -6,9 +6,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar as ExpoStatusBar } from "expo-status-bar"; // Import Expo Status Bar
 import { useRouter } from 'expo-router';
 
-const router = useRouter();
-
 const Home = () => {
+  const router = useRouter();
   return (
     <LinearGradient
       colors={["#3D0F6E", "#030014"]} // Extra middle color for smoothness
