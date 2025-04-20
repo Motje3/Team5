@@ -1,10 +1,14 @@
-import { View, Text, Image, FlatList } from 'react-native';
-import React from 'react';
+import React, { useState } from "react";
+import { View, Text, Image, FlatList, TextInput, TouchableOpacity } from "react-native";
 import { icons } from '@/constants/icons';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import DatePicker from "react-native-date-picker";
 
 const Stats = () => {
+  const [location, setLocation] = useState("");
+  const [date, setDate] = useState("");
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
   // Dummy shipment stats
   const shipmentStats = {
     total: 124, // Total processed shipments
@@ -14,12 +18,21 @@ const Stats = () => {
 
   // Dummy recent activity data
   const recentShipments = [
-    { id: "SHIP-101", status: "Afgerond", time: "10:30 AM" },
-    { id: "SHIP-102", status: "In afwachting", time: "11:00 AM" },
-    { id: "SHIP-103", status: "Afgerond", time: "11:45 AM" },
-    { id: "SHIP-104", status: "In afwachting", time: "12:15 PM" },
-    { id: "SHIP-105", status: "Afgerond", time: "01:00 PM" },
+    { id: "SHIP-101", location: "Amsterdam", status: "Afgerond", time: "2023-10-01" },
+    { id: "SHIP-102", location: "Rotterdam", status: "In afwachting", time: "2023-10-02" },
+    { id: "SHIP-103", location: "Utrecht", status: "Afgerond", time: "2023-10-01" },
+    { id: "SHIP-104", location: "Amsterdam", status: "In afwachting", time: "2023-10-03" },
+    { id: "SHIP-105", location: "Rotterdam", status: "Afgerond", time: "2023-10-02" },
   ];
+
+  // Filter logic
+  const filteredShipments = recentShipments.filter((shipment) => {
+    const matchesLocation = location
+      ? shipment.location.toLowerCase().includes(location.toLowerCase())
+      : true;
+    const matchesDate = date ? shipment.time === date : true;
+    return matchesLocation && matchesDate;
+  });
 
   return (
     <View className="bg-primary flex-1 px-6 py-6">
@@ -33,7 +46,7 @@ const Stats = () => {
         <Text className="text-white text-2xl font-bold mt-2">Jouw zendingen</Text>
       </View>
 
-      {/* 📦 Shipment Overview with Gradient Effect */}
+      {/* Shipment Overview with Gradient Effect */}
       <LinearGradient
         colors={["#17144F", "#090723"]} // Dark smooth gradient
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
@@ -68,6 +81,55 @@ const Stats = () => {
         </View>
       </LinearGradient>
 
+      {/* Filters */}
+      <View style={{ marginBottom: 16 }}>
+        {/* Location Filter */}
+        <View style={{ marginBottom: 8 }}>
+          <Text className="text-gray-300 mb-2">Filter op locatie:</Text>
+          <TextInput
+            style={{
+              backgroundColor: "#1E1E1E",
+              color: "#FFF",
+              padding: 8,
+              borderRadius: 8,
+            }}
+            placeholder="Voer locatie in"
+            placeholderTextColor="#888"
+            onChangeText={(text) => setLocation(text)}
+            value={location}
+          />
+        </View>
+
+        {/* Date Filter with Date Picker */}
+        <View>
+          <Text className="text-gray-300 mb-2">Filter op datum:</Text>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#1E1E1E",
+              padding: 8,
+              borderRadius: 8,
+              alignItems: "center",
+            }}
+            onPress={() => setIsDatePickerOpen(true)}
+          >
+            <Text style={{ color: "#FFF" }}>
+              {date ? date : "Selecteer een datum"}
+            </Text>
+          </TouchableOpacity>
+          <DatePicker
+            modal
+            open={isDatePickerOpen}
+            date={date ? new Date(date) : new Date()}
+            mode="date"
+            onConfirm={(selectedDate) => {
+              setIsDatePickerOpen(false);
+              setDate(selectedDate.toISOString().split("T")[0]); // Format as YYYY-MM-DD
+            }}
+            onCancel={() => setIsDatePickerOpen(false)}
+          />
+        </View>
+      </View>
+
       {/* 🕒 Recent Activity with Gradient Effect */}
       <LinearGradient
         colors={["#17144F", "#090723"]} // Dark smooth gradient
@@ -85,12 +147,12 @@ const Stats = () => {
         <Text className="text-white text-lg font-bold mb-4">Recente activiteit</Text>
 
         <FlatList
-          data={recentShipments}
+          data={filteredShipments}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <View className="flex-row justify-between py-2 border-b border-gray-700">
               <Text className="text-gray-300">{item.id}</Text>
-              <Text className={`text-lg ${item.status === "Completed" ? "text-green-400" : "text-yellow-400"}`}>
+              <Text className={`text-lg ${item.status === "Afgerond" ? "text-green-400" : "text-yellow-400"}`}>
                 {item.status}
               </Text>
               <Text className="text-gray-500">{item.time}</Text>
