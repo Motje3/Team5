@@ -41,7 +41,7 @@ const Home = () => {
             style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center" }} // Used style instead of className
           >
             <Image source={icons.orders} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text className="text-white text-lg mt-2">Geplande zendingen</Text>
+            <Text className="text-white text-lg mt-2">Zendingen van vandaag</Text>
           </LinearGradient>
         </TouchableOpacity>
 
