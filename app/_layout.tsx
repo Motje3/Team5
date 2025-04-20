@@ -20,6 +20,10 @@ export default function RootLayout() {
         name="profile"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="homescreen/todaysshipments"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
