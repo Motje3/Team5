@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useContext } from 'react';
 import { View, Text, Switch, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useNavigation } from 'expo-router';
+import ThemeContext from './ThemeContext'; // ✅ Accentkleur context importeren
 
 const COLORS = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
 
@@ -11,7 +12,9 @@ const AppSettings = () => {
 
     const [darkMode, setDarkMode] = useState(false);
     const [notifications, setNotifications] = useState(true);
-    const [accentColor, setAccentColor] = useState(COLORS[0]);
+    const [localAccentColor, setLocalAccentColor] = useState(COLORS[0]);
+
+    const { accentColor, updateAccentColor } = useContext(ThemeContext); // ✅ Context gebruiken
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -22,7 +25,6 @@ const AppSettings = () => {
         });
     }, [navigation]);
 
-    // Laden van instellingen uit AsyncStorage bij scherm openen
     useEffect(() => {
         const loadSettings = async () => {
             const dark = await AsyncStorage.getItem('setting_darkMode');
@@ -31,30 +33,23 @@ const AppSettings = () => {
 
             if (dark !== null) setDarkMode(dark === 'true');
             if (notif !== null) setNotifications(notif === 'true');
-            if (color) setAccentColor(color);
+            if (color) setLocalAccentColor(color);
         };
 
         loadSettings();
     }, []);
 
-    // Automatisch opslaan bij wijziging van darkMode
     useEffect(() => {
         AsyncStorage.setItem('setting_darkMode', darkMode.toString());
     }, [darkMode]);
 
-    // Automatisch opslaan bij wijziging van notifications
     useEffect(() => {
         AsyncStorage.setItem('setting_notifications', notifications.toString());
     }, [notifications]);
 
-    // Automatisch opslaan bij wijziging van accentColor
-    useEffect(() => {
-        AsyncStorage.setItem('setting_accentColor', accentColor);
-    }, [accentColor]);
-
-    // Feedback geven bij wijzigen van instellingen
     const handleChangeAccentColor = (color: string) => {
-        setAccentColor(color);
+        setLocalAccentColor(color);           // lokale kleur veranderen voor border
+        updateAccentColor(color);             // ✅ context bijwerken = hele app updaten
         Alert.alert('Accentkleur gewijzigd!', `Nieuwe kleur ingesteld: ${color}`);
     };
 
@@ -62,6 +57,7 @@ const AppSettings = () => {
         <View className="flex-1 bg-primary px-6 py-10">
             <Text className="text-white text-2xl font-bold mb-6">App Instellingen</Text>
 
+            {/* Donker thema toggle */}
             <View className="flex-row justify-between items-center mb-6">
                 <Text className="text-white text-lg">Donker thema</Text>
                 <Switch
@@ -70,11 +66,12 @@ const AppSettings = () => {
                         setDarkMode(value);
                         Alert.alert('Donker thema aangepast!', value ? 'Geactiveerd' : 'Gedeactiveerd');
                     }}
-                    trackColor={{ false: "#767577", true: "#A970FF" }}
+                    trackColor={{ false: "#767577", true: accentColor }}
                     thumbColor={darkMode ? "#fff" : "#f4f3f4"}
                 />
             </View>
 
+            {/* Meldingen toggle */}
             <View className="flex-row justify-between items-center mb-6">
                 <Text className="text-white text-lg">Meldingen</Text>
                 <Switch
@@ -83,11 +80,12 @@ const AppSettings = () => {
                         setNotifications(value);
                         Alert.alert('Meldingen aangepast!', value ? 'Geactiveerd' : 'Gedeactiveerd');
                     }}
-                    trackColor={{ false: "#767577", true: "#A970FF" }}
+                    trackColor={{ false: "#767577", true: accentColor }}
                     thumbColor={notifications ? "#fff" : "#f4f3f4"}
                 />
             </View>
 
+            {/* Accentkleur selectie */}
             <Text className="text-white text-lg mb-2">Accentkleur</Text>
             <View className="flex-row mb-8">
                 {COLORS.map((color, index) => (
@@ -100,19 +98,25 @@ const AppSettings = () => {
                             height: 40,
                             borderRadius: 20,
                             marginRight: 12,
-                            borderWidth: accentColor === color ? 3 : 1,
-                            borderColor: accentColor === color ? 'white' : 'gray',
+                            borderWidth: localAccentColor === color ? 3 : 1,
+                            borderColor: localAccentColor === color ? 'white' : 'gray',
                         }}
                     />
                 ))}
             </View>
 
+            {/* Sluiten knop */}
             <TouchableOpacity
                 onPress={() => {
                     Alert.alert('Instellingen', 'Instellingen zijn al automatisch opgeslagen.');
                     router.back();
                 }}
-                className="bg-purple-600 py-3 rounded-lg items-center"
+                style={{
+                    backgroundColor: accentColor,
+                    paddingVertical: 12,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                }}
             >
                 <Text className="text-white font-bold text-lg">Sluiten</Text>
             </TouchableOpacity>
