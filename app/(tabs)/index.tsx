@@ -1,19 +1,42 @@
 import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar as ExpoStatusBar } from "expo-status-bar"; // Correcte import van Expo status bar
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import ThemeContext from "../profile/ThemeContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Home = () => {
+  const { accentColor } = useContext(ThemeContext);
+
+  const [name, setName] = useState("Laden...");
+  const [email, setEmail] = useState("");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadProfile = async () => {
+        const storedName = await AsyncStorage.getItem("profile_name");
+        const storedEmail = await AsyncStorage.getItem("profile_email");
+        const storedImage = await AsyncStorage.getItem("profile_image");
+
+        if (storedName) setName(storedName);
+        if (storedEmail) setEmail(storedEmail);
+        if (storedImage) setProfileImage(storedImage);
+      };
+
+      loadProfile();
+    }, [])
+  );
+
   return (
     <LinearGradient
       colors={["#3D0F6E", "#030014"]}
-      locations={[0, 0.7, 1]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 0.25 }}
       style={{ flex: 1, paddingHorizontal: 24, paddingTop: 40 }}
     >
-      {/* ✅ Verberg status bar */}
       <ExpoStatusBar hidden />
       <StatusBar hidden />
 
@@ -21,16 +44,22 @@ const Home = () => {
       <View className="flex-row justify-between items-center">
         <View>
           <Text className="text-gray-400 text-lg mt-2">Welkom terug,</Text>
-          <Text className="text-white text-2xl font-bold">Tyrone</Text>
+          <Text className="text-white text-2xl font-bold">{name}</Text>
         </View>
+
+        {profileImage && (
+          <Image
+            source={{ uri: profileImage }}
+            style={{ width: 50, height: 50, borderRadius: 25 }}
+          />
+        )}
       </View>
 
       {/* 🔘 Knoppen Grid */}
       <View className="mt-6 grid grid-cols-2 gap-4">
-        {/* 📦 Geplande zendingen */}
         <TouchableOpacity className="rounded-lg overflow-hidden">
           <LinearGradient
-            colors={["#9124BD", "#320042"]}
+            colors={[accentColor, "#320042"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={{
@@ -48,7 +77,6 @@ const Home = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* 🔍 Scannen voor info */}
         <TouchableOpacity className="rounded-lg overflow-hidden">
           <LinearGradient
             colors={["#1A5BC4", "#111A47"]}
@@ -69,7 +97,7 @@ const Home = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* 🕒 Placeholder 1 */}
+        {/* Placeholder 1 */}
         <TouchableOpacity className="rounded-lg overflow-hidden">
           <LinearGradient
             colors={["#4B5563", "#131921"]}
@@ -87,7 +115,7 @@ const Home = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* 🕒 Placeholder 2 */}
+        {/* Placeholder 2 */}
         <TouchableOpacity className="rounded-lg overflow-hidden">
           <LinearGradient
             colors={["#4B5563", "#131921"]}
