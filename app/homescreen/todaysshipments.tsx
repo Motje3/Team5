@@ -26,7 +26,7 @@ const Todaysshipment = () => {
                 <TouchableOpacity onPress={() => router.back()}
                     style={{
                         position: 'absolute',
-                        top: -35,
+                        top: 15,
                         left: -15,
                         zIndex: 10,
                         flexDirection: 'row',
@@ -34,12 +34,12 @@ const Todaysshipment = () => {
                     }}
                 >
                     <Ionicons name="arrow-back" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 16, marginLeft: 8 }}>Back</Text>
+                    <Text style={{ color: 'white', fontSize: 20, marginLeft: 8 }}>Back</Text>
                 </TouchableOpacity>
             </View>
 
             {/* 🔹 Welcome Header */}
-            <View className="flex-row justify-between items-center">
+            <View className="flex-row justify-between items-center pt-16">
                 <View>
                     <Text className="text-white text-2xl font-bold">Zendingen van vandaag</Text>
                 </View>
