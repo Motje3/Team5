@@ -88,11 +88,13 @@ const ShipmentDetails = () => {
           <Text className="text-white text-lg font-semibold">Opnieuw scannen</Text>
         </TouchableOpacity>
 
-        {/* 🔴 Issue Icon */}
-        <Image 
-          source={icons.issue}  
-          style={{ width: 54, height: 49, marginLeft: 12 }}
-        />
+        {/* 🔴 Issue Icon - now touchable */}
+        <TouchableOpacity onPress={() => router.push('/shipment/reportissue')}>
+          <Image 
+            source={icons.issue}  
+            style={{ width: 54, height: 49, marginLeft: 12 }}
+          />
+        </TouchableOpacity>
       </View>
     </LinearGradient>
   );

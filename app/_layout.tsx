@@ -9,17 +9,22 @@ export default function RootLayout() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="shipment"
+        name="shipment/shipmentdetails"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="shipment/reportissue"
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="login/loginpage"
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="profile"
-        options={{ headerShown: false }}
-      />
+      
     </Stack>
   );
 }
+
+
+
+import './global.css';

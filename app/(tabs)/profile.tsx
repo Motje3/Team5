@@ -20,7 +20,7 @@ const Profile = () => {
     };
 
     const handleLogout = () => {
-        //router.replace("/login/loginpage"); // Redirect to login page
+        router.replace("/login/loginpage"); // Redirect to login page
     };
 
     return (
@@ -28,7 +28,7 @@ const Profile = () => {
             {/* Curved Top Header */}
             <View style={{
                 backgroundColor: "#3E1F92",
-                height: 110,
+                height: 70,
                 borderBottomLeftRadius: 30,
                 borderBottomRightRadius: 30,
                 justifyContent: "center",

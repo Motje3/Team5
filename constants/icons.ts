@@ -10,6 +10,8 @@ import logout from "@/assets/icons/logout.png";
 import setting from "@/assets/icons/setting.png";
 import orders from "@/assets/icons/orders.png";
 import scaninfo from "@/assets/icons/scaninfo.png";
+import reportproblem from "@/assets/icons/report.png";
+
 
 
 
@@ -29,5 +31,6 @@ export const icons = {
   setting,
   orders,
   scaninfo,
+  reportproblem,
   
 };
