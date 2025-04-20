@@ -3,28 +3,18 @@ import './global.css';
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen
-        name="(tabs)"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="shipment/shipmentdetails"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="shipment/reportissue"
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="login/loginpage"
-        options={{ headerShown: false }}
-      />
-      
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: '#0f0D23', // 🔥 match your dark theme
+        },
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="shipment/shipmentdetails" />
+      <Stack.Screen name="shipment/reportissue" />
+      <Stack.Screen name="login/loginpage" />
     </Stack>
   );
 }
-
-
-
-import './global.css';

@@ -11,6 +11,7 @@ import setting from "@/assets/icons/setting.png";
 import orders from "@/assets/icons/orders.png";
 import scaninfo from "@/assets/icons/scaninfo.png";
 import reportproblem from "@/assets/icons/report.png";
+import arrowleft from "@/assets/icons/arrow-left.png";
 
 
 
@@ -32,5 +33,6 @@ export const icons = {
   orders,
   scaninfo,
   reportproblem,
+  arrowleft,
   
 };

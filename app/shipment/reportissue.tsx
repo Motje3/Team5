@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import { icons } from '@/constants/icons'; // Add your reportproblem icon here
 
 const ReportIssue = () => {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -16,6 +18,9 @@ const ReportIssue = () => {
 
   return (
     <View className="flex-1 bg-primary px-6 py-10 justify-center items-center">
+
+        
+
       {/* 🧠 Big Center Icon */}
       <Image 
         source={icons.reportproblem} 
@@ -55,6 +60,18 @@ const ReportIssue = () => {
         className="bg-purple-600 py-3 rounded-lg items-center w-full"
       >
         <Text className="text-white text-lg font-semibold">Indienen</Text>
+      </TouchableOpacity>
+
+      {/* 🔙 Terug Button */}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        className="mt-4 flex-row items-center self-start"
+        >
+        <Image 
+            source={icons.arrowleft}
+            style={{ width: 40, height: 40, marginRight: 6 }}
+        />
+        <Text className="text-gray-300 text-base">Terug</Text>
       </TouchableOpacity>
     </View>
   );
