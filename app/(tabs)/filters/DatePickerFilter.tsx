@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import DatePicker from "react-native-date-picker";
+import { View, Text, TouchableOpacity, Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 interface DatePickerFilterProps {
   label: string;
@@ -9,11 +9,13 @@ interface DatePickerFilterProps {
 }
 
 const DatePickerFilter: React.FC<DatePickerFilterProps> = ({ label, value, onChange }) => {
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
 
-  const handleDateConfirm = (selectedDate: Date) => {
-    setIsDatePickerOpen(false);
-    onChange(selectedDate.toISOString().split("T")[0]); // Format as YYYY-MM-DD
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setIsPickerVisible(false);
+    if (selectedDate) {
+      onChange(selectedDate.toISOString().split("T")[0]); // Format as YYYY-MM-DD
+    }
   };
 
   return (
@@ -26,18 +28,16 @@ const DatePickerFilter: React.FC<DatePickerFilterProps> = ({ label, value, onCha
           borderRadius: 8,
           alignItems: "center",
         }}
-        onPress={() => setIsDatePickerOpen(true)}
+        onPress={() => setIsPickerVisible(true)}
       >
         <Text style={{ color: "#FFF" }}>{value || `Select ${label.toLowerCase()}`}</Text>
       </TouchableOpacity>
-      {isDatePickerOpen && (
-        <DatePicker
-          modal
-          open={isDatePickerOpen}
-          date={value ? new Date(value) : new Date()}
+      {isPickerVisible && (
+        <DateTimePicker
+          value={value ? new Date(value) : new Date()}
           mode="date"
-          onConfirm={handleDateConfirm}
-          onCancel={() => setIsDatePickerOpen(false)}
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={handleDateChange}
         />
       )}
     </View>
