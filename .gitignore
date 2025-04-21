@@ -36,3 +36,21 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+
+
+
+
+**/AssemblyInfo.cs
+
+# Ignore build outputs
+bin/
+obj/
+*.user
+*.suo
+
+# NuGet
+*.nupkg
+project.assets.json
+*.nuget.props
+*.nuget.targets
