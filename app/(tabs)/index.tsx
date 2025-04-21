@@ -1,89 +1,100 @@
 import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import React from "react";
 import { icons } from "@/constants/icons";
-import { images } from "@/constants/images";
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar as ExpoStatusBar } from "expo-status-bar"; // Import Expo Status Bar
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useRouter } from 'expo-router';
+import { useApp } from '../context/AppContext';
+import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext'; // ✅ gebruik useTheme
+
+const fallbackImage = require('../../assets/images/default-profile.png');
 
 const Home = () => {
   const router = useRouter();
+  const { darkMode, username, accentColor, profileImage } = useApp();
+  const theme = darkMode ? darkTheme : lightTheme;
+
   return (
-    <LinearGradient
-      colors={["#3D0F6E", "#030014"]} // Extra middle color for smoothness
-      locations={[0, 0.7, 1]} // Controls smooth transition
-      start={{ x: 0.5, y: 0 }} 
-      end={{ x: 0.5, y: 0.25 }} // Stops the gradient sooner
-      style={{ flex: 1, paddingHorizontal: 24, paddingTop: 40 }} 
-    >
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: 24, paddingTop: 40 }}>
+      <ExpoStatusBar style={darkMode ? "light" : "dark"} />
+      <StatusBar barStyle={darkMode ? "light-content" : "dark-content"} />
 
-
-      {/* 🔹 Hide the status bar */}
-      <ExpoStatusBar hidden />
-      <StatusBar hidden />
-      
       {/* 🔹 Welcome Header */}
-      <View className="flex-row justify-between items-center">
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View>
-          <Text className="text-gray-400 text-lg mt-2">Welkom terug,</Text>
-          <Text className="text-white text-2xl font-bold">Tyrone</Text>
+          <Text style={{ color: theme.secondaryText, fontSize: 16, marginBottom: 4 }}>Welkom terug,</Text>
+          <Text style={{ color: theme.text, fontSize: 24, fontWeight: 'bold' }}>{username}</Text>
         </View>
+        <Image
+          source={profileImage ? { uri: profileImage } : fallbackImage}
+          style={{ width: 40, height: 40, borderRadius: 20 }}
+        />
       </View>
 
       {/* 🔹 Grid Buttons */}
-      <View className="mt-6 grid grid-cols-2 gap-4">
-        
-        {/* 📦 Today's Shipments */}
-        <TouchableOpacity className="rounded-lg overflow-hidden" onPress={() => router.push('/homescreen/todaysshipments')}>
+      <View style={{ marginTop: 24, flexDirection: 'column', justifyContent: 'flex-start' }}>
+        {/* 📦 Zendingen */}
+        <TouchableOpacity
+          style={{ borderRadius: 12, overflow: 'hidden', width: '100%', marginBottom: 16 }}
+          onPress={() => router.push('/homescreen/todaysshipments')}
+        >
           <LinearGradient
-            colors={["#9124BD", "#320042"]} // Purple Gradient
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start/end values
-            style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center" }} // Used style instead of className
+            colors={[accentColor, "#320042"]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+            style={{
+              padding: 24,
+              borderRadius: 12,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
           >
             <Image source={icons.orders} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text className="text-white text-lg mt-2">Zendingen van vandaag</Text>
+            <Text style={{ color: "#fff", fontSize: 16, marginTop: 8 }}>Zendingen van vandaag</Text>
           </LinearGradient>
         </TouchableOpacity>
 
-
-        {/* 🔍 Scan for Info */}
-        <TouchableOpacity className="rounded-lg overflow-hidden">
+        {/* 🔍 Scan */}
+        <TouchableOpacity
+          style={{ borderRadius: 12, overflow: 'hidden', width: '100%', marginBottom: 16 }}
+        >
           <LinearGradient
-            colors={["#1A5BC4", "#111A47"]} // Blue Gradient
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start & end
-            style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center" }} // Fixed styling
+            colors={["#1A5BC4", "#111A47"]}
+            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+            style={{
+              padding: 24,
+              borderRadius: 12,
+              justifyContent: "center",
+              alignItems: "center"
+            }}
           >
             <Image source={icons.scaninfo} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text className="text-white text-lg mt-2">Scannen voor Info</Text>
+            <Text style={{ color: "#fff", fontSize: 16, marginTop: 8 }}>Scannen voor Info</Text>
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* 🕒 Empty Placeholder */}
-        <TouchableOpacity className="rounded-lg overflow-hidden">
-          <LinearGradient
-            colors={["#4B5563", "#131921"]} // Dark Gray Gradient
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start & end
-            style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center", opacity: 0.5 }} // Fixed styling
+        {/* 🕒 Placeholder */}
+        {[1, 2].map((i) => (
+          <TouchableOpacity
+            key={i}
+            style={{ borderRadius: 12, overflow: 'hidden', width: '100%', marginBottom: 16 }}
           >
-            <Text className="text-gray-400 text-lg">Binnenkort beschikbaar</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-        {/* 🕒 Empty Placeholder */}
-        <TouchableOpacity className="rounded-lg overflow-hidden">
-          <LinearGradient
-            colors={["#4B5563", "#131921"]} // Dark Gray Gradient
-            start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} // Corrected start & end
-            style={{ padding: 24, borderRadius: 12, justifyContent: "center", alignItems: "center", opacity: 0.5 }} // Fixed styling
-          >
-            <Text className="text-gray-400 text-lg">Binnenkort beschikbaar</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-
+            <LinearGradient
+              colors={["#4B5563", "#131921"]}
+              start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+              style={{
+                padding: 24,
+                borderRadius: 12,
+                justifyContent: "center",
+                alignItems: "center",
+                opacity: 0.5
+              }}
+            >
+              <Text style={{ color: "#D1D5DB", fontSize: 16 }}>Binnenkort beschikbaar</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        ))}
       </View>
-
-      </LinearGradient>
+    </View>
   );
 };
 
