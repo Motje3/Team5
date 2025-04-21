@@ -2,17 +2,19 @@ import { View, Text, Image, FlatList } from 'react-native';
 import React from 'react';
 import { icons } from '@/constants/icons';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { useApp } from '../context/AppContext';
+import { darkTheme, lightTheme } from '../context/ThemeContext';
 
 const Stats = () => {
-  // Dummy shipment stats
+  const { darkMode, accentColor } = useApp();
+  const theme = darkMode ? darkTheme : lightTheme;  // Dynamisch thema op basis van darkMode
+
   const shipmentStats = {
-    total: 124, // Total processed shipments
-    completed: 98, // Successfully completed
-    pending: 26, // Still in transit
+    total: 124,
+    completed: 98,
+    pending: 26,
   };
 
-  // Dummy recent activity data
   const recentShipments = [
     { id: "SHIP-101", status: "Afgerond", time: "10:30 AM" },
     { id: "SHIP-102", status: "In afwachting", time: "11:00 AM" },
@@ -22,59 +24,61 @@ const Stats = () => {
   ];
 
   return (
-    <View className="bg-primary flex-1 px-6 py-6">
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: 24, paddingVertical: 24 }}>
       
       {/* 🔹 Page Header */}
-      <View className="flex items-center mb-6">
-        <Image 
-          source={icons.stats}  
-          style={{ width: 50, height: 50, tintColor: "#A970FF", marginTop: 25 }} 
+      <View style={{ alignItems: 'center', marginBottom: 24 }}>
+        <Image
+          source={icons.stats}
+          style={{ width: 50, height: 50, tintColor: accentColor, marginTop: 25 }}
         />
-        <Text className="text-white text-2xl font-bold mt-2">Jouw zendingen</Text>
+        <Text style={{ color: theme.text, fontSize: 22, fontWeight: 'bold', marginTop: 8 }}>
+          Jouw zendingen
+        </Text>
       </View>
 
-      {/* 📦 Shipment Overview with Gradient Effect */}
+      {/* 📦 Shipment Overview */}
       <LinearGradient
-        colors={["#17144F", "#090723"]} // Dark smooth gradient
+        colors={["#17144F", "#090723"]} // Donkere kleuren voor de achtergrond
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
         style={{
           padding: 20,
-          borderRadius: 20, // More rounded corners for a modern feel
+          borderRadius: 20,
           alignItems: "center",
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 5 },
           shadowRadius: 10,
-          elevation: 8, // Android shadow effect
-          marginBottom: 15,
+          elevation: 8,
+          marginBottom: 16,
         }}
       >
-        <Text className="text-white text-lg font-bold mb-4">Jouw zendingen</Text>
-        
-        <View className="flex-row justify-between w-full px-4">
-          <View className="items-center">
-            <Text className="text-purple-400 text-3xl font-bold">{shipmentStats.total}</Text>
-            <Text className="text-gray-300">Totaal</Text>
-          </View>
+        <Text style={{ color: "#fff", fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>
+          Jouw zendingen
+        </Text>
 
-          <View className="items-center">
-            <Text className="text-green-400 text-3xl font-bold">{shipmentStats.completed}</Text>
-            <Text className="text-gray-300">Voltooid</Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", paddingHorizontal: 16 }}>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ color: "#A970FF", fontSize: 24, fontWeight: "bold" }}>{shipmentStats.total}</Text>
+            <Text style={{ color: "#D1D5DB" }}>Totaal</Text>
           </View>
-
-          <View className="items-center">
-            <Text className="text-yellow-400 text-3xl font-bold">{shipmentStats.pending}</Text>
-            <Text className="text-gray-300">In behandeling</Text>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ color: "#10B981", fontSize: 24, fontWeight: "bold" }}>{shipmentStats.completed}</Text>
+            <Text style={{ color: "#D1D5DB" }}>Voltooid</Text>
+          </View>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ color: "#FBBF24", fontSize: 24, fontWeight: "bold" }}>{shipmentStats.pending}</Text>
+            <Text style={{ color: "#D1D5DB" }}>In behandeling</Text>
           </View>
         </View>
       </LinearGradient>
 
-      {/* 🕒 Recent Activity with Gradient Effect */}
+      {/* 🕒 Recent Activity */}
       <LinearGradient
-        colors={["#17144F", "#090723"]} // Dark smooth gradient
+        colors={["#17144F", "#090723"]} // Donkere kleuren voor de achtergrond
         start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
         style={{
           padding: 20,
-          borderRadius: 20, 
+          borderRadius: 20,
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 5 },
           shadowOpacity: 0.4,
@@ -82,24 +86,34 @@ const Stats = () => {
           elevation: 8,
         }}
       >
-        <Text className="text-white text-lg font-bold mb-4">Recente activiteit</Text>
+        <Text style={{ color: "#fff", fontSize: 18, fontWeight: 'bold', marginBottom: 12 }}>
+          Recente activiteit
+        </Text>
 
         <FlatList
           data={recentShipments}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View className="flex-row justify-between py-2 border-b border-gray-700">
-              <Text className="text-gray-300">{item.id}</Text>
-              <Text className={`text-lg ${item.status === "Completed" ? "text-green-400" : "text-yellow-400"}`}>
+            <View style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingVertical: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: "#374151"
+            }}>
+              <Text style={{ color: "#D1D5DB" }}>{item.id}</Text>
+              <Text style={{
+                color: item.status === "Afgerond" ? "#10B981" : "#FBBF24",
+                fontSize: 16
+              }}>
                 {item.status}
               </Text>
-              <Text className="text-gray-500">{item.time}</Text>
+              <Text style={{ color: "#9CA3AF" }}>{item.time}</Text>
             </View>
           )}
           showsVerticalScrollIndicator={false}
         />
       </LinearGradient>
-
     </View>
   );
 };
