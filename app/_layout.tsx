@@ -15,6 +15,7 @@ export default function RootLayout() {
       <Stack.Screen name="shipment/shipmentdetails" />
       <Stack.Screen name="shipment/reportissue" />
       <Stack.Screen name="login/loginpage" />
+      <Stack.Screen name="homescreen/todaysshipments" />
     </Stack>
   );
 }
