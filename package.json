@@ -27,10 +27,7 @@
     "expo-constants": "~17.0.7",
     "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.1",
-<<<<<<< HEAD
-=======
     "expo-image-picker": "~16.0.6",
->>>>>>> a5713b5e9c037e25a7a328330a5c63a5905eef48
     "expo-linear-gradient": "~14.0.2",
     "expo-linking": "~7.0.5",
     "expo-router": "~4.0.17",
@@ -43,7 +40,6 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.7",
-    "react-native-date-picker": "^5.0.12",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-modal": "^14.0.0-rc.1",
