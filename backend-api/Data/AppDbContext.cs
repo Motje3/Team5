@@ -1,0 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using backend_api.Models;
+
+namespace backend_api.Data
+{
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) {}
+
+
+        public DbSet<Shipment> Shipments { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Statistic> Statistics { get; set; }
+
+    }
+}
