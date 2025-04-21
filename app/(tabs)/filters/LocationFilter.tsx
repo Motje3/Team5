@@ -1,24 +1,30 @@
-import React from 'react';
+import React from "react";
+import { View, Text, TextInput } from "react-native";
 
-interface DateFilterProps {
-  onChange: (date: string) => void;
+interface LocationFilterProps {
+  label: string;
+  value: string;
+  onChange: (location: string) => void;
 }
 
-const DateFilter: React.FC<DateFilterProps> = ({ onChange }) => {
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.value);
-  };
-
+const LocationFilter: React.FC<LocationFilterProps> = ({ label, value, onChange }) => {
   return (
-    <div>
-      <label htmlFor="date-filter">Filter by Date:</label>
-      <input
-        id="date-filter"
-        type="date"
-        onChange={handleDateChange}
+    <View style={{ marginBottom: 16 }}>
+      <Text style={{ color: "#FFF", marginBottom: 8 }}>{label}</Text>
+      <TextInput
+        style={{
+          backgroundColor: "#1E1E1E",
+          color: "#FFF",
+          padding: 8,
+          borderRadius: 8,
+        }}
+        placeholder={`Enter ${label.toLowerCase()}`}
+        placeholderTextColor="#888"
+        value={value}
+        onChangeText={onChange}
       />
-    </div>
+    </View>
   );
 };
 
-export default DateFilter;
+export default LocationFilter;
