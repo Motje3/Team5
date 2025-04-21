@@ -1,59 +1,72 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { images } from "@/constants/images";
-import { ImageBackground, Image, Text, View } from "react-native";
 import { icons } from "@/constants/icons";
+import { Image, Text, View } from "react-native";
+import { useApp } from "../context/AppContext";
+import { useTheme, darkTheme, lightTheme } from "../context/ThemeContext"; // ✅ import theme
 
-const TabIcon = ({ focused, icon, title}: any) => {
-    if(focused) {
-        return (
-            <ImageBackground 
-                        source={images.highlight}
-                        className="flex flex-row w-full flex-1 min-w-[114px] min-h-[64px] mt-4 justify-center items-center rounded-full overflow-hidden"
-                    >
-                    <Image 
-                        source={icon} 
-                        tintColor="#151312" 
-                        className="size-6" 
-                    />
-                    <Text className="text-secondary text-base font-semibold ml-2">{title}</Text>
-            </ImageBackground>
-        )
-    }
+const TabIcon = ({ focused, icon, title }: any) => {
+  const { accentColor } = useApp(); // Accentkleur uit AppContext
 
+  if (focused) {
     return (
-        <View className="size-full justify-center items-center mt-4 rounded-full">
-          <Image source={icon} tintColor="#A8B5DB" className="size-6" />
-        </View>
-      )
-      
-}
+      <View
+        style={{
+          backgroundColor: accentColor,
+          flexDirection: 'row',
+          minWidth: 114,
+          minHeight: 64,
+          marginTop: 16,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 999,
+          overflow: 'hidden',
+          paddingHorizontal: 16
+        }}
+      >
+        <Image
+          source={icon}
+          tintColor="#151312"
+          style={{ width: 24, height: 24 }}
+        />
+        <Text style={{ color: '#151312', fontSize: 16, fontWeight: '600', marginLeft: 8 }}>{title}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 16 }}>
+      <Image source={icon} tintColor="#A8B5DB" style={{ width: 24, height: 24 }} />
+    </View>
+  );
+};
 
 const _Layout = () => {
+  const { darkMode } = useTheme(); // ✅ haal darkMode uit context
+  const theme = darkMode ? darkTheme : lightTheme;
+
   return (
     <Tabs
-        screenOptions={{
-            tabBarShowLabel: false,
-            tabBarItemStyle: {
-            width: '100%',
-            height: "100%",
-            justifyContent: 'center',
-            alignItems: 'center'
-            },
-            tabBarStyle: {
-                backgroundColor: '#0f0D23',
-                borderRadius: 50,
-                marginHorizontal: 20,
-                marginBottom: 36,
-                height: 53,
-                position: 'absolute',
-                overflow: 'hidden',
-                borderWidth: 0,
-                borderColor: '#0f0d23',
-              }
-              
-        }}
-      
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarItemStyle: {
+          width: '100%',
+          height: "100%",
+          justifyContent: 'center',
+          alignItems: 'center'
+        },
+        tabBarStyle: {
+          backgroundColor: theme.background, // ✅ dynamische achtergrondkleur
+          borderRadius: 50,
+          marginHorizontal: 20,
+          marginBottom: 36,
+          height: 53,
+          position: 'absolute',
+          overflow: 'hidden',
+          borderWidth: 0,
+          borderColor: theme.background,
+        }
+      }}
     >
       <Tabs.Screen
         name="index"
@@ -62,9 +75,9 @@ const _Layout = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon
-                focused={focused}
-                icon={icons.home}
-                title="Start"
+              focused={focused}
+              icon={icons.home}
+              title="Start"
             />
           )
         }}
@@ -72,47 +85,47 @@ const _Layout = () => {
       <Tabs.Screen
         name="scan"
         options={{
-            title: 'Scan',
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-                <TabIcon
-                    focused={focused}
-                    icon={icons.qrcode}
-                    title="Scannen"
-                />
-              )
+          title: 'Scan',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              icon={icons.qrcode}
+              title="Scannen"
+            />
+          )
         }}
-        />
-        <Tabs.Screen
+      />
+      <Tabs.Screen
         name="stats"
         options={{
-            title: 'Stats',
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-                <TabIcon
-                    focused={focused}
-                    icon={icons.stats}
-                    title="Statistieken"
-                />
-            )
+          title: 'Stats',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              icon={icons.stats}
+              title="Statistieken"
+            />
+          )
         }}
-        />
-        <Tabs.Screen
+      />
+      <Tabs.Screen
         name="profile"
         options={{
-            title: 'Profile',
-            headerShown: false,
-            tabBarIcon: ({ focused }) => (
-                <TabIcon
-                    focused={focused}
-                    icon={icons.user}
-                    title="Profiel"
-                />
-              )
+          title: 'Profile',
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              icon={icons.user}
+              title="Profiel"
+            />
+          )
         }}
-        />
+      />
     </Tabs>
   );
-}
+};
 
 export default _Layout;
