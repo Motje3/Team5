@@ -8,6 +8,7 @@ import {
   Image,
 } from 'react-native';
 import React, { useState } from 'react';
+import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,8 +28,8 @@ const EditProfile = () => {
     accentColor,
   } = useApp();
 
-  const { darkMode } = useTheme(); // Haal darkMode uit de context
-  const theme = darkMode ? darkTheme : lightTheme; // Gebruik het juiste thema afhankelijk van darkMode
+  const { darkMode } = useTheme();
+  const theme = darkMode ? darkTheme : lightTheme;
 
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
@@ -57,18 +58,18 @@ const EditProfile = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{
         flex: 1,
-        backgroundColor: theme.background, // Achtergrondkleur afhankelijk van darkMode
-        paddingHorizontal: 24,
-        paddingTop: 48,
+        backgroundColor: theme.background,
+        paddingHorizontal: wp(6),
+        paddingTop: hp(6),
       }}
     >
       <Text
         style={{
-          color: theme.text, // Kleur van de tekst afhankelijk van darkMode
-          fontSize: 22,
+          color: theme.text,
+          fontSize: wp(5.5),
           fontWeight: 'bold',
           textAlign: 'center',
-          marginBottom: 24,
+          marginBottom: hp(3),
         }}
       >
         Profiel Bewerken
@@ -76,45 +77,57 @@ const EditProfile = () => {
 
       <TouchableOpacity
         onPress={handlePickImage}
-        style={{ alignItems: 'center', marginBottom: 24 }}
+        style={{ alignItems: 'center', marginBottom: hp(3) }}
       >
         <Image
           source={profileImage ? { uri: profileImage } : fallbackImage}
-          style={{ width: 90, height: 90, borderRadius: 50 }}
+          style={{
+            width: wp(24),
+            height: wp(24),
+            borderRadius: wp(12),
+          }}
         />
-        <Text style={{ color: accentColor, marginTop: 8 }}>Wijzig profielfoto</Text>
+        <Text style={{ color: accentColor, marginTop: hp(1), fontSize: wp(3.5) }}>
+          Wijzig profielfoto
+        </Text>
       </TouchableOpacity>
 
-      <Text style={{ color: theme.secondaryText, marginBottom: 8 }}>Naam</Text>
+      <Text style={{ color: theme.secondaryText, marginBottom: hp(1), fontSize: wp(4) }}>
+        Naam
+      </Text>
       <TextInput
         value={newName}
         onChangeText={setNewName}
         placeholder="Naam"
-        placeholderTextColor={theme.secondaryText} // Placeholderkleur afhankelijk van darkMode
+        placeholderTextColor={theme.secondaryText}
         style={{
-          backgroundColor: theme.card, // Achtergrondkleur van het tekstveld afhankelijk van darkMode
-          color: theme.text, // Kleur van de tekst in het tekstveld afhankelijk van darkMode
-          paddingHorizontal: 16,
-          paddingVertical: 12,
-          borderRadius: 10,
-          marginBottom: 16,
+          backgroundColor: theme.card,
+          color: theme.text,
+          paddingHorizontal: wp(4),
+          paddingVertical: hp(1.5),
+          borderRadius: wp(2),
+          marginBottom: hp(2),
+          fontSize: wp(4),
         }}
       />
 
-      <Text style={{ color: theme.secondaryText, marginBottom: 8 }}>E-mail</Text>
+      <Text style={{ color: theme.secondaryText, marginBottom: hp(1), fontSize: wp(4) }}>
+        E-mail
+      </Text>
       <TextInput
         value={newEmail}
         onChangeText={setNewEmail}
         placeholder="E-mail"
-        placeholderTextColor={theme.secondaryText} // Placeholderkleur afhankelijk van darkMode
+        placeholderTextColor={theme.secondaryText}
         keyboardType="email-address"
         style={{
-          backgroundColor: theme.card, // Achtergrondkleur van het tekstveld afhankelijk van darkMode
-          color: theme.text, // Kleur van de tekst in het tekstveld afhankelijk van darkMode
-          paddingHorizontal: 16,
-          paddingVertical: 12,
-          borderRadius: 10,
-          marginBottom: 32,
+          backgroundColor: theme.card,
+          color: theme.text,
+          paddingHorizontal: wp(4),
+          paddingVertical: hp(1.5),
+          borderRadius: wp(2),
+          marginBottom: hp(4),
+          fontSize: wp(4),
         }}
       />
 
@@ -122,12 +135,12 @@ const EditProfile = () => {
         onPress={handleSave}
         style={{
           backgroundColor: accentColor,
-          paddingVertical: 16,
-          borderRadius: 10,
+          paddingVertical: hp(2),
+          borderRadius: wp(3),
           alignItems: 'center',
         }}
       >
-        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>
+        <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>
           Opslaan
         </Text>
       </TouchableOpacity>
