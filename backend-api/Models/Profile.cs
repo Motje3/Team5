@@ -10,6 +10,9 @@ namespace backend_api.Models
         [Required]
         public required string Username { get; set; }
 
+        [Required]
+        public string Password { get; set; } = string.Empty;
+
         public required string FullName { get; set; }
 
         public string Role { get; set; } = "user"; // "user" or "admin"
