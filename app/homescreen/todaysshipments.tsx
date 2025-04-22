@@ -45,7 +45,7 @@ const Todaysshipment = () => {
                     }}
                 >
                     <Ionicons name="arrow-back" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, marginLeft: 8 }}>Back</Text>
+                    <Text style={{ color: 'white', fontSize: 20, marginLeft: 8 }}>Terug</Text>
                 </TouchableOpacity>
             </View>
 
