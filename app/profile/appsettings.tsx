@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import React from 'react';
-import { useRouter } from 'expo-router';  // Importeren van useRouter voor navigatie
+import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
+import { wp, hp } from '../utils/responsive';
 
 const AppSettings = () => {
   const {
@@ -11,31 +12,45 @@ const AppSettings = () => {
     setNotificationsEnabled,
     accentColor,
     setAccentColor,
-  } = useApp(); // Gebruik van useApp om darkMode op te halen en bij te werken
-  const router = useRouter();  // Initialiseren van router
+  } = useApp();
+  const router = useRouter();
 
   const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
 
   return (
-    <View style={{ flex: 1, padding: 24, backgroundColor: darkMode ? "#0f0D23" : "#ffffff" }}>
-      <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 22, fontWeight: 'bold', marginBottom: 24 }}>
+    <View style={{ flex: 1, padding: wp(6), backgroundColor: darkMode ? "#0f0D23" : "#ffffff" }}>
+      <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: wp(5.5), fontWeight: 'bold', marginBottom: hp(3) }}>
         App Instellingen
       </Text>
 
       {/* 🔘 Dark mode */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18 }}>Donker thema</Text>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: hp(2)
+      }}>
+        <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: wp(4.5) }}>
+          Donker thema
+        </Text>
         <Switch
           value={darkMode}
-          onValueChange={setDarkMode} // Wijzig de waarde van darkMode
+          onValueChange={setDarkMode}
           trackColor={{ false: "#767577", true: "#6D28D9" }}
           thumbColor={darkMode ? "#A970FF" : "#f4f3f4"}
         />
       </View>
 
       {/* 🔔 Notifications */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18 }}>Meldingen</Text>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: hp(2)
+      }}>
+        <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: wp(4.5) }}>
+          Meldingen
+        </Text>
         <Switch
           value={notificationsEnabled}
           onValueChange={setNotificationsEnabled}
@@ -45,19 +60,21 @@ const AppSettings = () => {
       </View>
 
       {/* 🎨 Accent kleur */}
-      <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: 18, marginBottom: 10 }}>Accentkleur</Text>
-      <View style={{ flexDirection: 'row', marginBottom: 30 }}>
+      <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: wp(4.5), marginBottom: hp(1.5) }}>
+        Accentkleur
+      </Text>
+      <View style={{ flexDirection: 'row', marginBottom: hp(3) }}>
         {accentOptions.map((color, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => setAccentColor(color)} // Wijzig de accentkleur
+            onPress={() => setAccentColor(color)}
             style={{
               backgroundColor: color,
-              width: 32,
-              height: 32,
-              borderRadius: 16,
-              marginRight: 12,
-              borderWidth: accentColor === color ? 3 : 0, // Highlight de geselecteerde kleur
+              width: wp(8),
+              height: wp(8),
+              borderRadius: wp(4),
+              marginRight: wp(3),
+              borderWidth: accentColor === color ? 3 : 0,
               borderColor: '#fff',
             }}
           />
@@ -67,14 +84,16 @@ const AppSettings = () => {
       {/* Sluiten */}
       <TouchableOpacity
         style={{
-          backgroundColor: accentColor, // Zorg ervoor dat de kleur van de knop verandert
-          paddingVertical: 16,
-          borderRadius: 12,
+          backgroundColor: accentColor,
+          paddingVertical: hp(2),
+          borderRadius: wp(3),
           alignItems: 'center',
         }}
-        onPress={() => router.back()}  // Vervang history.back() door router.back()
+        onPress={() => router.back()}
       >
-        <Text style={{ color: "#fff", fontSize: 16, fontWeight: 'bold' }}>Sluiten</Text>
+        <Text style={{ color: "#fff", fontSize: wp(4.5), fontWeight: 'bold' }}>
+          Sluiten
+        </Text>
       </TouchableOpacity>
     </View>
   );
