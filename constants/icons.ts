@@ -12,7 +12,7 @@ import orders from "@/assets/icons/orders.png";
 import scaninfo from "@/assets/icons/scaninfo.png";
 import reportproblem from "@/assets/icons/report.png";
 import arrowleft from "@/assets/icons/arrow-left.png";
-
+import filter from "@/assets/icons/filter.png";
 
 
 
@@ -34,5 +34,6 @@ export const icons = {
   scaninfo,
   reportproblem,
   arrowleft,
+  filter
   
 };
