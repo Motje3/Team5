@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
   View,
   Text,
@@ -10,41 +10,65 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Modal from 'react-native-modal';
-import { icons } from '@/constants/icons'; // Make sure icons.reportproblem and icons.arrowleft exist
+import { icons } from '@/constants/icons';
 
 const ReportIssue = () => {
   const router = useRouter();
+  const { shipmentId } = useLocalSearchParams();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const toggleModal = () => setModalVisible(!isModalVisible);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title || !description) {
       Alert.alert('Vul alle velden in.');
       return;
     }
 
-    console.log({ title, description, image });
-    Alert.alert('Probleem succesvol ingediend!');
+    setSubmitting(true);
+    try {
+      const response = await fetch('http://192.168.1.198:5070/api/IssueReport', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          shipmentId: shipmentId ? parseInt(shipmentId as string) : undefined
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Fout bij indienen');
+      }
+
+      Alert.alert('✅ Probleem succesvol gemeld!');
+      router.back();
+    } catch (error) {
+      console.error(error);
+      Alert.alert('❌ Indienen mislukt.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <View className="flex-1 bg-primary px-6 py-10 justify-center items-center">
-      {/* 🧠 Big Center Icon */}
       <Image
         source={icons.reportproblem}
         style={{ width: 140, height: 140, marginBottom: 20 }}
       />
 
-      {/* 🧾 Header Title */}
       <Text className="text-white text-3xl font-bold mb-10 text-center">
         Probleem melden
       </Text>
 
-      {/* ✏️ Titel Input */}
       <Text className="text-white mb-2 self-start">Titel</Text>
       <TextInput
         value={title}
@@ -54,7 +78,6 @@ const ReportIssue = () => {
         className="bg-[#1E1B33] text-white px-4 py-3 rounded-lg mb-4 w-full"
       />
 
-      {/* 📝 Omschrijving Input */}
       <Text className="text-white mb-2 self-start">Omschrijving</Text>
       <TextInput
         value={description}
@@ -66,7 +89,7 @@ const ReportIssue = () => {
         className="bg-[#1E1B33] text-white px-4 py-3 rounded-lg mb-6 w-full text-left"
       />
 
-      {/* 📸 Pick Image Button */}
+      {/* 📸 Pick Image Button (inactive for now) */}
       <TouchableOpacity
         onPress={toggleModal}
         className="bg-[#1E1B33] py-3 px-4 rounded-lg mb-4 w-full items-center border border-gray-600"
@@ -76,7 +99,6 @@ const ReportIssue = () => {
         </Text>
       </TouchableOpacity>
 
-      {/* 🖼️ Preview Image */}
       {image && (
         <Image
           source={{ uri: image }}
@@ -90,15 +112,16 @@ const ReportIssue = () => {
         />
       )}
 
-      {/* 📤 Submit Button */}
       <TouchableOpacity
         onPress={handleSubmit}
         className="bg-purple-600 py-3 rounded-lg items-center w-full"
+        disabled={submitting}
       >
-        <Text className="text-white text-lg font-semibold">Indienen</Text>
+        <Text className="text-white text-lg font-semibold">
+          {submitting ? 'Verzenden...' : 'Indienen'}
+        </Text>
       </TouchableOpacity>
 
-      {/* 🔙 Terug Button */}
       <TouchableOpacity
         onPress={() => router.back()}
         className="mt-4 flex-row items-center self-start"
@@ -110,7 +133,6 @@ const ReportIssue = () => {
         <Text className="text-gray-300 text-base">Terug</Text>
       </TouchableOpacity>
 
-      {/* 📱 Modal for image choice */}
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={toggleModal}
@@ -121,8 +143,7 @@ const ReportIssue = () => {
         animationOutTiming={2}
         backdropTransitionInTiming={1}
         backdropTransitionOutTiming={1}
-        >
-
+      >
         <View className="bg-[#1E1B33] p-6 rounded-t-2xl">
           <Text className="text-white text-xl font-bold mb-4 text-center">
             Foto toevoegen
@@ -131,8 +152,7 @@ const ReportIssue = () => {
           <TouchableOpacity
             onPress={async () => {
               toggleModal();
-              const cameraPerm =
-                await ImagePicker.requestCameraPermissionsAsync();
+              const cameraPerm = await ImagePicker.requestCameraPermissionsAsync();
               if (!cameraPerm.granted) {
                 Alert.alert('Camera toegang vereist');
                 return;
@@ -151,8 +171,7 @@ const ReportIssue = () => {
           <TouchableOpacity
             onPress={async () => {
               toggleModal();
-              const galleryPerm =
-                await ImagePicker.requestMediaLibraryPermissionsAsync();
+              const galleryPerm = await ImagePicker.requestMediaLibraryPermissionsAsync();
               if (!galleryPerm.granted) {
                 Alert.alert('Galerij toegang vereist');
                 return;
