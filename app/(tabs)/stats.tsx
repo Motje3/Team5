@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Image, FlatList } from "react-native";
+import { View, Text, Image, FlatList, Dimensions, StyleSheet } from "react-native";
 import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
+
+const { width } = Dimensions.get("window"); // Get screen width for consistent sizing
 
 const Stats = () => {
   const [location, setLocation] = useState("");
@@ -28,7 +30,6 @@ const Stats = () => {
     { id: "SHIP-108", location: "Rotterdam", status: "In afwachting", date: "2025-04-24" },
     { id: "SHIP-109", location: "Utrecht", status: "Afgerond", date: "2025-04-23" },
     { id: "SHIP-110", location: "Amsterdam", status: "In afwachting", date: "2025-04-25" },
-
   ];
 
   // Filter logic
@@ -41,116 +42,214 @@ const Stats = () => {
   });
 
   return (
-    <View className="bg-primary flex-1 px-6 py-6">
+    <LinearGradient
+      colors={["#3D0F6E", "#030014"]} // Updated background gradient to match index.tsx
+      locations={[0, 0.7, 1]} // Smooth transition
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      style={styles.container}
+    >
       {/* Page Header */}
-      <View className="flex items-center mb-6">
-        <Image
-          source={icons.stats}
-          style={{ width: 30, height: 30, tintColor: "#A970FF", marginTop: 20 }}
-        />
+      <View style={styles.header}>
+        <Image source={icons.stats} style={styles.headerIcon} />
       </View>
 
       {/* Shipment Overview */}
       <LinearGradient
-        colors={["#17144F", "#090723"]}
+        colors={["#17144F", "#090723"]} // Original box gradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={{
-          padding: 20,
-          borderRadius: 20,
-          alignItems: "center",
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 5 },
-          shadowRadius: 10,
-          elevation: 8,
-          marginBottom: 15,
-        }}
+        style={styles.overviewBox}
       >
-        <Text className="text-white text-lg font-bold mb-4">Jouw zendingen</Text>
-        <View className="flex-row justify-between w-full px-4">
-          <View className="items-center">
-            <Text className="text-purple-400 text-3xl font-bold">{shipmentStats.total}</Text>
-            <Text className="text-gray-300">Totaal</Text>
+        <Text style={styles.overviewTitle}>Jouw zendingen</Text>
+        <View style={styles.overviewStats}>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>{shipmentStats.total}</Text>
+            <Text style={styles.statLabel}>Totaal</Text>
           </View>
-          <View className="items-center">
-            <Text className="text-green-400 text-3xl font-bold">{shipmentStats.completed}</Text>
-            <Text className="text-gray-300">Voltooid</Text>
+          <View style={styles.statBox}>
+            <Text style={styles.statValueCompleted}>{shipmentStats.completed}</Text>
+            <Text style={styles.statLabel}>Voltooid</Text>
           </View>
-          <View className="items-center">
-            <Text className="text-yellow-400 text-3xl font-bold">{shipmentStats.pending}</Text>
-            <Text className="text-gray-300">In behandeling</Text>
+          <View style={styles.statBox}>
+            <Text style={styles.statValuePending}>{shipmentStats.pending}</Text>
+            <Text style={styles.statLabel}>In behandeling</Text>
           </View>
         </View>
       </LinearGradient>
 
       {/* Recent Activity */}
       <LinearGradient
-        colors={["#17144F", "#090723"]}
+        colors={["#17144F", "#090723"]} // Original box gradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={{
-          padding: 20,
-          borderRadius: 20,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 5 },
-          shadowOpacity: 0.4,
-          shadowRadius: 10,
-          elevation: 8,
-          marginBottom: 15,
-        }}
+        style={styles.activityBox}
       >
-        <Text className="text-white text-lg font-bold mb-4">Recente activiteit</Text>
+        <Text style={styles.activityTitle}>Recente activiteit</Text>
 
-        {/* Shipment List */}
-        <FlatList
-          data={filteredShipments}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View className="flex-row justify-between py-2 border-b border-gray-700">
-              <Text className="text-gray-300">{item.id}</Text>
-              <Text
-                className={`text-lg ${
-                  item.status === "Afgerond" ? "text-green-400" : "text-yellow-400"
-                }`}
-              >
-                {item.status}
-              </Text>
-              <Text className="text-gray-500">{item.date}</Text>
-            </View>
-          )}
-          showsVerticalScrollIndicator={false}
-        />
+        {/* Scrollable Shipment List */}
+        <View style={styles.scrollableList}>
+          <FlatList
+            data={filteredShipments}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.listItem}>
+                <Text style={styles.listItemId}>{item.id}</Text>
+                <Text
+                  style={[
+                    styles.listItemStatus,
+                    { color: item.status === "Afgerond" ? "#22C55E" : "#FACC15" },
+                  ]}
+                >
+                  {item.status}
+                </Text>
+                <Text style={styles.listItemDate}>{item.date}</Text>
+              </View>
+            )}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       </LinearGradient>
 
       {/* Filters */}
       <LinearGradient
-        colors={["#17144F", "#090723"]}
+        colors={["#17144F", "#090723"]} // Original box gradient
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={{
-          paddingTop: 15,
-          paddingBottom: 5,
-          paddingHorizontal: 20,
-          borderRadius: 20,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 5 },
-          shadowOpacity: 0.4,
-          shadowRadius: 10,
-          elevation: 8,
-        }}
+        style={styles.filterBox}
       >
-        <Text style={{ color: "#FFF", fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
-          Filters
-        </Text>
-        <View style={{ marginBottom: -5 }}>
+        <Text style={styles.filterTitle}>Filters</Text>
+        <View style={styles.filterItem}>
           <LocationFilter label="Location" value={location} onChange={setLocation} />
         </View>
         <View>
           <DatePickerFilter label="Date" value={date} onChange={setDate} />
         </View>
       </LinearGradient>
-    </View>
+    </LinearGradient>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  headerIcon: {
+    width: 30,
+    height: 30,
+    tintColor: "#A970FF",
+    marginTop: 20,
+  },
+  overviewBox: {
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 10,
+    elevation: 8,
+    marginBottom: 15,
+    width: width * 0.9, // Consistent width
+    alignSelf: "center",
+  },
+  overviewTitle: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  overviewStats: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 10,
+  },
+  statBox: {
+    alignItems: "center",
+  },
+  statValue: {
+    color: "#A970FF",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  statValueCompleted: {
+    color: "#22C55E",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  statValuePending: {
+    color: "#FACC15",
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  statLabel: {
+    color: "#AAA",
+    fontSize: 14,
+  },
+  activityBox: {
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+    marginBottom: 15,
+    width: width * 0.9, // Consistent width
+    alignSelf: "center",
+  },
+  activityTitle: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  scrollableList: {
+    maxHeight: 200, // Fixed height for scrollable list
+  },
+  listItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#444",
+  },
+  listItemId: {
+    color: "#AAA",
+    fontSize: 14,
+  },
+  listItemStatus: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  listItemDate: {
+    color: "#666",
+    fontSize: 14,
+  },
+  filterBox: {
+    padding: 20,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+    width: width * 0.9, // Consistent width
+    alignSelf: "center",
+  },
+  filterTitle: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  filterItem: {
+    marginBottom: 10,
+  },
+});
 
 export default Stats;
