@@ -9,6 +9,13 @@ const Stats = () => {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
 
+  // Dummy shipment stats
+  const shipmentStats = {
+    total: 124, // Total processed shipments
+    completed: 98, // Successfully completed
+    pending: 26, // Still in transit
+  };
+
   // Dummy shipment data
   const shipments = [
     { id: "SHIP-101", location: "Amsterdam", status: "Afgerond", date: "2025-04-20" },
@@ -33,24 +40,44 @@ const Stats = () => {
       <View className="flex items-center mb-6">
         <Image
           source={icons.stats}
-          style={{ width: 50, height: 50, tintColor: "#A970FF", marginTop: 25 }}
+          style={{ width: 30, height: 30, tintColor: "#A970FF", marginTop: 20 }}
         />
-        <Text className="text-white text-2xl font-bold mt-2">Jouw zendingen</Text>
       </View>
 
-      {/* Filters */}
-      <LocationFilter
-        label="Location"
-        value={location}
-        onChange={setLocation}
-      />
-      <DatePickerFilter
-        label="Date"
-        value={date}
-        onChange={setDate}
-      />
+      {/* Shipment Overview */}
+      <LinearGradient
+        colors={["#17144F", "#090723"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          padding: 20,
+          borderRadius: 20,
+          alignItems: "center",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 5 },
+          shadowRadius: 10,
+          elevation: 8,
+          marginBottom: 15,
+        }}
+      >
+        <Text className="text-white text-lg font-bold mb-4">Jouw zendingen</Text>
+        <View className="flex-row justify-between w-full px-4">
+          <View className="items-center">
+            <Text className="text-purple-400 text-3xl font-bold">{shipmentStats.total}</Text>
+            <Text className="text-gray-300">Totaal</Text>
+          </View>
+          <View className="items-center">
+            <Text className="text-green-400 text-3xl font-bold">{shipmentStats.completed}</Text>
+            <Text className="text-gray-300">Voltooid</Text>
+          </View>
+          <View className="items-center">
+            <Text className="text-yellow-400 text-3xl font-bold">{shipmentStats.pending}</Text>
+            <Text className="text-gray-300">In behandeling</Text>
+          </View>
+        </View>
+      </LinearGradient>
 
-      {/* Shipment List */}
+      {/* Recent Activity */}
       <LinearGradient
         colors={["#17144F", "#090723"]}
         start={{ x: 0, y: 0 }}
@@ -63,9 +90,12 @@ const Stats = () => {
           shadowOpacity: 0.4,
           shadowRadius: 10,
           elevation: 8,
+          marginBottom: 15,
         }}
       >
         <Text className="text-white text-lg font-bold mb-4">Recente activiteit</Text>
+
+        {/* Shipment List */}
         <FlatList
           data={filteredShipments}
           keyExtractor={(item) => item.id}
@@ -84,6 +114,34 @@ const Stats = () => {
           )}
           showsVerticalScrollIndicator={false}
         />
+      </LinearGradient>
+
+      {/* Filters */}
+      <LinearGradient
+        colors={["#17144F", "#090723"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={{
+          paddingTop: 15,
+          paddingBottom: 5,
+          paddingHorizontal: 20,
+          borderRadius: 20,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 5 },
+          shadowOpacity: 0.4,
+          shadowRadius: 10,
+          elevation: 8,
+        }}
+      >
+        <Text style={{ color: "#FFF", fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>
+          Filters
+        </Text>
+        <View style={{ marginBottom: -5 }}>
+          <LocationFilter label="Location" value={location} onChange={setLocation} />
+        </View>
+        <View>
+          <DatePickerFilter label="Date" value={date} onChange={setDate} />
+        </View>
       </LinearGradient>
     </View>
   );
