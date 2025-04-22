@@ -15,7 +15,7 @@ namespace backend_api.Models
 
         public string ExpectedDelivery { get; set; }
 
-        public string Weight { get; set; }
+        public string? Weight { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
