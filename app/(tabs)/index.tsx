@@ -5,7 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
-import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext'; // ✅ gebruik useTheme
+import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
+import { wp, hp } from '../utils/responsive'; // ✅ responsive helpers
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
@@ -15,81 +16,81 @@ const Home = () => {
   const theme = darkMode ? darkTheme : lightTheme;
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: 24, paddingTop: 40 }}>
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(5) }}>
       <ExpoStatusBar style={darkMode ? "light" : "dark"} />
       <StatusBar barStyle={darkMode ? "light-content" : "dark-content"} />
 
       {/* 🔹 Welcome Header */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View>
-          <Text style={{ color: theme.secondaryText, fontSize: 16, marginBottom: 4 }}>Welkom terug,</Text>
-          <Text style={{ color: theme.text, fontSize: 24, fontWeight: 'bold' }}>{username}</Text>
+          <Text style={{ color: theme.secondaryText, fontSize: wp(4), marginBottom: hp(0.5) }}>Welkom terug,</Text>
+          <Text style={{ color: theme.text, fontSize: wp(6), fontWeight: 'bold' }}>{username}</Text>
         </View>
         <Image
           source={profileImage ? { uri: profileImage } : fallbackImage}
-          style={{ width: 40, height: 40, borderRadius: 20 }}
+          style={{ width: wp(10), height: wp(10), borderRadius: wp(5) }}
         />
       </View>
 
       {/* 🔹 Grid Buttons */}
-      <View style={{ marginTop: 24, flexDirection: 'column', justifyContent: 'flex-start' }}>
+      <View style={{ marginTop: hp(3), flexDirection: 'column', justifyContent: 'flex-start' }}>
         {/* 📦 Zendingen */}
         <TouchableOpacity
-          style={{ borderRadius: 12, overflow: 'hidden', width: '100%', marginBottom: 16 }}
+          style={{ borderRadius: wp(3), overflow: 'hidden', width: '100%', marginBottom: hp(2) }}
           onPress={() => router.push('/homescreen/todaysshipments')}
         >
           <LinearGradient
             colors={[accentColor, "#320042"]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={{
-              padding: 24,
-              borderRadius: 12,
+              padding: wp(6),
+              borderRadius: wp(3),
               justifyContent: "center",
               alignItems: "center"
             }}
           >
-            <Image source={icons.orders} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text style={{ color: "#fff", fontSize: 16, marginTop: 8 }}>Zendingen van vandaag</Text>
+            <Image source={icons.orders} style={{ width: wp(10), height: wp(10), tintColor: "#fff" }} />
+            <Text style={{ color: "#fff", fontSize: wp(4), marginTop: hp(1) }}>Zendingen van vandaag</Text>
           </LinearGradient>
         </TouchableOpacity>
 
         {/* 🔍 Scan */}
         <TouchableOpacity
-          style={{ borderRadius: 12, overflow: 'hidden', width: '100%', marginBottom: 16 }}
+          style={{ borderRadius: wp(3), overflow: 'hidden', width: '100%', marginBottom: hp(2) }}
         >
           <LinearGradient
             colors={["#1A5BC4", "#111A47"]}
             start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
             style={{
-              padding: 24,
-              borderRadius: 12,
+              padding: wp(6),
+              borderRadius: wp(3),
               justifyContent: "center",
               alignItems: "center"
             }}
           >
-            <Image source={icons.scaninfo} style={{ width: 40, height: 40, tintColor: "#fff" }} />
-            <Text style={{ color: "#fff", fontSize: 16, marginTop: 8 }}>Scannen voor Info</Text>
+            <Image source={icons.scaninfo} style={{ width: wp(10), height: wp(10), tintColor: "#fff" }} />
+            <Text style={{ color: "#fff", fontSize: wp(4), marginTop: hp(1) }}>Scannen voor Info</Text>
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* 🕒 Placeholder */}
+        {/* 🕒 Placeholder Buttons */}
         {[1, 2].map((i) => (
           <TouchableOpacity
             key={i}
-            style={{ borderRadius: 12, overflow: 'hidden', width: '100%', marginBottom: 16 }}
+            style={{ borderRadius: wp(3), overflow: 'hidden', width: '100%', marginBottom: hp(2) }}
           >
             <LinearGradient
               colors={["#4B5563", "#131921"]}
               start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
               style={{
-                padding: 24,
-                borderRadius: 12,
+                padding: wp(6),
+                borderRadius: wp(3),
                 justifyContent: "center",
                 alignItems: "center",
                 opacity: 0.5
               }}
             >
-              <Text style={{ color: "#D1D5DB", fontSize: 16 }}>Binnenkort beschikbaar</Text>
+              <Text style={{ color: "#D1D5DB", fontSize: wp(4) }}>Binnenkort beschikbaar</Text>
             </LinearGradient>
           </TouchableOpacity>
         ))}
