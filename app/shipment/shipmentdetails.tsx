@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -10,27 +10,43 @@ const ShipmentDetails = () => {
   const router = useRouter();
   const { qrData } = useLocalSearchParams();
 
-  const [statusModalVisible, setStatusModalVisible] = useState(false);
+  const [shipment, setShipment] = useState<any>(null);
   const [shipmentStatus, setShipmentStatus] = useState("Geleverd");
+  const [statusModalVisible, setStatusModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  let shipment = {
-    status: shipmentStatus,
-    destination: "Niet bekend",
-    expectedDelivery: "Niet bekend",
-    weight: "Niet bekend",
-  };
+  useEffect(() => {
+    const fetchShipment = async () => {
+      try {
+        const id = Array.isArray(qrData) ? qrData[0] : qrData;
+        const response = await fetch(`http://192.168.1.198:5070/api/shipments/${id}`);
 
-  try {
-    const parsedData = JSON.parse(Array.isArray(qrData) ? qrData[0] : qrData);
-    shipment = { ...shipment, ...parsedData };
-  } catch (error) {
-    console.log("Scanned data is not JSON, using default format.");
-  }
+        const data = await response.json();
+        setShipment(data);
+        setShipmentStatus(data.status);
+      } catch (error) {
+        console.error("Fout bij ophalen van zending:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchShipment();
+  }, [qrData]);
 
   const updateStatus = (newStatus: string) => {
     setShipmentStatus(newStatus);
     setStatusModalVisible(false);
+    // TODO: send PUT request to backend later
   };
+
+  if (loading || !shipment) {
+    return (
+      <View className="flex-1 justify-center items-center bg-[#090723]">
+        <Text className="text-white">Laden...</Text>
+      </View>
+    );
+  }
 
   return (
     <LinearGradient
@@ -41,16 +57,13 @@ const ShipmentDetails = () => {
     >
       <StatusBar hidden />
 
-      {/* ✅ Check Icon */}
       <Image 
         source={icons.checked}  
         style={{ width: 80, height: 80, marginBottom: 10 }}
       />
 
-      {/* ✅ Scanned Successfully Text */}
       <Text className="text-green-400 text-2xl font-bold mb-4">Succesvol gescand</Text>
 
-      {/* ✅ Shipment Details Card */}
       <LinearGradient
         colors={["#1E1B4B", "#13112D"]}
         start={{ x: 0, y: 0 }}
@@ -75,7 +88,7 @@ const ShipmentDetails = () => {
         <Text className="text-gray-300 text-lg">⚖️ Gewicht: <Text className="text-red-400">{shipment.weight}</Text></Text>
       </LinearGradient>
 
-      {/* ✨ Status wijzigen button (styled like Zendingdetails) */}
+      {/* ✨ Status wijzigen */}
       <LinearGradient
         colors={["#1E1B4B", "#13112D"]}
         start={{ x: 0, y: 0 }}
@@ -102,10 +115,8 @@ const ShipmentDetails = () => {
         </TouchableOpacity>
       </LinearGradient>
 
-
-      {/* ▶️ Volgende Scannen & ❗ Probleem Melden buttons */}
+      {/* Buttons */}
       <View className="flex-row mt-6 w-full justify-between">
-        {/* Probleem Melden (left) */}
         <TouchableOpacity
           className="flex-1 mr-2 py-4 rounded-xl items-center justify-center"
           style={{
@@ -116,7 +127,7 @@ const ShipmentDetails = () => {
             shadowRadius: 6,
             elevation: 6,
           }}
-          onPress={() => router.push('/shipment/reportissue')}
+          onPress={() => router.push(`/shipment/reportissue?shipmentId=${shipment.id}`)}
         >
           <Image 
             source={icons.issue}  
@@ -125,7 +136,6 @@ const ShipmentDetails = () => {
           <Text className="text-white font-semibold">Probleem melden</Text>
         </TouchableOpacity>
 
-        {/* Volgende Scannen (right) */}
         <TouchableOpacity
           className="flex-1 ml-2 py-4 rounded-xl items-center justify-center"
           style={{
