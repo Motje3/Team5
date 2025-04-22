@@ -1,17 +1,16 @@
 import { Stack } from "expo-router";
-import './global.css';
 import { AppProvider } from "./context/AppContext";
-import { ThemeProvider } from "./context/ThemeContext"; // ✅ import ThemeProvider
+import { ThemeProvider } from "./context/ThemeContext";
 
 export default function RootLayout() {
   return (
-    <ThemeProvider> {/* ✅ Wrap met ThemeProvider */}
+    <ThemeProvider>
       <AppProvider>
         <Stack
           screenOptions={{
             headerShown: false,
             contentStyle: {
-              backgroundColor: '#0f0D23', // blijft ok, wordt overschreven indien nodig
+              backgroundColor: '#0f0D23', // fallback background (overschreven door thema's)
             },
           }}
         >
