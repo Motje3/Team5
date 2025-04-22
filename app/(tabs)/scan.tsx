@@ -2,17 +2,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, AppState } from 'react-native';
 import { Camera, CameraView } from 'expo-camera';
 import { useRouter } from 'expo-router';
-import { useApp } from '../context/AppContext'; // Import useApp hook
-import { useIsFocused } from '@react-navigation/native'; // Import useIsFocused hook
+import { useApp } from '../context/AppContext';
+import { useIsFocused } from '@react-navigation/native';
+import { wp, hp } from '../utils/responsive'; // ✅ Responsive helpers
 
 const Scan = () => {
-  const { darkMode } = useApp(); // Now this works after importing the context
+  const { darkMode } = useApp();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const appState = useRef(AppState.currentState);
-  const qrLock = useRef(false); // Prevent multiple scans
+  const qrLock = useRef(false);
   const router = useRouter();
-
-  const isFocused = useIsFocused(); // Track if the screen is focused
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const initializeCamera = async () => {
@@ -20,12 +20,12 @@ const Scan = () => {
       setHasPermission(status === 'granted');
     };
 
-    initializeCamera();  // Initialiseer de camera
+    initializeCamera();
 
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (appState.current.match(/inactive|background/) && nextAppState === "active") {
-        qrLock.current = false; // Unlock scanning when app is active again
-        initializeCamera(); // Reinitialize the camera when app is in foreground
+        qrLock.current = false;
+        initializeCamera();
       }
       appState.current = nextAppState;
     });
@@ -33,12 +33,12 @@ const Scan = () => {
     return () => {
       subscription.remove();
     };
-  }, [darkMode, isFocused]); // Re-run this effect whenever darkMode or screen focus changes
+  }, [darkMode, isFocused]);
 
   if (hasPermission === null) {
     return (
       <View style={styles.container}>
-        <Text>Camera toestemming wordt aangevraagd...</Text>
+        <Text style={styles.infoText}>Camera toestemming wordt aangevraagd...</Text>
       </View>
     );
   }
@@ -46,7 +46,7 @@ const Scan = () => {
   if (hasPermission === false) {
     return (
       <View style={styles.container}>
-        <Text>Geen toegang tot de camera</Text>
+        <Text style={styles.infoText}>Geen toegang tot de camera</Text>
       </View>
     );
   }
@@ -60,7 +60,7 @@ const Scan = () => {
           if (data && !qrLock.current) {
             qrLock.current = true;
             setTimeout(() => {
-              router.push(`/shipment/shipmentdetails?qrData=${encodeURIComponent(data)}`); 
+              router.push(`/shipment/shipmentdetails?qrData=${encodeURIComponent(data)}`);
             }, 500);
           }
         }}
@@ -72,6 +72,15 @@ const Scan = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: wp(4),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000',
+  },
+  infoText: {
+    color: '#fff',
+    fontSize: wp(4),
+    textAlign: 'center',
   },
 });
 
