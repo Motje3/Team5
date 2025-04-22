@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Importeer AsyncStorage
 
+
 type AppContextType = {
   username: string;
   setUsername: (value: string) => void;
