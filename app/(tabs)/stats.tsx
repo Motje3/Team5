@@ -1,24 +1,23 @@
 import React, { useState } from "react";
-import { View, Text, Image, FlatList, Dimensions, StyleSheet } from "react-native";
+import { View, Text, Image, FlatList, Dimensions, StyleSheet, Modal, TouchableOpacity } from "react-native";
 import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
 
-const { width } = Dimensions.get("window"); // Get screen width for consistent sizing
+const { width } = Dimensions.get("window");
 
 const Stats = () => {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Dummy shipment stats
   const shipmentStats = {
-    total: 124, // Total processed shipments
-    completed: 98, // Successfully completed
-    pending: 26, // Still in transit
+    total: 124,
+    completed: 98,
+    pending: 26,
   };
 
-  // Dummy shipment data
   const shipments = [
     { id: "SHIP-101", location: "Amsterdam", status: "Afgerond", date: "2025-04-20" },
     { id: "SHIP-102", location: "Rotterdam", status: "In afwachting", date: "2025-04-21" },
@@ -32,7 +31,6 @@ const Stats = () => {
     { id: "SHIP-110", location: "Amsterdam", status: "In afwachting", date: "2025-04-25" },
   ];
 
-  // Filter logic
   const filteredShipments = shipments.filter((shipment) => {
     const matchesLocation = location
       ? shipment.location.toLowerCase().includes(location.toLowerCase())
@@ -43,8 +41,8 @@ const Stats = () => {
 
   return (
     <LinearGradient
-      colors={["#3D0F6E", "#030014"]} // Updated background gradient to match index.tsx
-      locations={[0, 0.7, 1]} // Smooth transition
+      colors={["#3D0F6E", "#030014"]}
+      locations={[0, 0.7, 1]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       style={styles.container}
@@ -56,7 +54,7 @@ const Stats = () => {
 
       {/* Shipment Overview */}
       <LinearGradient
-        colors={["#17144F", "#090723"]} // Original box gradient
+        colors={["#17144F", "#090723"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.overviewBox}
@@ -80,14 +78,12 @@ const Stats = () => {
 
       {/* Recent Activity */}
       <LinearGradient
-        colors={["#17144F", "#090723"]} // Original box gradient
+        colors={["#17144F", "#090723"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.activityBox}
       >
         <Text style={styles.activityTitle}>Recente activiteit</Text>
-
-        {/* Scrollable Shipment List */}
         <View style={styles.scrollableList}>
           <FlatList
             data={filteredShipments}
@@ -111,21 +107,50 @@ const Stats = () => {
         </View>
       </LinearGradient>
 
-      {/* Filters */}
-      <LinearGradient
-        colors={["#17144F", "#090723"]} // Original box gradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.filterBox}
+      {/* Filters Button */}
+      <TouchableOpacity
+        onPress={() => setIsModalVisible(true)}
+        style={styles.filterButton}
       >
-        <Text style={styles.filterTitle}>Filters</Text>
-        <View style={styles.filterItem}>
-          <LocationFilter label="Location" value={location} onChange={setLocation} />
+        <View style={styles.filterButtonContent}>
+          <Image source={icons.filter} style={styles.filterIcon} />
+          <Text style={styles.filterText}>Filter</Text>
         </View>
-        <View>
-          <DatePickerFilter label="Date" value={date} onChange={setDate} />
+      </TouchableOpacity>
+
+      {/* Filters Modal */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <LinearGradient
+            colors={["#17144F", "#090723"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.filterBox}
+          >
+            <Text style={styles.filterTitle}>Filters</Text>
+            <View style={styles.filterItem}>
+              <LocationFilter label="Location" value={location} onChange={setLocation} />
+            </View>
+            <View>
+              <DatePickerFilter label="Date" value={date} onChange={setDate} />
+              <TouchableOpacity onPress={() => setDate("")} style={styles.resetButton}>
+                <Text style={styles.resetButtonText}>Reset Date</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(false)}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </LinearGradient>
         </View>
-      </LinearGradient>
+      </Modal>
     </LinearGradient>
   );
 };
@@ -142,7 +167,37 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     tintColor: "#A970FF",
-    marginTop: 20,
+    marginTop: 40,
+  },
+  filterButton: {
+    marginTop: 10,
+    alignSelf: "flex-start", // Align to the left
+    marginLeft: 20, // Add some spacing from the left
+    backgroundColor: "#17144F",
+    paddingVertical: 10,
+    paddingLeft: 20,
+    paddingRight: 25,
+    borderRadius: 25, // Makes it oval
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  filterButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  filterIcon: {
+    width: 20,
+    height: 20,
+    tintColor: "#FFF",
+    marginRight: 15, // Space between icon and text
+  },
+  filterText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   overviewBox: {
     padding: 20,
@@ -153,7 +208,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 8,
     marginBottom: 15,
-    width: width * 0.9, // Consistent width
+    width: width * 0.9,
     alignSelf: "center",
   },
   overviewTitle: {
@@ -199,7 +254,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 8,
     marginBottom: 15,
-    width: width * 0.9, // Consistent width
+    width: width * 0.9,
     alignSelf: "center",
   },
   activityTitle: {
@@ -209,7 +264,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   scrollableList: {
-    maxHeight: 200, // Fixed height for scrollable list
+    maxHeight: 200,
   },
   listItem: {
     flexDirection: "row",
@@ -230,16 +285,16 @@ const styles = StyleSheet.create({
     color: "#666",
     fontSize: 14,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
   filterBox: {
     padding: 20,
     borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
-    width: width * 0.9, // Consistent width
-    alignSelf: "center",
+    width: width * 0.9,
   },
   filterTitle: {
     color: "#FFF",
@@ -249,6 +304,28 @@ const styles = StyleSheet.create({
   },
   filterItem: {
     marginBottom: 10,
+  },
+  resetButton: {
+    marginTop: 10,
+    backgroundColor: "#FF4D4D",
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  resetButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "#1E90FF",
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  closeButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
   },
 });
 
