@@ -10,6 +10,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // 📦 Services
 builder.Services.AddScoped<IShipmentService, ShipmentService>();
+builder.Services.AddScoped<IIssueReportService, IssueReportService>();
+
 
 
 // 🔍 Swagger for API docs
