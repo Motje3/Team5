@@ -23,6 +23,12 @@ const Stats = () => {
     { id: "SHIP-103", location: "Utrecht", status: "Afgerond", date: "2025-04-20" },
     { id: "SHIP-104", location: "Amsterdam", status: "In afwachting", date: "2025-04-22" },
     { id: "SHIP-105", location: "Rotterdam", status: "Afgerond", date: "2025-04-21" },
+    { id: "SHIP-106", location: "Utrecht", status: "In afwachting", date: "2025-04-23" },
+    { id: "SHIP-107", location: "Amsterdam", status: "Afgerond", date: "2025-04-22" },
+    { id: "SHIP-108", location: "Rotterdam", status: "In afwachting", date: "2025-04-24" },
+    { id: "SHIP-109", location: "Utrecht", status: "Afgerond", date: "2025-04-23" },
+    { id: "SHIP-110", location: "Amsterdam", status: "In afwachting", date: "2025-04-25" },
+
   ];
 
   // Filter logic
