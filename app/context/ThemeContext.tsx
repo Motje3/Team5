@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { wp, hp } from '../utils/responsive'; // als je in 'app/tabs/' zit
+
 
 type ThemeContextType = {
   darkMode: boolean;
