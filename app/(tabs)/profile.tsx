@@ -4,6 +4,7 @@ import { icons } from '@/constants/icons';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
+import { wp, hp } from '../utils/responsive';
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
@@ -41,32 +42,32 @@ const Profile = () => {
       <View
         style={{
           backgroundColor: accentColor,
-          height: 70,
-          borderBottomLeftRadius: 30,
-          borderBottomRightRadius: 30,
+          height: hp(9),
+          borderBottomLeftRadius: wp(8),
+          borderBottomRightRadius: wp(8),
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "#fff", fontSize: 20, fontWeight: "bold", marginTop: 24 }}>
+        <Text style={{ color: "#fff", fontSize: wp(5), fontWeight: "bold", marginTop: hp(2) }}>
           Profiel
         </Text>
       </View>
 
       {/* Profiel info */}
-      <View style={{ alignItems: "center", marginTop: 40 }}>
+      <View style={{ alignItems: "center", marginTop: hp(5) }}>
         <Image
           source={profileImage ? { uri: profileImage } : fallbackImage}
-          style={{ width: 90, height: 90, borderRadius: 50 }}
+          style={{ width: wp(24), height: wp(24), borderRadius: wp(12) }}
         />
-        <Text style={{ color: theme.text, fontSize: 18, fontWeight: "bold", marginTop: 8 }}>
+        <Text style={{ color: theme.text, fontSize: wp(4.5), fontWeight: "bold", marginTop: hp(1) }}>
           {username}
         </Text>
-        <Text style={{ color: theme.secondaryText, fontSize: 14 }}>{email}</Text>
+        <Text style={{ color: theme.secondaryText, fontSize: wp(3.5) }}>{email}</Text>
       </View>
 
       {/* Opties */}
-      <ScrollView style={{ marginTop: 24, paddingHorizontal: 24 }}>
+      <ScrollView style={{ marginTop: hp(3), paddingHorizontal: wp(6) }}>
         {options.map((item, index) => (
           <TouchableOpacity
             key={index}
@@ -74,7 +75,7 @@ const Profile = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              paddingVertical: 16,
+              paddingVertical: hp(2),
               borderBottomWidth: 1,
               borderBottomColor: darkMode ? "#2D2D2D" : "#E5E7EB",
             }}
@@ -82,16 +83,16 @@ const Profile = () => {
             <Image
               source={item.icon}
               style={{
-                width: 24,
-                height: 24,
+                width: wp(6),
+                height: wp(6),
                 tintColor: accentColor,
-                marginRight: 12,
+                marginRight: wp(3),
               }}
             />
             <Text
               style={{
                 color: item.color || theme.text,
-                fontSize: 16,
+                fontSize: wp(4),
               }}
             >
               {item.title}
