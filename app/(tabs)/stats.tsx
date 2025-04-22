@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { View, Text, Image, FlatList } from "react-native";
 import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
-import DatePickerFilter from "./filters/DatePickerFilter";
-import LocationFilter from "./filters/LocationFilter";
+import DatePickerFilter from "../filters/DatePickerFilter";
+import LocationFilter from "../filters/LocationFilter";
 
 const Stats = () => {
   const [location, setLocation] = useState("");
