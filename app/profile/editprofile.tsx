@@ -37,7 +37,7 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put("http://192.168.2.50:5070/api/profile/1", {
+      await axios.put("http://192.168.1.114:5070/api/profile/1", {
         fullName: newName,
         email: newEmail,
         imageUrl: profileImage || "",

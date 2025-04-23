@@ -14,10 +14,10 @@ namespace backend_api.Models
 
         public string? ImageUrl { get; set; } // Optional image path or URL
 
-        public int? ShipmentId { get; set; }  // Optional link to scanned shipment
-        public int? ProfileId { get; set; }
-        public Profile? Profile { get; set; }       
+        public int? ShipmentId { get; set; }  // Optional link to scanned shipment      
         public Shipment? Shipment { get; set; }
+        public int? ProfileId { get; set; }
+        public Profile? Profile { get; set; } 
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

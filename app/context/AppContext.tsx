@@ -36,7 +36,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     notificationsEnabled: boolean
   ) => {
     try {
-      await axios.put("http://192.168.2.50:5070/api/profile/1/settings", {
+      await axios.put("http://192.168.1.114:5070/api/profile/1/settings", {
         accentColor,
         darkMode,
         notificationsEnabled
@@ -51,7 +51,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const response = await axios.get("http://192.168.2.50:5070/api/profile/1");
+        const response = await axios.get("http://192.168.1.114:5070/api/profile/1");
         const data = response.data;
         setUsername(data.fullName);
         setEmail(data.email);
