@@ -9,18 +9,47 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { icons } from "@/constants/icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Fout", "Vul alstublieft zowel e-mail als wachtwoord in.");
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Fout", "Vul alstublieft zowel gebruikersnaam als wachtwoord in.");
       return;
     }
-    router.replace("/");
+
+    try {
+      const response = await fetch("http://192.168.1.198:5070/api/profile/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      if (!response.ok) {
+        const msg = await response.text();
+        throw new Error(msg || "Login mislukt");
+      }
+
+      const data = await response.json();
+
+      // ✅ Store token and user data
+      await AsyncStorage.setItem("userSession", JSON.stringify({
+        token: data.token,
+        user: data.user,
+        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 // 1 week
+      }));
+
+      // ✅ Go to home
+      router.replace("/(tabs)")
+    } catch (err: any) {
+      Alert.alert("Login fout", err.message || "Onbekende fout");
+    }
   };
 
   const handleForgotPassword = () => {
@@ -30,7 +59,6 @@ const Login = () => {
   return (
     <>
       <ExpoStatusBar hidden />
-
       <SafeAreaView style={{ flex: 1, backgroundColor: "#3E1F92" }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -40,16 +68,14 @@ const Login = () => {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               <View style={{ flex: 1, backgroundColor: "#3E1F92", padding: wp(6) }}>
                 {/* Header */}
-                <View
-                  style={{
-                    backgroundColor: "#3E1F92",
-                    height: hp(9),
-                    borderBottomLeftRadius: wp(8),
-                    borderBottomRightRadius: wp(8),
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <View style={{
+                  backgroundColor: "#3E1F92",
+                  height: hp(9),
+                  borderBottomLeftRadius: wp(8),
+                  borderBottomRightRadius: wp(8),
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
                   <Text style={{ color: "#fff", fontSize: wp(5), fontWeight: "bold", marginTop: hp(1.5) }}>
                     Login
                   </Text>
@@ -69,13 +95,13 @@ const Login = () => {
                 {/* Form */}
                 <View>
                   <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
-                    E-mailadres
+                    Gebruikersnaam
                   </Text>
                   <TextInput
-                    placeholder="jouwemail@email.com"
+                    placeholder="jouwgebruikersnaam"
                     placeholderTextColor="#A8A8A8"
-                    value={email}
-                    onChangeText={setEmail}
+                    value={username}
+                    onChangeText={setUsername}
                     style={{
                       backgroundColor: "#1E1B33",
                       color: "#fff",

@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
 import { wp, hp } from '../utils/responsive';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
@@ -25,7 +27,8 @@ const Profile = () => {
     router.push("/profile/appsettings");
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("userSession");
     router.replace("/login/loginpage");
   };
 
