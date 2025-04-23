@@ -57,7 +57,7 @@ const Profile = () => {
       {/* Profiel info */}
       <View style={{ alignItems: "center", marginTop: hp(5) }}>
         <Image
-          source={profileImage ? { uri: profileImage } : fallbackImage}
+          source={profileImage && profileImage.trim() !== "" ? { uri: profileImage } : fallbackImage}
           style={{ width: wp(24), height: wp(24), borderRadius: wp(12) }}
         />
         <Text style={{ color: theme.text, fontSize: wp(4.5), fontWeight: "bold", marginTop: hp(1) }}>
