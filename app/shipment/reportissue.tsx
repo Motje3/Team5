@@ -32,7 +32,7 @@ const ReportIssue = () => {
 
     setSubmitting(true);
     try {
-      const response = await fetch('http://192.168.1.198:5070/api/IssueReport', {
+      const response = await fetch('http://192.168.1.114:5070/api/IssueReport', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
