@@ -11,12 +11,12 @@ namespace backend_api.Models
         [Required]
         public string Status { get; set; }
 
-        public string Destination { get; set; }
+        public string Destination { get; set; } //Location
 
         public string ExpectedDelivery { get; set; }
 
         public string? Weight { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; //Date
     }
 }
