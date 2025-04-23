@@ -1,19 +1,52 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import React, { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { wp, hp } from '../utils/responsive';
+import axios from 'axios';
 
 const ChangePassword = () => {
   const router = useRouter();
+
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSave = () => {
-    if (newPassword === confirmPassword) {
-      router.back();
-    } else {
-      alert("Wachtwoorden komen niet overeen");
+  const handleSave = async () => {
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage("Wachtwoorden komen niet overeen");
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://192.168.2.50:5070/api/profile/1/change-password', {
+        oldPassword,
+        newPassword,
+      });
+
+      if (response.status === 200) {
+        setSuccessMessage("✅ Wachtwoord succesvol gewijzigd");
+        setTimeout(() => router.back(), 1500);
+      } else {
+        setErrorMessage("Er ging iets mis bij het opslaan");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        setErrorMessage("❌ Oud wachtwoord klopt niet");
+      } else {
+        setErrorMessage("❌ Serverfout: probeer het later opnieuw");
+      }
     }
   };
 
@@ -39,6 +72,7 @@ const ChangePassword = () => {
         Wachtwoord wijzigen
       </Text>
 
+      {/* Oud wachtwoord */}
       <Text style={{ color: "#9CA3AF", fontSize: wp(4), marginBottom: hp(1) }}>
         Oud wachtwoord
       </Text>
@@ -59,6 +93,7 @@ const ChangePassword = () => {
         }}
       />
 
+      {/* Nieuw wachtwoord */}
       <Text style={{ color: "#9CA3AF", fontSize: wp(4), marginBottom: hp(1) }}>
         Nieuw wachtwoord
       </Text>
@@ -79,6 +114,7 @@ const ChangePassword = () => {
         }}
       />
 
+      {/* Bevestig nieuw wachtwoord */}
       <Text style={{ color: "#9CA3AF", fontSize: wp(4), marginBottom: hp(1) }}>
         Bevestig nieuw wachtwoord
       </Text>
@@ -99,6 +135,20 @@ const ChangePassword = () => {
         }}
       />
 
+      {/* Feedback */}
+      {errorMessage ? (
+        <Text style={{ color: "#EF4444", marginBottom: hp(1.5), fontSize: wp(3.8), textAlign: 'center' }}>
+          {errorMessage}
+        </Text>
+      ) : null}
+
+      {successMessage ? (
+        <Text style={{ color: "#10B981", marginBottom: hp(1.5), fontSize: wp(3.8), textAlign: 'center' }}>
+          {successMessage}
+        </Text>
+      ) : null}
+
+      {/* Opslaan knop */}
       <TouchableOpacity
         onPress={handleSave}
         style={{
