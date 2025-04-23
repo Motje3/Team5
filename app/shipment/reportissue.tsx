@@ -40,7 +40,8 @@ const ReportIssue = () => {
         body: JSON.stringify({
           title,
           description,
-          shipmentId: shipmentId ? parseInt(shipmentId as string) : undefined
+          shipmentId: shipmentId ? parseInt(shipmentId as string) : undefined,
+          profileId: 3
         })
       });
 

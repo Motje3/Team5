@@ -31,7 +31,7 @@ namespace backend_api.Controllers
                 Title = dto.Title,
                 Description = dto.Description,
                 ImageUrl = dto.ImageUrl,
-                ShipmentId = dto.ShipmentId
+                ShipmentId = dto.ShipmentId,
                 ProfileId = dto.ProfileId
             };
 
