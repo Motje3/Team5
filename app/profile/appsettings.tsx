@@ -3,6 +3,7 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import { wp, hp } from '../utils/responsive';
+import axios from 'axios';
 
 const AppSettings = () => {
   const {
@@ -17,13 +18,31 @@ const AppSettings = () => {
 
   const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
 
+  // ⬇️ Functie om alle instellingen te synchroniseren met backend
+  const updateSettings = async (
+    newDarkMode = darkMode,
+    newAccent = accentColor,
+    newNotif = notificationsEnabled
+  ) => {
+    try {
+      await axios.put('http://192.168.2.50:5070/api/profile/1/settings', {
+        darkMode: newDarkMode,
+        accentColor: newAccent,
+        notificationsEnabled: newNotif,
+      });
+      console.log("✅ Instellingen opgeslagen in de backend");
+    } catch (error) {
+      console.error("❌ Fout bij opslaan instellingen:", error);
+    }
+  };
+
   return (
     <View style={{ flex: 1, padding: wp(6), backgroundColor: darkMode ? "#0f0D23" : "#ffffff" }}>
       <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: wp(5.5), fontWeight: 'bold', marginBottom: hp(3) }}>
         App Instellingen
       </Text>
 
-      {/* 🔘 Dark mode */}
+      {/* 🔘 Donker thema */}
       <View style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -35,13 +54,16 @@ const AppSettings = () => {
         </Text>
         <Switch
           value={darkMode}
-          onValueChange={setDarkMode}
+          onValueChange={(value) => {
+            setDarkMode(value);
+            updateSettings(value, accentColor, notificationsEnabled);
+          }}
           trackColor={{ false: "#767577", true: "#6D28D9" }}
           thumbColor={darkMode ? "#A970FF" : "#f4f3f4"}
         />
       </View>
 
-      {/* 🔔 Notifications */}
+      {/* 🔔 Meldingen */}
       <View style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -53,13 +75,16 @@ const AppSettings = () => {
         </Text>
         <Switch
           value={notificationsEnabled}
-          onValueChange={setNotificationsEnabled}
+          onValueChange={(value) => {
+            setNotificationsEnabled(value);
+            updateSettings(darkMode, accentColor, value);
+          }}
           trackColor={{ false: "#767577", true: "#6D28D9" }}
           thumbColor={notificationsEnabled ? "#A970FF" : "#f4f3f4"}
         />
       </View>
 
-      {/* 🎨 Accent kleur */}
+      {/* 🎨 Accentkleur */}
       <Text style={{ color: darkMode ? "#fff" : "#000", fontSize: wp(4.5), marginBottom: hp(1.5) }}>
         Accentkleur
       </Text>
@@ -67,7 +92,10 @@ const AppSettings = () => {
         {accentOptions.map((color, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => setAccentColor(color)}
+            onPress={() => {
+              setAccentColor(color);
+              updateSettings(darkMode, color, notificationsEnabled);
+            }}
             style={{
               backgroundColor: color,
               width: wp(8),
