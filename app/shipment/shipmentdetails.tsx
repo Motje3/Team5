@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Modal from 'react-native-modal';
 import { icons } from '@/constants/icons';
+import { wp, hp } from '../utils/responsive';
 
 const ShipmentDetails = () => {
   const router = useRouter();
@@ -53,13 +54,19 @@ const ShipmentDetails = () => {
       colors={["#17144F", "#090723"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      className="flex-1 p-6 justify-center items-center"
+      style={{
+        flex: 1,
+        paddingHorizontal: wp(6),
+        paddingTop: hp(6),
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
     >
       <StatusBar hidden />
 
       <Image 
         source={icons.checked}  
-        style={{ width: 80, height: 80, marginBottom: 10 }}
+        style={{ width: wp(20), height: wp(20), marginBottom: hp(1.5) }}
       />
 
       <Text className="text-green-400 text-2xl font-bold mb-4">Succesvol gescand</Text>
@@ -69,9 +76,9 @@ const ShipmentDetails = () => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          width: "100%",
-          padding: 20,
-          borderRadius: 20,
+          width: '100%',
+          padding: wp(5),
+          borderRadius: wp(5),
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.5,
@@ -81,11 +88,21 @@ const ShipmentDetails = () => {
           borderColor: "#2D2A5A",
         }}
       >
-        <Text className="text-white text-xl font-bold mb-4">Zendingdetails</Text>
-        <Text className="text-gray-300 text-lg">🚚 Status: <Text className="text-yellow-400">{shipmentStatus}</Text></Text>
-        <Text className="text-gray-300 text-lg">📍 Bestemming: <Text className="text-blue-400">{shipment.destination}</Text></Text>
-        <Text className="text-gray-300 text-lg">⏳ Verwachte leveringtijd: <Text className="text-purple-400">{shipment.expectedDelivery}</Text></Text>
-        <Text className="text-gray-300 text-lg">⚖️ Gewicht: <Text className="text-red-400">{shipment.weight}</Text></Text>
+        <Text style={{ color: '#fff', fontSize: wp(5), fontWeight: 'bold', marginBottom: hp(2) }}>
+          Zendingdetails
+        </Text>
+        <Text style={{ color: '#D1D5DB', fontSize: wp(4.2), marginBottom: hp(0.5) }}>
+          🚚 Status: <Text style={{ color: "#FACC15" }}>{shipmentStatus}</Text>
+        </Text>
+        <Text style={{ color: '#D1D5DB', fontSize: wp(4.2), marginBottom: hp(0.5) }}>
+          📍 Bestemming: <Text style={{ color: "#60A5FA" }}>{shipment.destination}</Text>
+        </Text>
+        <Text style={{ color: '#D1D5DB', fontSize: wp(4.2), marginBottom: hp(0.5) }}>
+          ⏳ Verwachte leveringtijd: <Text style={{ color: "#C084FC" }}>{shipment.expectedDelivery}</Text>
+        </Text>
+        <Text style={{ color: '#D1D5DB', fontSize: wp(4.2) }}>
+          ⚖️ Gewicht: <Text style={{ color: "#F87171" }}>{shipment.weight}</Text>
+        </Text>
       </LinearGradient>
 
       {/* ✨ Status wijzigen */}
@@ -94,9 +111,10 @@ const ShipmentDetails = () => {
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          width: "100%",
-          padding: 20,
-          borderRadius: 20,
+          width: '100%',
+          padding: wp(5),
+          borderRadius: wp(5),
+          marginTop: hp(3),
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 6 },
           shadowOpacity: 0.5,
@@ -104,23 +122,23 @@ const ShipmentDetails = () => {
           elevation: 10,
           borderWidth: 1,
           borderColor: "#2D2A5A",
-          marginTop: 24,
         }}
       >
-        <TouchableOpacity
-          onPress={() => setStatusModalVisible(true)}
-          className="w-full items-center"
-        >
-          <Text className="text-white text-lg font-bold">📦 Status wijzigen</Text>
+        <TouchableOpacity onPress={() => setStatusModalVisible(true)} style={{ alignItems: 'center' }}>
+          <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>📦 Status wijzigen</Text>
         </TouchableOpacity>
       </LinearGradient>
 
       {/* Buttons */}
       <View className="flex-row mt-6 w-full justify-between">
         <TouchableOpacity
-          className="flex-1 mr-2 py-4 rounded-xl items-center justify-center"
           style={{
+            flex: 1,
+            marginRight: wp(2),
             backgroundColor: '#790600',
+            paddingVertical: hp(2),
+            borderRadius: wp(4),
+            alignItems: 'center',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
@@ -129,17 +147,18 @@ const ShipmentDetails = () => {
           }}
           onPress={() => router.push(`/shipment/reportissue?shipmentId=${shipment.id}`)}
         >
-          <Image 
-            source={icons.issue}  
-            style={{ width: 45, height: 45, marginBottom: 6 }}
-          />
-          <Text className="text-white font-semibold">Probleem melden</Text>
+          <Image source={icons.issue} style={{ width: wp(10), height: wp(10), marginBottom: hp(1) }} />
+          <Text style={{ color: '#fff', fontSize: wp(3.8), fontWeight: '600' }}>Probleem melden</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          className="flex-1 ml-2 py-4 rounded-xl items-center justify-center"
           style={{
+            flex: 1,
+            marginLeft: wp(2),
             backgroundColor: '#6C5CE7',
+            paddingVertical: hp(2),
+            borderRadius: wp(4),
+            alignItems: 'center',
             shadowColor: '#000',
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.3,
@@ -148,36 +167,49 @@ const ShipmentDetails = () => {
           }}
           onPress={() => router.push('/(tabs)/scan')}
         >
-          <Image 
-            source={icons.qrcode}  
-            style={{ width: 36, height: 36, tintColor: "#fff", marginBottom: 6 }}
+          <Image
+            source={icons.qrcode}
+            style={{ width: wp(9), height: wp(9), tintColor: "#fff", marginBottom: hp(1) }}
           />
-          <Text className="text-white font-semibold">Volgende scannen</Text>
+          <Text style={{ color: '#fff', fontSize: wp(3.8), fontWeight: '600' }}>Volgende scannen</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 🧊 Status Modal */}
+      {/* 🧊 Modal */}
       <Modal
         isVisible={statusModalVisible}
         onBackdropPress={() => setStatusModalVisible(false)}
         style={{ justifyContent: 'center', alignItems: 'center', margin: 0 }}
-        animationIn="fadeInUp"
-        animationOut="fadeOutDown"
-        animationInTiming={300}
-        animationOutTiming={200}
-        backdropTransitionInTiming={150}
-        backdropTransitionOutTiming={100}
       >
-        <View className="bg-[#1E1B33] w-[85%] p-6 rounded-2xl">
-          <Text className="text-white text-xl font-bold mb-4 text-center">📦 Kies nieuwe status</Text>
+        <View style={{
+          backgroundColor: '#1E1B33',
+          width: '85%',
+          padding: wp(6),
+          borderRadius: wp(5),
+        }}>
+          <Text style={{
+            color: '#fff',
+            fontSize: wp(5),
+            fontWeight: 'bold',
+            textAlign: 'center',
+            marginBottom: hp(2),
+          }}>
+            📦 Kies nieuwe status
+          </Text>
 
           {["Onderweg", "Geleverd", "Vertraagd"].map((option) => (
             <TouchableOpacity
               key={option}
               onPress={() => updateStatus(option)}
-              className="bg-purple-700 py-3 rounded-lg items-center mb-3"
+              style={{
+                backgroundColor: '#7C3AED',
+                paddingVertical: hp(2),
+                borderRadius: wp(3),
+                alignItems: 'center',
+                marginBottom: hp(1.5),
+              }}
             >
-              <Text className="text-white text-lg">{option}</Text>
+              <Text style={{ color: '#fff', fontSize: wp(4.2) }}>{option}</Text>
             </TouchableOpacity>
           ))}
         </View>
