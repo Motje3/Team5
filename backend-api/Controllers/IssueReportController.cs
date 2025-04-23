@@ -32,6 +32,7 @@ namespace backend_api.Controllers
                 Description = dto.Description,
                 ImageUrl = dto.ImageUrl,
                 ShipmentId = dto.ShipmentId
+                ProfileId = dto.ProfileId
             };
 
             var created = await _service.CreateAsync(report);

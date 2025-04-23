@@ -13,5 +13,7 @@ namespace backend_api.DTOs
         public string? ImageUrl { get; set; }
 
         public int? ShipmentId { get; set; }
+
+        public int? ProfileId { get; set; }
     }
 }
