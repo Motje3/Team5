@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend_api.Data;
@@ -11,9 +12,11 @@ using backend_api.Data;
 namespace backend_api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250423204019_AddProfileToIssueReport")]
+    partial class AddProfileToIssueReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,8 +53,6 @@ namespace backend_api.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
 
                     b.HasIndex("ShipmentId");
 
@@ -141,16 +142,9 @@ namespace backend_api.Migrations
 
             modelBuilder.Entity("backend_api.Models.IssueReport", b =>
                 {
-                    b.HasOne("backend_api.Models.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("backend_api.Models.Shipment", "Shipment")
                         .WithMany()
                         .HasForeignKey("ShipmentId");
-
-                    b.Navigation("Profile");
 
                     b.Navigation("Shipment");
                 });
