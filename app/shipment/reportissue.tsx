@@ -43,7 +43,6 @@ const ReportIssue = () => {
           title,
           description,
           shipmentId: shipmentId ? parseInt(shipmentId as string) : undefined,
-          profileId: 1
         })
       });
 
