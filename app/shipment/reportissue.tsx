@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
   View,
   Text,
@@ -16,262 +16,181 @@ import { icons } from '@/constants/icons';
 
 const ReportIssue = () => {
   const router = useRouter();
+  const { shipmentId } = useLocalSearchParams();
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const toggleModal = () => setModalVisible(!isModalVisible);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title || !description) {
       Alert.alert('Vul alle velden in.');
       return;
     }
 
-    console.log({ title, description, image });
-    Alert.alert('Probleem succesvol ingediend!');
+    setSubmitting(true);
+    try {
+      const response = await fetch('http://192.168.1.198:5070/api/IssueReport', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          shipmentId: shipmentId ? parseInt(shipmentId as string) : undefined
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Fout bij indienen');
+      }
+
+      Alert.alert('✅ Probleem succesvol gemeld!');
+      router.back();
+    } catch (error) {
+      console.error(error);
+      Alert.alert('❌ Indienen mislukt.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: '#1E1B33',
-          paddingHorizontal: wp(6),
-          paddingTop: hp(6),
-          paddingBottom: hp(6),
-          alignItems: 'center',
-        }}
+    <View className="flex-1 bg-primary px-6 py-10 justify-center items-center">
+      <Image
+        source={icons.reportproblem}
+        style={{ width: 140, height: 140, marginBottom: 20 }}
+      />
+
+      <Text className="text-white text-3xl font-bold mb-10 text-center">
+        Probleem melden
+      </Text>
+
+      <Text className="text-white mb-2 self-start">Titel</Text>
+      <TextInput
+        value={title}
+        onChangeText={setTitle}
+        placeholder="Bijv. QR-code werkt niet"
+        placeholderTextColor="#A8A8A8"
+        className="bg-[#1E1B33] text-white px-4 py-3 rounded-lg mb-4 w-full"
+      />
+
+      <Text className="text-white mb-2 self-start">Omschrijving</Text>
+      <TextInput
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Beschrijf het probleem"
+        placeholderTextColor="#A8A8A8"
+        multiline
+        numberOfLines={5}
+        className="bg-[#1E1B33] text-white px-4 py-3 rounded-lg mb-6 w-full text-left"
+      />
+
+      {/* 📸 Pick Image Button (inactive for now) */}
+      <TouchableOpacity
+        onPress={toggleModal}
+        className="bg-[#1E1B33] py-3 px-4 rounded-lg mb-4 w-full items-center border border-gray-600"
       >
-        {/* 🧠 Big Center Icon */}
+        <Text className="text-white text-base">
+          {image ? 'Foto wijzigen' : 'Voeg een foto toe'}
+        </Text>
+      </TouchableOpacity>
+
+      {image && (
         <Image
-          source={icons.reportproblem}
-          style={{ width: wp(35), height: wp(35), marginBottom: hp(3) }}
-        />
-
-        {/* 🧾 Header Title */}
-        <Text
+          source={{ uri: image }}
           style={{
-            color: '#fff',
-            fontSize: wp(6.5),
-            fontWeight: 'bold',
-            marginBottom: hp(5),
-            textAlign: 'center',
-          }}
-        >
-          Probleem melden
-        </Text>
-
-        {/* ✏️ Titel Input */}
-        <Text
-          style={{
-            color: '#fff',
-            fontSize: wp(4),
-            alignSelf: 'flex-start',
-            marginBottom: hp(1),
-          }}
-        >
-          Titel
-        </Text>
-        <TextInput
-          value={title}
-          onChangeText={setTitle}
-          placeholder="Bijv. QR-code werkt niet"
-          placeholderTextColor="#A8A8A8"
-          style={{
-            backgroundColor: '#2C2C3E',
-            color: '#fff',
-            borderRadius: wp(2),
-            paddingHorizontal: wp(4),
-            paddingVertical: hp(1.5),
-            marginBottom: hp(2),
             width: '100%',
-            fontSize: wp(4),
+            height: 180,
+            borderRadius: 12,
+            marginBottom: 12,
           }}
+          resizeMode="cover"
         />
+      )}
 
-        {/* 📝 Omschrijving Input */}
-        <Text
-          style={{
-            color: '#fff',
-            fontSize: wp(4),
-            alignSelf: 'flex-start',
-            marginBottom: hp(1),
-          }}
-        >
-          Omschrijving
+      <TouchableOpacity
+        onPress={handleSubmit}
+        className="bg-purple-600 py-3 rounded-lg items-center w-full"
+        disabled={submitting}
+      >
+        <Text className="text-white text-lg font-semibold">
+          {submitting ? 'Verzenden...' : 'Indienen'}
         </Text>
-        <TextInput
-          value={description}
-          onChangeText={setDescription}
-          placeholder="Beschrijf het probleem"
-          placeholderTextColor="#A8A8A8"
-          multiline
-          numberOfLines={5}
-          style={{
-            backgroundColor: '#2C2C3E',
-            color: '#fff',
-            borderRadius: wp(2),
-            paddingHorizontal: wp(4),
-            paddingVertical: hp(2),
-            marginBottom: hp(2.5),
-            width: '100%',
-            fontSize: wp(4),
-            textAlignVertical: 'top',
-          }}
-        />
+      </TouchableOpacity>
 
-        {/* 📸 Pick Image Button */}
-        <TouchableOpacity
-          onPress={toggleModal}
-          style={{
-            backgroundColor: '#2C2C3E',
-            paddingVertical: hp(1.5),
-            paddingHorizontal: wp(4),
-            borderRadius: wp(2),
-            marginBottom: hp(2),
-            borderWidth: 1,
-            borderColor: '#555',
-            width: '100%',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: '#fff', fontSize: wp(4) }}>
-            {image ? '📷 Foto wijzigen' : '📷 Voeg een foto toe'}
+      <TouchableOpacity
+        onPress={() => router.back()}
+        className="mt-4 flex-row items-center self-start"
+      >
+        <Image
+          source={icons.arrowleft}
+          style={{ width: 40, height: 40, marginRight: 6 }}
+        />
+        <Text className="text-gray-300 text-base">Terug</Text>
+      </TouchableOpacity>
+
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={toggleModal}
+        style={{ justifyContent: 'flex-end', margin: 0 }}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        animationInTiming={2}
+        animationOutTiming={2}
+        backdropTransitionInTiming={1}
+        backdropTransitionOutTiming={1}
+      >
+        <View className="bg-[#1E1B33] p-6 rounded-t-2xl">
+          <Text className="text-white text-xl font-bold mb-4 text-center">
+            Foto toevoegen
           </Text>
-        </TouchableOpacity>
 
-        {/* 🖼️ Preview Image */}
-        {image && (
-          <Image
-            source={{ uri: image }}
-            style={{
-              width: '100%',
-              height: hp(22),
-              borderRadius: wp(3),
-              marginBottom: hp(2),
+          <TouchableOpacity
+            onPress={async () => {
+              toggleModal();
+              const cameraPerm = await ImagePicker.requestCameraPermissionsAsync();
+              if (!cameraPerm.granted) {
+                Alert.alert('Camera toegang vereist');
+                return;
+              }
+              const result = await ImagePicker.launchCameraAsync({
+                quality: 0.5,
+                allowsEditing: true,
+              });
+              if (!result.canceled) setImage(result.assets[0].uri);
             }}
-            resizeMode="cover"
-          />
-        )}
-
-        {/* 📤 Submit Button */}
-        <TouchableOpacity
-          onPress={handleSubmit}
-          style={{
-            backgroundColor: '#7C3AED',
-            paddingVertical: hp(2),
-            borderRadius: wp(2.5),
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>
-            Indienen
-          </Text>
-        </TouchableOpacity>
-
-        {/* 🔙 Terug Button */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{
-            marginTop: hp(3),
-            flexDirection: 'row',
-            alignItems: 'center',
-            alignSelf: 'flex-start',
-          }}
-        >
-          <Image
-            source={icons.arrowleft}
-            style={{ width: wp(7), height: wp(7), marginRight: wp(2) }}
-          />
-          <Text style={{ color: '#D1D5DB', fontSize: wp(4) }}>Terug</Text>
-        </TouchableOpacity>
-
-        {/* 📱 Modal */}
-        <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={toggleModal}
-          style={{ justifyContent: 'flex-end', margin: 0 }}
-        >
-          <View
-            style={{
-              backgroundColor: '#1E1B33',
-              padding: wp(6),
-              borderTopLeftRadius: wp(6),
-              borderTopRightRadius: wp(6),
-            }}
+            className="bg-purple-600 py-3 rounded-lg items-center mb-3"
           >
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: wp(5),
-                fontWeight: 'bold',
-                marginBottom: hp(2),
-                textAlign: 'center',
-              }}
-            >
-              Foto toevoegen
-            </Text>
+            <Text className="text-white text-lg">📷 Gebruik camera</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={async () => {
-                toggleModal();
-                const cameraPerm = await ImagePicker.requestCameraPermissionsAsync();
-                if (!cameraPerm.granted) {
-                  Alert.alert('Camera toegang vereist');
-                  return;
-                }
-                const result = await ImagePicker.launchCameraAsync({
-                  quality: 0.5,
-                  allowsEditing: true,
-                });
-                if (!result.canceled) setImage(result.assets[0].uri);
-              }}
-              style={{
-                backgroundColor: '#7C3AED',
-                paddingVertical: hp(2),
-                borderRadius: wp(2),
-                alignItems: 'center',
-                marginBottom: hp(1.5),
-              }}
-            >
-              <Text style={{ color: '#fff', fontSize: wp(4.5) }}>
-                📷 Gebruik camera
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={async () => {
-                toggleModal();
-                const galleryPerm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                if (!galleryPerm.granted) {
-                  Alert.alert('Galerij toegang vereist');
-                  return;
-                }
-                const result = await ImagePicker.launchImageLibraryAsync({
-                  quality: 0.5,
-                  allowsEditing: true,
-                });
-                if (!result.canceled) setImage(result.assets[0].uri);
-              }}
-              style={{
-                backgroundColor: '#7C3AED',
-                paddingVertical: hp(2),
-                borderRadius: wp(2),
-                alignItems: 'center',
-              }}
-            >
-              <Text style={{ color: '#fff', fontSize: wp(4.5) }}>
-                🖼️ Kies uit galerij
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      </View>
-    </ScrollView>
+          <TouchableOpacity
+            onPress={async () => {
+              toggleModal();
+              const galleryPerm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (!galleryPerm.granted) {
+                Alert.alert('Galerij toegang vereist');
+                return;
+              }
+              const result = await ImagePicker.launchImageLibraryAsync({
+                quality: 0.5,
+                allowsEditing: true,
+              });
+              if (!result.canceled) setImage(result.assets[0].uri);
+            }}
+            className="bg-purple-600 py-3 rounded-lg items-center"
+          >
+            <Text className="text-white text-lg">🖼️ Kies uit galerij</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </View>
   );
 };
 

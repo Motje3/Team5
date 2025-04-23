@@ -36,23 +36,22 @@ const Todaysshipment = () => {
       <ExpoStatusBar hidden />
       <StatusBar hidden />
 
-      {/* Back button */}
-      <View>
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={{
-            position: "absolute",
-            top: hp(1),
-            left: -wp(3),
-            zIndex: 10,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Ionicons name="arrow-back" size={wp(7)} color="white" />
-          <Text style={{ color: "white", fontSize: wp(4.5), marginLeft: wp(2) }}>Back</Text>
-        </TouchableOpacity>
-      </View>
+            <View style={{
+                }}>
+                <TouchableOpacity onPress={() => router.back()}
+                    style={{
+                        position: 'absolute',
+                        top: 15,
+                        left: -15,
+                        zIndex: 10,
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}
+                >
+                    <Ionicons name="arrow-back" size={30} color="white" />
+                    <Text style={{ color: 'white', fontSize: 20, marginLeft: 8 }}>Terug</Text>
+                </TouchableOpacity>
+            </View>
 
       {/* Titel */}
       <View style={{ marginTop: hp(8), marginBottom: hp(2) }}>
