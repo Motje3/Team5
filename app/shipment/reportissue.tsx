@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  ScrollView,
 } from 'react-native';
+import { wp, hp } from '../utils/responsive';
 import * as ImagePicker from 'expo-image-picker';
 import Modal from 'react-native-modal';
 import { icons } from '@/constants/icons';
