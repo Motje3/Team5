@@ -6,7 +6,7 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
-import { wp, hp } from '../utils/responsive'; // ✅ responsive helpers
+import { wp, hp } from '../utils/responsive';
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
@@ -27,7 +27,7 @@ const Home = () => {
           <Text style={{ color: theme.text, fontSize: wp(6), fontWeight: 'bold' }}>{username}</Text>
         </View>
         <Image
-          source={profileImage ? { uri: profileImage } : fallbackImage}
+          source={profileImage && profileImage.trim() !== "" ? { uri: profileImage } : fallbackImage}
           style={{ width: wp(10), height: wp(10), borderRadius: wp(5) }}
         />
       </View>
