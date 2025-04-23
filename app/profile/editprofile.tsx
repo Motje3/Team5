@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import * as ImagePicker from 'expo-image-picker';
 import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
+import axios from 'axios';
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
@@ -34,10 +35,23 @@ const EditProfile = () => {
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
 
-  const handleSave = () => {
-    setUsername(newName);
-    setEmail(newEmail);
-    router.back();
+  const handleSave = async () => {
+    try {
+      await axios.put("http://192.168.2.50:5070/api/profile/1", {
+        fullName: newName,
+        email: newEmail,
+        imageUrl: profileImage || "",
+      });
+
+      // Context updaten zodat de app visueel ook klopt
+      setUsername(newName);
+      setEmail(newEmail);
+      setProfileImage(profileImage);
+
+      router.back(); // Terug naar Profiel
+    } catch (error) {
+      console.error("❌ Fout bij opslaan profiel:", error);
+    }
   };
 
   const handlePickImage = async () => {
@@ -80,7 +94,7 @@ const EditProfile = () => {
         style={{ alignItems: 'center', marginBottom: hp(3) }}
       >
         <Image
-          source={profileImage ? { uri: profileImage } : fallbackImage}
+          source={profileImage && profileImage.trim() !== "" ? { uri: profileImage } : fallbackImage}
           style={{
             width: wp(24),
             height: wp(24),
