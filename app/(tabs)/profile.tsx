@@ -1,77 +1,110 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+// Profile.tsx
+import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { icons } from '@/constants/icons';
-import { images } from '@/constants/images';
-import { useRouter } from 'expo-router'; // 🔥 Needed for navigation
+import { useRouter } from 'expo-router';
+import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+import { wp, hp } from '../utils/responsive';
+
+const fallbackImage = require('../../assets/images/default-profile.png');
 
 const Profile = () => {
-    const router = useRouter();
+  const router = useRouter();
+  const { darkMode, username, email, profileImage, accentColor } = useApp();
+  const { logout } = useAuth();
 
-    const handleEditProfile = () => {
-        //router.replace("/profile/editprofile"); // Redirect to edit profile page
-    };
+  const theme = {
+    background: darkMode ? '#0f0D23' : '#ffffff',
+    text: darkMode ? '#ffffff' : '#0f0D23',
+    secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
+    borderColor: darkMode ? '#2D2D2D' : '#E5E7EB',
+  };
 
-    const handleChangePassword = () => {
-        //router.replace("/profile/changepassword"); // Redirect to change password page
-    };
+  const handleEditProfile = () => {
+    router.push('/profile/editprofile');
+  };
 
-    const handleSettings = () => {
-        //router.replace("/profile/appsettings"); // Redirect to settings page
-    };
+  const handleChangePassword = () => {
+    router.push('/profile/changepassword');
+  };
 
-    const handleLogout = () => {
-        router.replace("/login/loginpage"); // Redirect to login page
-    };
+  const handleSettings = () => {
+    router.push('/profile/appsettings');
+  };
 
-    return (
-        <View className="bg-primary flex-1">
-            {/* Curved Top Header */}
-            <View style={{
-                backgroundColor: "#3E1F92",
-                height: 70,
-                borderBottomLeftRadius: 30,
-                borderBottomRightRadius: 30,
-                justifyContent: "center",
-                alignItems: "center",
-            }}>
-                <Text className="text-white text-xl font-bold mt-6">Profiel</Text>
-            </View>
+  const handleLogout = async () => {
+    await logout(); // clears session + in-memory user, then redirects to login
+  };
 
-            {/* Profile Info */}
-            <View className="items-center mt-20">
-                <Image 
-                    source={images.tyron}
-                    style={{ width: 90, height: 90, borderRadius: 50 }}
-                />
-                <Text className="text-white text-lg font-bold mt-2">Tyrone Woodly</Text>
-                <Text className="text-gray-400 text-sm">TyroneWood@gmail.com</Text>
-            </View>
+  const options = [
+    { title: 'Profiel bewerken', icon: icons.edit, action: handleEditProfile },
+    { title: 'Wachtwoord aanpassen', icon: icons.lock, action: handleChangePassword },
+    { title: 'App instellingen', icon: icons.setting, action: handleSettings },
+    { title: 'Uitloggen', icon: icons.logout, color: '#EF4444', action: handleLogout },
+  ];
 
-            {/* Profile Options */}
-            <View className="mt-6 px-8">
-                {[
-                    { title: "Profiel bewerken", icon: icons.edit, action: handleEditProfile },
-                    { title: "Wachtwoord aanpassen", icon: icons.lock, action: handleChangePassword },
-                    { title: "App instellingen", icon: icons.setting, action: handleSettings },
-                    { title: "Uitloggen", icon: icons.logout, color: "text-red-500", action: handleLogout },
-                ].map((item, index) => (
-                    <TouchableOpacity 
-                        key={index} 
-                        onPress={item.action || (() => {})}
-                        className="flex-row items-center py-4 border-b border-gray-700"
-                    >
-                        <Image 
-                            source={item.icon} 
-                            style={{ width: 24, height: 24, tintColor: "#A970FF", marginRight: 12 }}
-                        />
-                        <Text className={`text-gray-300 text-lg ${item.color || ""}`}>
-                            {item.title}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-        </View>
-    );
-}
+  return (
+    <View style={{ flex: 1, backgroundColor: theme.background }}>
+      {/* Top Header */}
+      <View
+        style={{
+          backgroundColor: accentColor,
+          height: hp(9),
+          borderBottomLeftRadius: wp(8),
+          borderBottomRightRadius: wp(8),
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Text style={{ color: '#fff', fontSize: wp(5), fontWeight: 'bold', marginTop: hp(2) }}>
+          Profiel
+        </Text>
+      </View>
+
+      {/* Profile Info */}
+      <View style={{ alignItems: 'center', marginTop: hp(5) }}>
+        <Image
+          source={profileImage?.trim() ? { uri: profileImage } : fallbackImage}
+          style={{ width: wp(24), height: wp(24), borderRadius: wp(12) }}
+        />
+        <Text style={{ color: theme.text, fontSize: wp(4.5), fontWeight: 'bold', marginTop: hp(1) }}>
+          {username}
+        </Text>
+        <Text style={{ color: theme.secondaryText, fontSize: wp(3.5) }}>{email}</Text>
+      </View>
+
+      {/* Options */}
+      <ScrollView style={{ marginTop: hp(3), paddingHorizontal: wp(6) }}>
+        {options.map((item, idx) => (
+          <TouchableOpacity
+            key={idx}
+            onPress={item.action}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: hp(2),
+              borderBottomWidth: 1,
+              borderBottomColor: theme.borderColor,
+            }}
+          >
+            <Image
+              source={item.icon}
+              style={{
+                width: wp(6),
+                height: wp(6),
+                tintColor: accentColor,
+                marginRight: wp(3),
+              }}
+            />
+            <Text style={{ color: item.color || theme.text, fontSize: wp(4) }}>
+              {item.title}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  );
+};
 
 export default Profile;

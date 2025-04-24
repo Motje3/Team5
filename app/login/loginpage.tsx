@@ -1,38 +1,43 @@
-// loginpage.tsx
+import { wp, hp } from '../utils/responsive';
 import React, { useState } from "react";
 import {
   View, Text, TextInput, TouchableOpacity, Image,
   Alert, KeyboardAvoidingView, Platform, ScrollView,
   TouchableWithoutFeedback, Keyboard
 } from "react-native";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { icons } from "@/constants/icons";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "expo-router";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const { login } = useAuth();
+  const router = useRouter();                       // ← 2) get router
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Fout", "Vul alstublieft zowel e-mail als wachtwoord in.");
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Fout", "Vul alstublieft zowel gebruikersnaam als wachtwoord in.");
       return;
     }
-    router.replace("/");
+
+    try {
+      await login(username, password);
+      router.replace("/");                          // ← 3) redirect to root
+    } catch (err: any) {
+      Alert.alert("Login fout", err.message || "Onbekende fout");
+    }
   };
 
   const handleForgotPassword = () => {
-    router.replace("/login/forgotpassword");
+    Alert.alert("Niet geïmplementeerd", "Wachtwoord vergeten functie komt nog.");
   };
 
   return (
     <>
-      {/* hide the system status bar */}
       <ExpoStatusBar hidden />
-
-      {/* wrap in SafeAreaView so your purple fills behind the notch */}
       <SafeAreaView style={{ flex: 1, backgroundColor: "#3E1F92" }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -40,63 +45,93 @@ const Login = () => {
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <View className="bg-primary flex-1">
-                {/* Curved Top Header */}
-                <View
-                  style={{
-                    backgroundColor: "#3E1F92",
-                    height: 70,
-                    borderBottomLeftRadius: 30,
-                    borderBottomRightRadius: 30,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text className="text-white text-xl font-bold mt-4">Login</Text>
+              <View style={{ flex: 1, backgroundColor: "#3E1F92", padding: wp(6) }}>
+                
+                {/* 🔹 Header */}
+                <View style={{
+                  backgroundColor: "#3E1F92",
+                  height: hp(9),
+                  borderBottomLeftRadius: wp(8),
+                  borderBottomRightRadius: wp(8),
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
+                  <Text style={{ color: "#fff", fontSize: wp(5), fontWeight: "bold", marginTop: hp(1.5) }}>
+                    Login
+                  </Text>
                 </View>
 
-                <View className="items-center mb-12">
+                {/* 🔹 Logo & Welcome */}
+                <View style={{ alignItems: "center", marginBottom: hp(6) }}>
                   <Image
                     source={icons.user}
-                    style={{ width: 60, height: 60, tintColor: "#fff", marginTop: 40 }}
+                    style={{ width: wp(14), height: wp(14), tintColor: "#fff", marginTop: hp(5) }}
                   />
-                  <Text className="text-white text-2xl font-bold mt-4">Welkom</Text>
+                  <Text style={{ color: "#fff", fontSize: wp(6), fontWeight: "bold", marginTop: hp(2) }}>
+                    Welkom
+                  </Text>
                 </View>
 
+                {/* 🔹 Form */}
                 <View>
-                  <Text className="text-white mb-2">E-mailadres</Text>
+                  <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
+                    Gebruikersnaam
+                  </Text>
                   <TextInput
-                    placeholder="jouwemail@email.com"
+                    placeholder="jouwgebruikersnaam"
                     placeholderTextColor="#A8A8A8"
-                    value={email}
-                    onChangeText={setEmail}
-                    className="bg-[#1E1B33] text-white px-4 py-3 rounded-lg mb-4"
+                    value={username}
+                    onChangeText={setUsername}
+                    style={{
+                      backgroundColor: "#1E1B33",
+                      color: "#fff",
+                      paddingHorizontal: wp(4),
+                      paddingVertical: hp(1.5),
+                      borderRadius: wp(2),
+                      marginBottom: hp(2),
+                      fontSize: wp(4),
+                    }}
                   />
 
-                  <Text className="text-white mb-2">Wachtwoord</Text>
+                  <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
+                    Wachtwoord
+                  </Text>
                   <TextInput
                     placeholder="••••••••"
                     placeholderTextColor="#A8A8A8"
                     secureTextEntry
                     value={password}
                     onChangeText={setPassword}
-                    className="bg-[#1E1B33] text-white px-4 py-3 rounded-lg mb-6"
+                    style={{
+                      backgroundColor: "#1E1B33",
+                      color: "#fff",
+                      paddingHorizontal: wp(4),
+                      paddingVertical: hp(1.5),
+                      borderRadius: wp(2),
+                      marginBottom: hp(2.5),
+                      fontSize: wp(4),
+                    }}
                   />
 
                   <TouchableOpacity
                     onPress={handleForgotPassword}
-                    className="self-end mb-6"
+                    style={{ alignSelf: "flex-end", marginBottom: hp(2) }}
                   >
-                    <Text className="text-purple-300 text-sm font-medium">
+                    <Text style={{ color: "#D8B4FE", fontSize: wp(3.5), fontWeight: "500" }}>
                       Wachtwoord vergeten?
                     </Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
                     onPress={handleLogin}
-                    className="bg-purple-600 py-3 rounded-lg items-center"
+                    style={{
+                      backgroundColor: "#7C3AED",
+                      paddingVertical: hp(1.8),
+                      borderRadius: wp(2),
+                      alignItems: "center",
+                    }}
                   >
-                    <Text className="text-white text-lg font-semibold">
+                    <Text style={{ color: "#fff", fontSize: wp(4.5), fontWeight: "600" }}>
                       Inloggen
                     </Text>
                   </TouchableOpacity>
