@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
   View,
@@ -10,10 +10,11 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  BackHandler,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
-import { LinearGradient } from 'expo-linear-gradient'; // Add this import
+import { LinearGradient } from 'expo-linear-gradient';
 import { icons } from '@/constants/icons';
 import { wp, hp } from '../utils/responsive';
 import { useApp } from '../context/AppContext';
@@ -38,6 +39,22 @@ export default function ReportIssue() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // Handle back navigation with animation
+  const handleBack = () => {
+    router.navigate(`/shipment/shipmentdetails?qrData=${shipmentId}`);
+    return true; // Prevents default back behavior
+  };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const handleSubmit = async () => {
     if (!title || !description) {
       Alert.alert('Vul alle velden in.');
@@ -56,7 +73,7 @@ export default function ReportIssue() {
       });
       if (!res.ok) throw new Error();
       Alert.alert('✅ Probleem succesvol gemeld!');
-      router.back();
+      handleBack();
     } catch {
       Alert.alert('❌ Indienen mislukt.');
     } finally {
@@ -201,7 +218,7 @@ export default function ReportIssue() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={handleBack}
             style={{ flexDirection: 'row', alignItems: 'center' }}
           >
             <Image source={icons.arrowleft} style={{ width: wp(6), height: wp(6), marginRight: wp(2) }} />

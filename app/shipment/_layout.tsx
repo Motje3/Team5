@@ -21,10 +21,10 @@ export default function ShipmentLayout() {
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         
-        // Change from transparentModal to card for consistent animations
-        presentation: 'card',
+        // Use card presentation for consistent background handling
+        presentation: 'card', 
         
-        // Ensure consistent animations
+        // Ensure consistent animations for forward and backward navigation
         animationTypeForReplace: 'push',
         
         // Prevent background flash
