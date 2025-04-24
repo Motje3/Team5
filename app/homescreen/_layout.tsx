@@ -13,17 +13,21 @@ export default function HomescreenLayout() {
         headerShown: false,
         contentStyle: { backgroundColor: bg },
         
-        // Change from 'fade' to 'default' or try 'slide_from_right'
+        // Keep slide animation for forward navigation
         animation: 'slide_from_right',
         
-        // Reduce animation duration
+        // Animation duration
         animationDuration: 100,
         
-        // Keep this if you want swipe back
+        // Enable gesture for back navigation
         gestureEnabled: true,
         
-        // Add this to prevent white flash
+        // Keep transparentModal to prevent white flash
         presentation: 'transparentModal',
+        
+        // Add these settings for back navigation
+        gestureDirection: 'horizontal',
+        animationTypeForReplace: 'push',
       }}
     />
   )
