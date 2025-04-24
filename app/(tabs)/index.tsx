@@ -5,7 +5,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
-import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
 import { wp, hp } from '../utils/responsive';
 
 const fallbackImage = require('../../assets/images/default-profile.png');
@@ -13,7 +12,13 @@ const fallbackImage = require('../../assets/images/default-profile.png');
 const Home = () => {
   const router = useRouter();
   const { darkMode, username, accentColor, profileImage } = useApp();
-  const theme = darkMode ? darkTheme : lightTheme;
+
+  // Merge theme values inline
+  const theme = {
+    background: darkMode ? "#0f0D23" : "#ffffff",
+    text: darkMode ? "#ffffff" : "#0f0D23",
+    secondaryText: darkMode ? "#9CA3AF" : "#6B7280",
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(5) }}>

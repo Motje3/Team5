@@ -9,11 +9,40 @@ namespace backend_api.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IProfileService _profileService;
+        private readonly ITokenService _tokenService;
 
-        public ProfileController(IProfileService profileService)
+        public ProfileController(IProfileService profileService, ITokenService tokenService)
         {
             _profileService = profileService;
+            _tokenService = tokenService;
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            var user = await _profileService.LoginAsync(dto.Username, dto.Password);
+            if (user == null)
+                return Unauthorized("Gebruiker niet gevonden of wachtwoord onjuist");
+
+            // 🔐 Create JWT with only essential claims
+            var token = _tokenService.CreateToken(user);
+
+            // ✅ Return token + user preferences separately
+            return Ok(new
+            {
+                token,
+                user = new
+                {
+                    user.Id,
+                    user.Username,
+                    user.AccentColor,
+                    user.DarkMode,
+                    user.NotificationsEnabled
+                }
+            });
+        }
+
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProfile(int id)
@@ -56,7 +85,7 @@ namespace backend_api.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
-        
+
         [HttpPut("{id}/settings")]
         public async Task<IActionResult> UpdateSettings(int id, [FromBody] UpdateSettingsDto dto)
         {

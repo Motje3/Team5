@@ -3,8 +3,7 @@ import { Tabs } from "expo-router";
 import { icons } from "@/constants/icons";
 import { Image, Text, View } from "react-native";
 import { useApp } from "../context/AppContext";
-import { useTheme, darkTheme, lightTheme } from "../context/ThemeContext";
-import { wp, hp } from "../utils/responsive"; // ✅ Responsive helper
+import { wp, hp } from "../utils/responsive";
 
 const TabIcon = ({ focused, icon, title }: any) => {
   const { accentColor } = useApp();
@@ -58,8 +57,8 @@ const TabIcon = ({ focused, icon, title }: any) => {
 };
 
 const _Layout = () => {
-  const { darkMode } = useTheme();
-  const theme = darkMode ? darkTheme : lightTheme;
+  const { darkMode } = useApp();
+  const backgroundColor = darkMode ? "#0f0D23" : "#ffffff";
 
   return (
     <Tabs
@@ -72,7 +71,7 @@ const _Layout = () => {
           alignItems: "center",
         },
         tabBarStyle: {
-          backgroundColor: theme.background,
+          backgroundColor,
           borderRadius: wp(12),
           marginHorizontal: wp(5),
           marginBottom: hp(4),
@@ -80,7 +79,7 @@ const _Layout = () => {
           position: "absolute",
           overflow: "hidden",
           borderWidth: 0,
-          borderColor: theme.background,
+          borderColor: backgroundColor,
         },
       }}
     >

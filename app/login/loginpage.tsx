@@ -5,32 +5,39 @@ import {
   Alert, KeyboardAvoidingView, Platform, ScrollView,
   TouchableWithoutFeedback, Keyboard
 } from "react-native";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { icons } from "@/constants/icons";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "expo-router";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const { login } = useAuth();
+  const router = useRouter();                       // ← 2) get router
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Fout", "Vul alstublieft zowel e-mail als wachtwoord in.");
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert("Fout", "Vul alstublieft zowel gebruikersnaam als wachtwoord in.");
       return;
     }
-    router.replace("/");
+
+    try {
+      await login(username, password);
+      router.replace("/");                          // ← 3) redirect to root
+    } catch (err: any) {
+      Alert.alert("Login fout", err.message || "Onbekende fout");
+    }
   };
 
   const handleForgotPassword = () => {
-    router.replace("/login/forgotpassword");
+    Alert.alert("Niet geïmplementeerd", "Wachtwoord vergeten functie komt nog.");
   };
 
   return (
     <>
       <ExpoStatusBar hidden />
-
       <SafeAreaView style={{ flex: 1, backgroundColor: "#3E1F92" }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -39,23 +46,22 @@ const Login = () => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               <View style={{ flex: 1, backgroundColor: "#3E1F92", padding: wp(6) }}>
-                {/* Header */}
-                <View
-                  style={{
-                    backgroundColor: "#3E1F92",
-                    height: hp(9),
-                    borderBottomLeftRadius: wp(8),
-                    borderBottomRightRadius: wp(8),
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                
+                {/* 🔹 Header */}
+                <View style={{
+                  backgroundColor: "#3E1F92",
+                  height: hp(9),
+                  borderBottomLeftRadius: wp(8),
+                  borderBottomRightRadius: wp(8),
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}>
                   <Text style={{ color: "#fff", fontSize: wp(5), fontWeight: "bold", marginTop: hp(1.5) }}>
                     Login
                   </Text>
                 </View>
 
-                {/* Logo & Welcome */}
+                {/* 🔹 Logo & Welcome */}
                 <View style={{ alignItems: "center", marginBottom: hp(6) }}>
                   <Image
                     source={icons.user}
@@ -66,16 +72,16 @@ const Login = () => {
                   </Text>
                 </View>
 
-                {/* Form */}
+                {/* 🔹 Form */}
                 <View>
                   <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
-                    E-mailadres
+                    Gebruikersnaam
                   </Text>
                   <TextInput
-                    placeholder="jouwemail@email.com"
+                    placeholder="jouwgebruikersnaam"
                     placeholderTextColor="#A8A8A8"
-                    value={email}
-                    onChangeText={setEmail}
+                    value={username}
+                    onChangeText={setUsername}
                     style={{
                       backgroundColor: "#1E1B33",
                       color: "#fff",

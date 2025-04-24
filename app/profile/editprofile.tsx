@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,18 +8,18 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import React, { useState } from 'react';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
-import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
 import axios from 'axios';
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
 const EditProfile = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const {
     username,
     setUsername,
@@ -27,30 +28,40 @@ const EditProfile = () => {
     profileImage,
     setProfileImage,
     accentColor,
+    darkMode,
   } = useApp();
 
-  const { darkMode } = useTheme();
-  const theme = darkMode ? darkTheme : lightTheme;
+  // Inline theme
+  const theme = {
+    background: darkMode ? '#0f0D23' : '#ffffff',
+    text: darkMode ? '#ffffff' : '#0f0D23',
+    secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
+    card: darkMode ? '#1F2937' : '#f3f4f6',
+  };
 
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
 
   const handleSave = async () => {
     try {
-      await axios.put("http://192.168.1.114:5070/api/profile/1", {
-        fullName: newName,
-        email: newEmail,
-        imageUrl: profileImage || "",
-      });
+      await axios.put(
+        `http://192.168.1.198:5070/api/profile/${user.id}`,
+        {
+          fullName: newName,
+          email: newEmail,
+          imageUrl: profileImage || '',
+        },
+        { headers: { Authorization: `Bearer ${useAuth().token}` } }
+      );
 
-      // Context updaten zodat de app visueel ook klopt
+      // Update context so UI matches
       setUsername(newName);
       setEmail(newEmail);
       setProfileImage(profileImage);
 
-      router.back(); // Terug naar Profiel
+      router.back();
     } catch (error) {
-      console.error("❌ Fout bij opslaan profiel:", error);
+      console.error('❌ Fout bij opslaan profiel:', error);
     }
   };
 
@@ -94,19 +105,35 @@ const EditProfile = () => {
         style={{ alignItems: 'center', marginBottom: hp(3) }}
       >
         <Image
-          source={profileImage && profileImage.trim() !== "" ? { uri: profileImage } : fallbackImage}
+          source={
+            profileImage?.trim()
+              ? { uri: profileImage }
+              : fallbackImage
+          }
           style={{
             width: wp(24),
             height: wp(24),
             borderRadius: wp(12),
           }}
         />
-        <Text style={{ color: accentColor, marginTop: hp(1), fontSize: wp(3.5) }}>
+        <Text
+          style={{
+            color: accentColor,
+            marginTop: hp(1),
+            fontSize: wp(3.5),
+          }}
+        >
           Wijzig profielfoto
         </Text>
       </TouchableOpacity>
 
-      <Text style={{ color: theme.secondaryText, marginBottom: hp(1), fontSize: wp(4) }}>
+      <Text
+        style={{
+          color: theme.secondaryText,
+          marginBottom: hp(1),
+          fontSize: wp(4),
+        }}
+      >
         Naam
       </Text>
       <TextInput
@@ -125,7 +152,13 @@ const EditProfile = () => {
         }}
       />
 
-      <Text style={{ color: theme.secondaryText, marginBottom: hp(1), fontSize: wp(4) }}>
+      <Text
+        style={{
+          color: theme.secondaryText,
+          marginBottom: hp(1),
+          fontSize: wp(4),
+        }}
+      >
         E-mail
       </Text>
       <TextInput
@@ -154,7 +187,13 @@ const EditProfile = () => {
           alignItems: 'center',
         }}
       >
-        <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>
+        <Text
+          style={{
+            color: '#fff',
+            fontSize: wp(4.5),
+            fontWeight: 'bold',
+          }}
+        >
           Opslaan
         </Text>
       </TouchableOpacity>
