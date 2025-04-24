@@ -13,20 +13,18 @@ export default function HomescreenLayout() {
         headerShown: false,
         contentStyle: { backgroundColor: bg },
         
-        // Keep slide animation for forward navigation
+        // Animation settings for both forward and backward navigation
         animation: 'slide_from_right',
-        
-        // Animation duration
         animationDuration: 100,
         
         // Enable gesture for back navigation
         gestureEnabled: true,
-        
-        // Keep transparentModal to prevent white flash
-        presentation: 'transparentModal',
-        
-        // Add these settings for back navigation
         gestureDirection: 'horizontal',
+        
+        // Change from transparentModal to card for consistent animations
+        presentation: 'card',
+        
+        // Ensure consistent animations
         animationTypeForReplace: 'push',
       }}
     />
