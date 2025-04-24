@@ -4,18 +4,16 @@ import React from 'react';
 import { icons } from '@/constants/icons';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
-import { useAuth } from '../context/AuthContext';       // ← added
+import { useAuth } from '../context/AuthContext';
 import { wp, hp } from '../utils/responsive';
-// AsyncStorage import removed
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
 const Profile = () => {
   const router = useRouter();
   const { darkMode, username, email, profileImage, accentColor } = useApp();
-  const { logout } = useAuth();                        // ← added
+  const { logout } = useAuth();
 
-  // Inline theme values
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
     text: darkMode ? '#ffffff' : '#0f0D23',
@@ -36,9 +34,7 @@ const Profile = () => {
   };
 
   const handleLogout = async () => {
-    // ← only this bit changed:
-    // clears AsyncStorage + in-memory user, then redirects to login
-    await logout();
+    await logout(); // clears session + in-memory user, then redirects to login
   };
 
   const options = [
@@ -66,7 +62,7 @@ const Profile = () => {
         </Text>
       </View>
 
-      {/* Profiel info */}
+      {/* Profile Info */}
       <View style={{ alignItems: 'center', marginTop: hp(5) }}>
         <Image
           source={profileImage?.trim() ? { uri: profileImage } : fallbackImage}
@@ -78,11 +74,11 @@ const Profile = () => {
         <Text style={{ color: theme.secondaryText, fontSize: wp(3.5) }}>{email}</Text>
       </View>
 
-      {/* Opties */}
+      {/* Options */}
       <ScrollView style={{ marginTop: hp(3), paddingHorizontal: wp(6) }}>
-        {options.map((item, index) => (
+        {options.map((item, idx) => (
           <TouchableOpacity
-            key={index}
+            key={idx}
             onPress={item.action}
             style={{
               flexDirection: 'row',
@@ -101,12 +97,7 @@ const Profile = () => {
                 marginRight: wp(3),
               }}
             />
-            <Text
-              style={{
-                color: item.color || theme.text,
-                fontSize: wp(4),
-              }}
-            >
+            <Text style={{ color: item.color || theme.text, fontSize: wp(4) }}>
               {item.title}
             </Text>
           </TouchableOpacity>
