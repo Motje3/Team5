@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, StatusBar, FlatList } from "react-native";
-import React from "react";
+import { View, Text, Image, TouchableOpacity, StatusBar, FlatList, BackHandler } from "react-native";
+import React, { useEffect } from "react";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,10 +23,20 @@ const Todaysshipment = () => {
 
   // Handle back navigation with animation
   const handleBack = () => {
-    // Instead of router.back(), use router.navigate() or router.replace()
-    // to ensure the transition animation works properly
+    // Instead of router.back(), use router.navigate() to ensure the transition animation works properly
     router.navigate("/(tabs)");
+    return true; // Prevents default back behavior
   };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <LinearGradient
