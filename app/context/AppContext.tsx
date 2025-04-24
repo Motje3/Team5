@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { View, Text } from "react-native";
+import { useAuth } from "./AuthContext";
 
 type AppContextType = {
   username: string;
@@ -17,97 +19,113 @@ type AppContextType = {
   setNotificationsEnabled: (value: boolean) => void;
 };
 
-const defaultAccent = '#A970FF';
-
+const defaultAccent = "#A970FF";
 const AppContext = createContext<AppContextType>({} as AppContextType);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user, token } = useAuth();
+
+  // Local UI state & preferences
   const [username, setUsername] = useState("Laden...");
   const [email, setEmail] = useState("...");
   const [accentColorState, setAccentColorState] = useState(defaultAccent);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [darkModeState, setDarkModeState] = useState<boolean | null>(null);
-  const [notificationsEnabledState, setNotificationsEnabledState] = useState(true);
+  const [darkModeState, setDarkModeState] = useState<boolean>(true);
+  const [notificationsEnabledState, setNotificationsEnabledState] = useState<boolean>(true);
+  const [isReady, setIsReady] = useState(false);
 
-  // 🔁 Backend update functie
-  const updateSettingsOnBackend = async (
+  // Fetch preferences from backend (only when logged in)
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      if (user && token) {
+        try {
+          const res = await axios.get(
+            `http://192.168.1.198:5070/api/profile/${user.id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          const data = res.data;
+
+          setUsername(data.fullName);
+          setEmail(data.email);
+          setProfileImage(data.imageUrl);
+          setAccentColorState(data.accentColor ?? defaultAccent);
+          setDarkModeState(data.darkMode ?? true);
+          setNotificationsEnabledState(data.notificationsEnabled ?? true);
+
+          console.log("✅ App preferences loaded");
+        } catch (err) {
+          console.error("❌ Failed to load preferences:", err);
+        }
+      }
+
+      // Always mark ready (even if no user or on error)
+      setIsReady(true);
+    };
+
+    fetchPreferences();
+  }, [user, token]);
+
+  // While logged in but prefs still loading, show a splash
+  if (user && !isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#0f0D23" }}>
+        <Text style={{ color: "#fff", fontSize: 16 }}>Voorkeuren laden…</Text>
+      </View>
+    );
+  }
+
+  // Push settings updates to backend
+  const updateSettings = async (
     accentColor: string,
     darkMode: boolean,
     notificationsEnabled: boolean
   ) => {
+    if (!user || !token) return;
+
     try {
-      await axios.put("http://192.168.2.50:5070/api/profile/1/settings", {
-        accentColor,
-        darkMode,
-        notificationsEnabled
-      });
-      console.log("✅ Instellingen opgeslagen in backend");
+      await axios.put(
+        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        { accentColor, darkMode, notificationsEnabled },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("✅ Settings updated");
     } catch (err) {
-      console.error("❌ Fout bij opslaan instellingen:", err);
+      console.error("❌ Error updating settings:", err);
     }
   };
 
-  // 🔁 Bij start profiel en voorkeuren ophalen
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const response = await axios.get("http://192.168.2.50:5070/api/profile/1");
-        const data = response.data;
-        setUsername(data.fullName);
-        setEmail(data.email);
-        setProfileImage(data.imageUrl);
-        setAccentColorState(data.accentColor || defaultAccent);
-        setDarkModeState(data.darkMode ?? true);
-        setNotificationsEnabledState(data.notificationsEnabled ?? true);
-        console.log("🔄 Profiel geladen uit backend:", data);
-      } catch (error) {
-        console.error("❌ Fout bij laden profiel uit backend:", error);
-      }
-    };
-
-    const loadThemePreference = async () => {
-      const savedDarkMode = await AsyncStorage.getItem('darkMode');
-      if (savedDarkMode !== null) {
-        setDarkModeState(savedDarkMode === 'true');
-      }
-    };
-
-    loadThemePreference();
-    loadProfile();
-  }, []);
-
-  // 📌 Donker thema instellen + opslaan
+  // Local setters that also push to backend
   const setDarkMode = async (value: boolean) => {
-    await AsyncStorage.setItem('darkMode', value.toString());
+    await AsyncStorage.setItem("darkMode", value.toString());
     setDarkModeState(value);
-    updateSettingsOnBackend(accentColorState, value, notificationsEnabledState);
+    updateSettings(accentColorState, value, notificationsEnabledState);
   };
 
-  // 📌 Accentkleur instellen + opslaan
   const setAccentColor = (color: string) => {
     setAccentColorState(color);
-    updateSettingsOnBackend(color, darkModeState!, notificationsEnabledState);
+    updateSettings(color, darkModeState, notificationsEnabledState);
   };
 
-  // 📌 Notificaties instellen + opslaan
   const setNotificationsEnabled = (enabled: boolean) => {
     setNotificationsEnabledState(enabled);
-    updateSettingsOnBackend(accentColorState, darkModeState!, enabled);
+    updateSettings(accentColorState, darkModeState, enabled);
   };
-
-  if (darkModeState === null) {
-    return null;
-  }
 
   return (
     <AppContext.Provider
       value={{
-        username, setUsername,
-        email, setEmail,
-        accentColor: accentColorState, setAccentColor,
-        profileImage, setProfileImage,
-        darkMode: darkModeState, setDarkMode,
-        notificationsEnabled: notificationsEnabledState, setNotificationsEnabled,
+        username,
+        setUsername,
+        email,
+        setEmail,
+        accentColor: accentColorState,
+        setAccentColor,
+        profileImage,
+        setProfileImage,
+        darkMode: darkModeState,
+        setDarkMode,
+        notificationsEnabled: notificationsEnabledState,
+        setNotificationsEnabled,
       }}
     >
       {children}

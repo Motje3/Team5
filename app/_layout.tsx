@@ -1,16 +1,17 @@
+// app/_layout.tsx
 import { Stack } from "expo-router";
+import { AuthProvider } from "./context/AuthContext";
 import { AppProvider } from "./context/AppContext";
-import { ThemeProvider } from "./context/ThemeContext";
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
+    <AuthProvider>
       <AppProvider>
         <Stack
           screenOptions={{
             headerShown: false,
             contentStyle: {
-              backgroundColor: '#0f0D23', // fallback background (overschreven door thema's)
+              backgroundColor: "#0f0D23", // fallback background
             },
           }}
         >
@@ -21,6 +22,6 @@ export default function RootLayout() {
           <Stack.Screen name="homescreen/todaysshipments" />
         </Stack>
       </AppProvider>
-    </ThemeProvider>
+    </AuthProvider>
   );
 }

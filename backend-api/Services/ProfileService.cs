@@ -14,6 +14,13 @@ namespace backend_api.Services
             _context = context;
         }
 
+        public async Task<Profile?> LoginAsync(string username, string password)
+        {
+            return await _context.Profiles
+                .FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
+        }
+
+
         public async Task<Profile?> GetProfileAsync(int id)
         {
             return await _context.Profiles.FindAsync(id);
