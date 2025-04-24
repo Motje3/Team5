@@ -5,16 +5,17 @@ import {
   Alert, KeyboardAvoidingView, Platform, ScrollView,
   TouchableWithoutFeedback, Keyboard
 } from "react-native";
-import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { icons } from "@/constants/icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../context/AuthContext";
+import { useRouter } from "expo-router";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const { login } = useAuth();
+  const router = useRouter();                       // ← 2) get router
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -23,37 +24,15 @@ const Login = () => {
     }
 
     try {
-      const response = await fetch("http://192.168.1.198:5070/api/profile/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-      });
-
-      if (!response.ok) {
-        const msg = await response.text();
-        throw new Error(msg || "Login mislukt");
-      }
-
-      const data = await response.json();
-
-      // ✅ Store token and user data
-      await AsyncStorage.setItem("userSession", JSON.stringify({
-        token: data.token,
-        user: data.user,
-        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 // 1 week
-      }));
-
-      // ✅ Go to home
-      router.replace("/(tabs)")
+      await login(username, password);
+      router.replace("/");                          // ← 3) redirect to root
     } catch (err: any) {
       Alert.alert("Login fout", err.message || "Onbekende fout");
     }
   };
 
   const handleForgotPassword = () => {
-    router.replace("/login/forgotpassword");
+    Alert.alert("Niet geïmplementeerd", "Wachtwoord vergeten functie komt nog.");
   };
 
   return (
@@ -67,7 +46,8 @@ const Login = () => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
               <View style={{ flex: 1, backgroundColor: "#3E1F92", padding: wp(6) }}>
-                {/* Header */}
+                
+                {/* 🔹 Header */}
                 <View style={{
                   backgroundColor: "#3E1F92",
                   height: hp(9),
@@ -81,7 +61,7 @@ const Login = () => {
                   </Text>
                 </View>
 
-                {/* Logo & Welcome */}
+                {/* 🔹 Logo & Welcome */}
                 <View style={{ alignItems: "center", marginBottom: hp(6) }}>
                   <Image
                     source={icons.user}
@@ -92,7 +72,7 @@ const Login = () => {
                   </Text>
                 </View>
 
-                {/* Form */}
+                {/* 🔹 Form */}
                 <View>
                   <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
                     Gebruikersnaam

@@ -3,40 +3,46 @@ import React from 'react';
 import { icons } from '@/constants/icons';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
-import { useTheme, darkTheme, lightTheme } from '../context/ThemeContext';
 import { wp, hp } from '../utils/responsive';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
 const Profile = () => {
   const router = useRouter();
   const { darkMode, username, email, profileImage, accentColor } = useApp();
-  const theme = darkMode ? darkTheme : lightTheme;
+
+  // Inline theme values
+  const theme = {
+    background: darkMode ? '#0f0D23' : '#ffffff',
+    text: darkMode ? '#ffffff' : '#0f0D23',
+    secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
+    borderColor: darkMode ? '#2D2D2D' : '#E5E7EB',
+  };
 
   const handleEditProfile = () => {
-    router.push("/profile/editprofile");
+    router.push('/profile/editprofile');
   };
 
   const handleChangePassword = () => {
-    router.push("/profile/changepassword");
+    router.push('/profile/changepassword');
   };
 
   const handleSettings = () => {
-    router.push("/profile/appsettings");
+    router.push('/profile/appsettings');
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("userSession");
-    router.replace("/login/loginpage");
+    // Clear session and navigate to login
+    await AsyncStorage.removeItem('userSession');
+    router.replace('/');
   };
 
   const options = [
-    { title: "Profiel bewerken", icon: icons.edit, action: handleEditProfile },
-    { title: "Wachtwoord aanpassen", icon: icons.lock, action: handleChangePassword },
-    { title: "App instellingen", icon: icons.setting, action: handleSettings },
-    { title: "Uitloggen", icon: icons.logout, color: "#EF4444", action: handleLogout },
+    { title: 'Profiel bewerken', icon: icons.edit, action: handleEditProfile },
+    { title: 'Wachtwoord aanpassen', icon: icons.lock, action: handleChangePassword },
+    { title: 'App instellingen', icon: icons.setting, action: handleSettings },
+    { title: 'Uitloggen', icon: icons.logout, color: '#EF4444', action: handleLogout },
   ];
 
   return (
@@ -48,22 +54,22 @@ const Profile = () => {
           height: hp(9),
           borderBottomLeftRadius: wp(8),
           borderBottomRightRadius: wp(8),
-          justifyContent: "center",
-          alignItems: "center",
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
-        <Text style={{ color: "#fff", fontSize: wp(5), fontWeight: "bold", marginTop: hp(2) }}>
+        <Text style={{ color: '#fff', fontSize: wp(5), fontWeight: 'bold', marginTop: hp(2) }}>
           Profiel
         </Text>
       </View>
 
       {/* Profiel info */}
-      <View style={{ alignItems: "center", marginTop: hp(5) }}>
+      <View style={{ alignItems: 'center', marginTop: hp(5) }}>
         <Image
-          source={profileImage && profileImage.trim() !== "" ? { uri: profileImage } : fallbackImage}
+          source={profileImage?.trim() ? { uri: profileImage } : fallbackImage}
           style={{ width: wp(24), height: wp(24), borderRadius: wp(12) }}
         />
-        <Text style={{ color: theme.text, fontSize: wp(4.5), fontWeight: "bold", marginTop: hp(1) }}>
+        <Text style={{ color: theme.text, fontSize: wp(4.5), fontWeight: 'bold', marginTop: hp(1) }}>
           {username}
         </Text>
         <Text style={{ color: theme.secondaryText, fontSize: wp(3.5) }}>{email}</Text>
@@ -76,11 +82,11 @@ const Profile = () => {
             key={index}
             onPress={item.action}
             style={{
-              flexDirection: "row",
-              alignItems: "center",
+              flexDirection: 'row',
+              alignItems: 'center',
               paddingVertical: hp(2),
               borderBottomWidth: 1,
-              borderBottomColor: darkMode ? "#2D2D2D" : "#E5E7EB",
+              borderBottomColor: theme.borderColor,
             }}
           >
             <Image

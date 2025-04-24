@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { useRouter } from 'expo-router';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { View, Text } from "react-native";
+import { useAuth } from "./AuthContext";
 
 type AppContextType = {
   username: string;
@@ -18,119 +19,113 @@ type AppContextType = {
   setNotificationsEnabled: (value: boolean) => void;
 };
 
-const defaultAccent = '#A970FF';
+const defaultAccent = "#A970FF";
 const AppContext = createContext<AppContextType>({} as AppContextType);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const router = useRouter();
+  const { user, token } = useAuth();
 
+  // Local UI state & preferences
   const [username, setUsername] = useState("Laden...");
   const [email, setEmail] = useState("...");
   const [accentColorState, setAccentColorState] = useState(defaultAccent);
   const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [darkModeState, setDarkModeState] = useState<boolean | null>(null);
-  const [notificationsEnabledState, setNotificationsEnabledState] = useState(true);
-  const [userId, setUserId] = useState<number | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [darkModeState, setDarkModeState] = useState<boolean>(true);
+  const [notificationsEnabledState, setNotificationsEnabledState] = useState<boolean>(true);
+  const [isReady, setIsReady] = useState(false);
 
-  // 🔁 Load session & fetch user data
+  // Fetch preferences from backend (only when logged in)
   useEffect(() => {
-    const loadSessionAndProfile = async () => {
-      const sessionData = await AsyncStorage.getItem("userSession");
+    const fetchPreferences = async () => {
+      if (user && token) {
+        try {
+          const res = await axios.get(
+            `http://192.168.1.198:5070/api/profile/${user.id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          const data = res.data;
 
-      if (!sessionData) {
-        router.replace("/login/loginpage");
-        return;
+          setUsername(data.fullName);
+          setEmail(data.email);
+          setProfileImage(data.imageUrl);
+          setAccentColorState(data.accentColor ?? defaultAccent);
+          setDarkModeState(data.darkMode ?? true);
+          setNotificationsEnabledState(data.notificationsEnabled ?? true);
+
+          console.log("✅ App preferences loaded");
+        } catch (err) {
+          console.error("❌ Failed to load preferences:", err);
+        }
       }
 
-      const session = JSON.parse(sessionData);
-      const isExpired = Date.now() > session.expiresAt;
-
-      if (isExpired) {
-        await AsyncStorage.removeItem("userSession");
-        router.replace("/login/loginpage");
-        return;
-      }
-
-      setToken(session.token);
-      setUserId(session.user.id);
-
-      try {
-        const response = await axios.get(`http://192.168.1.198:5070/api/profile/${session.user.id}`, {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-          },
-        });
-
-        const data = response.data;
-        setUsername(data.fullName);
-        setEmail(data.email);
-        setProfileImage(data.imageUrl);
-        setAccentColorState(data.accentColor || defaultAccent);
-        setDarkModeState(data.darkMode ?? true);
-        setNotificationsEnabledState(data.notificationsEnabled ?? true);
-
-        console.log("🔄 Profiel geladen uit backend:", data);
-      } catch (error) {
-        console.error("❌ Fout bij laden profiel uit backend:", error);
-      }
+      // Always mark ready (even if no user or on error)
+      setIsReady(true);
     };
 
-    loadSessionAndProfile();
-  }, []);
+    fetchPreferences();
+  }, [user, token]);
 
-  // ✅ Save + update settings on backend
-  const updateSettingsOnBackend = async (
+  // While logged in but prefs still loading, show a splash
+  if (user && !isReady) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#0f0D23" }}>
+        <Text style={{ color: "#fff", fontSize: 16 }}>Voorkeuren laden…</Text>
+      </View>
+    );
+  }
+
+  // Push settings updates to backend
+  const updateSettings = async (
     accentColor: string,
     darkMode: boolean,
     notificationsEnabled: boolean
   ) => {
-    if (!userId || !token) return;
+    if (!user || !token) return;
 
     try {
-      await axios.put(`http://192.168.1.198:5070/api/profile/${userId}/settings`, {
-        accentColor,
-        darkMode,
-        notificationsEnabled,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("✅ Instellingen opgeslagen in backend");
+      await axios.put(
+        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        { accentColor, darkMode, notificationsEnabled },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("✅ Settings updated");
     } catch (err) {
-      console.error("❌ Fout bij opslaan instellingen:", err);
+      console.error("❌ Error updating settings:", err);
     }
   };
 
+  // Local setters that also push to backend
   const setDarkMode = async (value: boolean) => {
-    await AsyncStorage.setItem('darkMode', value.toString());
+    await AsyncStorage.setItem("darkMode", value.toString());
     setDarkModeState(value);
-    updateSettingsOnBackend(accentColorState, value, notificationsEnabledState);
+    updateSettings(accentColorState, value, notificationsEnabledState);
   };
 
   const setAccentColor = (color: string) => {
     setAccentColorState(color);
-    updateSettingsOnBackend(color, darkModeState!, notificationsEnabledState);
+    updateSettings(color, darkModeState, notificationsEnabledState);
   };
 
   const setNotificationsEnabled = (enabled: boolean) => {
     setNotificationsEnabledState(enabled);
-    updateSettingsOnBackend(accentColorState, darkModeState!, enabled);
+    updateSettings(accentColorState, darkModeState, enabled);
   };
-
-  if (darkModeState === null) return null;
 
   return (
     <AppContext.Provider
       value={{
-        username, setUsername,
-        email, setEmail,
-        accentColor: accentColorState, setAccentColor,
-        profileImage, setProfileImage,
-        darkMode: darkModeState, setDarkMode,
-        notificationsEnabled: notificationsEnabledState, setNotificationsEnabled,
+        username,
+        setUsername,
+        email,
+        setEmail,
+        accentColor: accentColorState,
+        setAccentColor,
+        profileImage,
+        setProfileImage,
+        darkMode: darkModeState,
+        setDarkMode,
+        notificationsEnabled: notificationsEnabledState,
+        setNotificationsEnabled,
       }}
     >
       {children}
