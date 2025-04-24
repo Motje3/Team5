@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
-  Switch
+  Switch,
+  BackHandler
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { wp, hp } from '../utils/responsive';
@@ -29,6 +30,22 @@ const AppSettings = () => {
     text: darkMode ? '#ffffff' : '#0f0D23',
     secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
   };
+
+  // Handle back navigation with animation
+  const handleBack = () => {
+    router.navigate("/(tabs)/profile");
+    return true; // Prevents default back behavior
+  };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
 
@@ -133,7 +150,7 @@ const AppSettings = () => {
 
       {/* Sluiten knop */}
       <TouchableOpacity
-        onPress={() => router.back()}
+        onPress={handleBack}
         style={{
           backgroundColor: accentColor,
           paddingVertical: hp(2),

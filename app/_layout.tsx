@@ -2,26 +2,118 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "./context/AuthContext";
 import { AppProvider } from "./context/AppContext";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
+  
   return (
-    <AuthProvider>
-      <AppProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: {
-              backgroundColor: "#0f0D23", // fallback background
-            },
-          }}
-        >
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="shipment/shipmentdetails" />
-          <Stack.Screen name="shipment/reportissue" />
-          <Stack.Screen name="login/loginpage" />
-          <Stack.Screen name="homescreen/todaysshipments" />
-        </Stack>
-      </AppProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <AppProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: {
+                backgroundColor: "#030014", // Match the dark gradient base color
+              },
+              // Configure default animations for all screens
+              animation: "slide_from_right",
+              animationDuration: 250,
+              // Use card presentation for consistent background handling
+              presentation: "card", 
+              // Enable gestures for back navigation
+              gestureEnabled: true,
+              gestureDirection: "horizontal",
+              // Ensure consistent animations for forward and backward navigation
+              animationTypeForReplace: "push",
+              // Prevent background flash
+              freezeOnBlur: true,
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen 
+              name="homescreen" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="todaysshipments" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="profile/editprofile" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="profile/changepassword" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="profile/appsettings" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="shipment/shipmentdetails" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="shipment/reportissue" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="login/loginpage" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+          </Stack>
+        </AppProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }

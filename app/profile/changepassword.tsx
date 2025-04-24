@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  BackHandler
 } from 'react-native';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
@@ -32,6 +33,22 @@ const ChangePassword = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Handle back navigation with animation
+  const handleBack = () => {
+    router.navigate("/(tabs)/profile");
+    return true; // Prevents default back behavior
+  };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const handleSave = async () => {
     setErrorMessage('');
     setSuccessMessage('');
@@ -49,8 +66,8 @@ const ChangePassword = () => {
       );
 
       setSuccessMessage('✅ Wachtwoord succesvol gewijzigd');
-      setTimeout(() => router.back(), 1500);
-    } catch (error: any) {
+      setTimeout(() => router.navigate("/(tabs)/profile"), 1500);
+    } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
         setErrorMessage('❌ Oud wachtwoord klopt niet');
       } else {

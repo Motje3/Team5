@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { LinearGradient } from 'expo-linear-gradient'; // Add this import
 import { icons } from "@/constants/icons";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
@@ -15,7 +16,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
-  const router = useRouter();                       // ← 2) get router
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -25,7 +26,7 @@ const Login = () => {
 
     try {
       await login(username, password);
-      router.replace("/");                          // ← 3) redirect to root
+      router.replace("/");
     } catch (err: any) {
       Alert.alert("Login fout", err.message || "Onbekende fout");
     }
@@ -36,20 +37,30 @@ const Login = () => {
   };
 
   return (
-    <>
+    <LinearGradient
+      colors={["#3E1F92", "#230F52"]}
+      locations={[0.3, 1]}
+      style={{
+        flex: 1,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    >
       <ExpoStatusBar hidden />
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#3E1F92" }}>
+      <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <View style={{ flex: 1, backgroundColor: "#3E1F92", padding: wp(6) }}>
+              <View style={{ flex: 1, padding: wp(6) }}>
                 
                 {/* 🔹 Header */}
                 <View style={{
-                  backgroundColor: "#3E1F92",
                   height: hp(9),
                   borderBottomLeftRadius: wp(8),
                   borderBottomRightRadius: wp(8),
@@ -141,7 +152,7 @@ const Login = () => {
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </>
+    </LinearGradient>
   );
 };
 

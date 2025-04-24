@@ -4,6 +4,7 @@ import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
+import { hp } from "../utils/responsive";
 
 const { width } = Dimensions.get("window");
 
@@ -42,10 +43,10 @@ const Stats = () => {
   return (
     <LinearGradient
       colors={["#3D0F6E", "#030014"]}
-      locations={[0, 0.7, 1]}
+      locations={[0, 1]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
-      style={styles.container}
+      style={[styles.container, { paddingTop: hp(3) }]}
     >
       {/* Page Header */}
       <View style={styles.header}>
@@ -134,19 +135,19 @@ const Stats = () => {
           >
             <Text style={styles.filterTitle}>Filters</Text>
             <View style={styles.filterItem}>
-              <LocationFilter label="Location" value={location} onChange={setLocation} />
+              <LocationFilter label="Locatie" value={location} onChange={setLocation} />
             </View>
             <View>
-              <DatePickerFilter label="Date" value={date} onChange={setDate} />
+              <DatePickerFilter label="Datum" value={date} onChange={setDate} />
               <TouchableOpacity onPress={() => setDate("")} style={styles.resetButton}>
-                <Text style={styles.resetButtonText}>Reset Date</Text>
+                <Text style={styles.resetButtonText}>Reset datum</Text>
               </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={() => setIsModalVisible(false)}
               style={styles.closeButton}
             >
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>Sluiten</Text>
             </TouchableOpacity>
           </LinearGradient>
         </View>
@@ -164,8 +165,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   headerIcon: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     tintColor: "#A970FF",
     marginTop: 40,
   },

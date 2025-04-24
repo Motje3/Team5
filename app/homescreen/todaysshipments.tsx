@@ -1,5 +1,5 @@
-import { View, Text, Image, TouchableOpacity, StatusBar, FlatList } from "react-native";
-import React from "react";
+import { View, Text, Image, TouchableOpacity, StatusBar, FlatList, BackHandler } from "react-native";
+import React, { useEffect } from "react";
 import { icons } from "@/constants/icons";
 import { images } from "@/constants/images";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,6 +21,23 @@ const Todaysshipment = () => {
   const today = new Date().toISOString().split("T")[0];
   const todaysShipments = shipments.filter((s) => s.date === today);
 
+  // Handle back navigation with animation
+  const handleBack = () => {
+    // Instead of router.back(), use router.navigate() to ensure the transition animation works properly
+    router.navigate("/(tabs)");
+    return true; // Prevents default back behavior
+  };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   return (
     <LinearGradient
       colors={["#3D0F6E", "#030014"]}
@@ -31,27 +48,32 @@ const Todaysshipment = () => {
         flex: 1,
         paddingHorizontal: wp(6),
         paddingTop: hp(6),
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
       }}
     >
       <ExpoStatusBar hidden />
       <StatusBar hidden />
 
-            <View style={{
-                }}>
-                <TouchableOpacity onPress={() => router.back()}
-                    style={{
-                        position: 'absolute',
-                        top: 15,
-                        left: -15,
-                        zIndex: 10,
-                        flexDirection: 'row',
-                        alignItems: 'center'
-                    }}
-                >
-                    <Ionicons name="arrow-back" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, marginLeft: 8 }}>Terug</Text>
-                </TouchableOpacity>
-            </View>
+      <View>
+        <TouchableOpacity 
+          onPress={handleBack}
+          style={{
+            position: 'absolute',
+            top: 15,
+            left: -15,
+            zIndex: 10,
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}
+        >
+          <Ionicons name="arrow-back" size={30} color="white" />
+          <Text style={{ color: 'white', fontSize: 20, marginLeft: 8 }}>Terug</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Titel */}
       <View style={{ marginTop: hp(8), marginBottom: hp(2) }}>

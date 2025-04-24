@@ -21,7 +21,7 @@ const Home = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(5) }}>
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(10) }}>
       <ExpoStatusBar style={darkMode ? "light" : "dark"} />
       <StatusBar barStyle={darkMode ? "light-content" : "dark-content"} />
 
@@ -42,7 +42,12 @@ const Home = () => {
         {/* 📦 Zendingen */}
         <TouchableOpacity
           style={{ borderRadius: wp(3), overflow: 'hidden', width: '100%', marginBottom: hp(2) }}
-          onPress={() => router.push('/homescreen/todaysshipments')}
+          onPress={() => {
+            // Add a small delay to ensure clean transition
+            setTimeout(() => {
+              router.push('/homescreen/todaysshipments');
+            }, 50);
+          }}
         >
           <LinearGradient
             colors={[accentColor, "#320042"]}

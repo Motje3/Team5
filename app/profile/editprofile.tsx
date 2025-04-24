@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  BackHandler
 } from 'react-native';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
@@ -42,6 +43,22 @@ const EditProfile = () => {
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
 
+  // Handle back navigation with animation
+  const handleBack = () => {
+    router.navigate("/(tabs)/profile");
+    return true; // Prevents default back behavior
+  };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const handleSave = async () => {
     try {
       await axios.put(
@@ -59,7 +76,7 @@ const EditProfile = () => {
       setEmail(newEmail);
       setProfileImage(profileImage);
 
-      router.back();
+      router.navigate("/(tabs)/profile");
     } catch (error) {
       console.error('❌ Fout bij opslaan profiel:', error);
     }

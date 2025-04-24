@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  BackHandler
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -31,6 +32,22 @@ const ShipmentDetails = () => {
   const [shipmentStatus, setShipmentStatus] = useState<string>('Geleverd');
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  // Handle back navigation
+  const handleBack = () => {
+    router.navigate("/(tabs)/scan");
+    return true; // Prevents default back behavior
+  };
+
+  // Handle hardware back button
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress', 
+      handleBack
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     const fetchShipment = async () => {
@@ -58,28 +75,44 @@ const ShipmentDetails = () => {
   // Loading / placeholder state
   if (loading) {
     return (
-      <View style={{
-        flex: 1,
-        backgroundColor: theme.background,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
+      <LinearGradient
+        colors={['#17144F', '#090723']}
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+        style={{
+          flex: 1,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <ActivityIndicator size="large" color="#A970FF" />
         <Text style={{ color: theme.text, marginTop: hp(2) }}>Laden...</Text>
-      </View>
+      </LinearGradient>
     );
   }
 
   if (!shipment) {
     return (
-      <View style={{
-        flex: 1,
-        backgroundColor: theme.background,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
+      <LinearGradient
+        colors={['#17144F', '#090723']}
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
+        style={{
+          flex: 1,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <Text style={{ color: theme.text }}>Zending niet gevonden</Text>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -89,12 +122,19 @@ const ShipmentDetails = () => {
       start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
       style={{
         flex: 1,
-        backgroundColor: theme.background,
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         paddingHorizontal: wp(6),
-        paddingTop: hp(6),
+        paddingTop: hp(9),
       }}
     >
       <StatusBar hidden />
+
+      {/* Empty spacer view to push content down */}
+      <View style={{ height: hp(4) }} />
 
       {/* ✅ Success icon + text */}
       <Image
@@ -146,7 +186,7 @@ const ShipmentDetails = () => {
         </Text>
       </LinearGradient>
 
-      {/* 📦 “Status wijzigen” */}
+      {/* 📦 "Status wijzigen" */}
       <TouchableOpacity
         onPress={() => setStatusModalVisible(true)}
         style={{
@@ -194,7 +234,7 @@ const ShipmentDetails = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => router.push("/(tabs)/scan")}
+          onPress={() => router.navigate("/(tabs)/scan")}
           style={{
             flex: 1,
             marginLeft: wp(2),
@@ -224,6 +264,13 @@ const ShipmentDetails = () => {
         isVisible={statusModalVisible}
         onBackdropPress={() => setStatusModalVisible(false)}
         style={{ justifyContent: 'center', alignItems: 'center', margin: 0 }}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        animationInTiming={200}
+        animationOutTiming={200}
+        backdropTransitionInTiming={200}
+        backdropTransitionOutTiming={0}
+        useNativeDriver={true}
       >
         <View style={{
           backgroundColor: theme.cardBg,
