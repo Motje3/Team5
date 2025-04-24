@@ -1,16 +1,19 @@
+// Profile.tsx
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { icons } from '@/constants/icons';
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';       // ← added
 import { wp, hp } from '../utils/responsive';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// AsyncStorage import removed
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
 const Profile = () => {
   const router = useRouter();
   const { darkMode, username, email, profileImage, accentColor } = useApp();
+  const { logout } = useAuth();                        // ← added
 
   // Inline theme values
   const theme = {
@@ -33,9 +36,9 @@ const Profile = () => {
   };
 
   const handleLogout = async () => {
-    // Clear session and navigate to login
-    await AsyncStorage.removeItem('userSession');
-    router.replace('/');
+    // ← only this bit changed:
+    // clears AsyncStorage + in-memory user, then redirects to login
+    await logout();
   };
 
   const options = [
