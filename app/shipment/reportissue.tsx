@@ -230,6 +230,13 @@ export default function ReportIssue() {
           isVisible={isModalVisible}
           onBackdropPress={() => setModalVisible(false)}
           style={{ justifyContent: 'flex-end', margin: 0 }}
+          animationIn="fadeIn"
+          animationOut="fadeOut"
+          animationInTiming={200}
+          animationOutTiming={200}
+          backdropTransitionInTiming={200}
+          backdropTransitionOutTiming={0}
+          useNativeDriver={true}
         >
           <View style={{
             backgroundColor: theme.cardBg,

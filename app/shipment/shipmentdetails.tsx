@@ -128,10 +128,13 @@ const ShipmentDetails = () => {
         right: 0,
         bottom: 0,
         paddingHorizontal: wp(6),
-        paddingTop: hp(6),
+        paddingTop: hp(9),
       }}
     >
       <StatusBar hidden />
+
+      {/* Empty spacer view to push content down */}
+      <View style={{ height: hp(4) }} />
 
       {/* ✅ Success icon + text */}
       <Image
@@ -261,6 +264,13 @@ const ShipmentDetails = () => {
         isVisible={statusModalVisible}
         onBackdropPress={() => setStatusModalVisible(false)}
         style={{ justifyContent: 'center', alignItems: 'center', margin: 0 }}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        animationInTiming={200}
+        animationOutTiming={200}
+        backdropTransitionInTiming={200}
+        backdropTransitionOutTiming={0}
+        useNativeDriver={true}
       >
         <View style={{
           backgroundColor: theme.cardBg,
