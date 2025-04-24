@@ -21,7 +21,7 @@ const Home = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(5) }}>
+    <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(10) }}>
       <ExpoStatusBar style={darkMode ? "light" : "dark"} />
       <StatusBar barStyle={darkMode ? "light-content" : "dark-content"} />
 
