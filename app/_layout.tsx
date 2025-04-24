@@ -11,15 +11,24 @@ export default function RootLayout() {
           screenOptions={{
             headerShown: false,
             contentStyle: {
-              backgroundColor: "#0f0D23", // fallback background
+              backgroundColor: "#030014", // Match the dark gradient base color
             },
+            animation: "slide_from_right",
+            animationDuration: 100,
+            presentation: "card",
           }}
         >
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen 
+            name="homescreen" 
+            options={{
+              presentation: "transparentModal",
+              animation: "slide_from_right",
+            }}
+          />
           <Stack.Screen name="shipment/shipmentdetails" />
           <Stack.Screen name="shipment/reportissue" />
           <Stack.Screen name="login/loginpage" />
-          <Stack.Screen name="homescreen/todaysshipments" />
         </Stack>
       </AppProvider>
     </AuthProvider>
