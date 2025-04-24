@@ -51,6 +51,36 @@ export default function RootLayout() {
                 freezeOnBlur: true,
               }}
             />
+            <Stack.Screen 
+              name="profile/editprofile" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="profile/changepassword" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="profile/appsettings" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
             <Stack.Screen name="shipment/shipmentdetails" />
             <Stack.Screen name="shipment/reportissue" />
             <Stack.Screen name="login/loginpage" />
