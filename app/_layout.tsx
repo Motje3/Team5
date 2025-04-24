@@ -5,6 +5,7 @@ import { AppProvider } from "./context/AppContext";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
@@ -26,8 +27,7 @@ export default function RootLayout() {
               // Ensure consistent animations for forward and backward navigation
               animationTypeForReplace: "push",
               // Prevent background flash
-              // Better transition behavior for Android
-              fullScreenGestureEnabled: true,
+              freezeOnBlur: true,
             }}
           >
             <Stack.Screen name="(tabs)" />
@@ -38,6 +38,7 @@ export default function RootLayout() {
                 animation: "slide_from_right",
                 gestureEnabled: true,
                 gestureDirection: "horizontal",
+                freezeOnBlur: true,
               }}
             />
             <Stack.Screen 
@@ -47,7 +48,6 @@ export default function RootLayout() {
                 animation: "slide_from_right",
                 gestureEnabled: true,
                 gestureDirection: "horizontal",
-                // Add this to ensure hardware back button works
                 freezeOnBlur: true,
               }}
             />
@@ -81,9 +81,36 @@ export default function RootLayout() {
                 freezeOnBlur: true,
               }}
             />
-            <Stack.Screen name="shipment/shipmentdetails" />
-            <Stack.Screen name="shipment/reportissue" />
-            <Stack.Screen name="login/loginpage" />
+            <Stack.Screen 
+              name="shipment/shipmentdetails" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="shipment/reportissue" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
+            <Stack.Screen 
+              name="login/loginpage" 
+              options={{
+                presentation: "card",
+                animation: "slide_from_right",
+                gestureEnabled: true,
+                gestureDirection: "horizontal",
+                freezeOnBlur: true,
+              }}
+            />
           </Stack>
         </AppProvider>
       </AuthProvider>
