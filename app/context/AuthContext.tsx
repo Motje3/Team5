@@ -49,14 +49,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
-    // clear storage + context
     await AsyncStorage.removeItem("userSession");
     setUser(null);
     setToken(null);
-
-    // send user “home”—your root redirect will jump to login
-    router.replace("/");
+    // Directly send to the login page
+    router.replace("/login/loginpage");
   };
+  
 
   useEffect(() => {
     // on app start, try to restore
