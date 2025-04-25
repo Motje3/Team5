@@ -261,49 +261,56 @@ const ShipmentDetails = () => {
 
       {/* 🧊 Status Modal */}
       <Modal
-        isVisible={statusModalVisible}
-        onBackdropPress={() => setStatusModalVisible(false)}
-        style={{ justifyContent: 'center', alignItems: 'center', margin: 0 }}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        animationInTiming={200}
-        animationOutTiming={200}
-        backdropTransitionInTiming={200}
-        backdropTransitionOutTiming={0}
-        useNativeDriver={true}
-      >
-        <View style={{
+      isVisible={statusModalVisible}
+      onBackdropPress={() => setStatusModalVisible(false)}
+      style={{ justifyContent: 'center', alignItems: 'center', margin: 0 }}
+      animationIn="fadeIn"
+      animationOut="fadeOut"
+      animationInTiming={200}
+      animationOutTiming={200}
+      backdropTransitionInTiming={200}
+      backdropTransitionOutTiming={200}      // ← match the fade-out duration
+      hideModalContentWhileAnimating={true}  // ← prevent content flash
+      useNativeDriver={true}
+      useNativeDriverForBackdrop={true}      // ← optional, if supported
+    >
+      <View
+        style={{
           backgroundColor: theme.cardBg,
           width: '85%',
           padding: wp(6),
           borderRadius: wp(5),
-        }}>
-          <Text style={{
+        }}
+      >
+        <Text
+          style={{
             color: theme.text,
             fontSize: wp(5),
             fontWeight: 'bold',
             textAlign: 'center',
             marginBottom: hp(2),
-          }}>
-            📦 Kies nieuwe status
-          </Text>
-          {["Onderweg","Geleverd","Vertraagd"].map(option => (
-            <TouchableOpacity
-              key={option}
-              onPress={() => updateStatus(option)}
-              style={{
-                backgroundColor: '#7C3AED',
-                paddingVertical: hp(2),
-                borderRadius: wp(3),
-                alignItems: 'center',
-                marginBottom: hp(1.5),
-              }}
-            >
-              <Text style={{ color: '#fff', fontSize: wp(4.2) }}>{option}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </Modal>
+          }}
+        >
+          📦 Kies nieuwe status
+        </Text>
+        {['Onderweg', 'Geleverd', 'Vertraagd'].map(option => (
+          <TouchableOpacity
+            key={option}
+            onPress={() => updateStatus(option)}
+            style={{
+              backgroundColor: '#7C3AED',
+              paddingVertical: hp(2),
+              borderRadius: wp(3),
+              alignItems: 'center',
+              marginBottom: hp(1.5),
+            }}
+          >
+            <Text style={{ color: '#fff', fontSize: wp(4.2) }}>{option}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </Modal>
+
     </LinearGradient>
   );
 };
