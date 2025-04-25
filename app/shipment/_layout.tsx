@@ -13,18 +13,18 @@ export default function ShipmentLayout() {
         headerShown: false,
         contentStyle: { backgroundColor: bg },
         
-        // Animation settings for both forward and backward navigation
-        animation: 'slide_from_right',
-        animationDuration: 150,
+        // Change animation to fade instead of slide
+        animation: 'fade',
+        animationDuration: 200,
         
-        // Enable gesture for back navigation
+        // Keep gesture-based navigation
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         
         // Use card presentation for consistent background handling
         presentation: 'card', 
         
-        // Ensure consistent animations for forward and backward navigation
+        // Use push animation type for consistency
         animationTypeForReplace: 'push',
         
         // Prevent background flash
