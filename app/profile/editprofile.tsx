@@ -105,7 +105,7 @@ const EditProfile = () => {
         flex: 1,
         backgroundColor: theme.background,
         paddingHorizontal: wp(6),
-        paddingTop: hp(6),
+        paddingTop: hp(8),
       }}
     >
       <Text
