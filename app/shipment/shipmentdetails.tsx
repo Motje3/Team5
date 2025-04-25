@@ -35,6 +35,8 @@ const ShipmentDetails = () => {
 
   const [shipment, setShipment] = useState<any>(null);
   const [shipmentStatus, setShipmentStatus] = useState<string>('Geleverd');
+  const [lastUpdatedBy, setLastUpdatedBy]   = useState<string | null>(null);
+  const [lastUpdatedAt, setLastUpdatedAt]   = useState<string | null>(null);
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   
@@ -70,6 +72,8 @@ const ShipmentDetails = () => {
         const data = await res.json();
         setShipment(data);
         setShipmentStatus(data.status);
+        setLastUpdatedBy(data.lastUpdatedBy);
+        setLastUpdatedAt(data.lastUpdatedAt);
       } catch (err) {
         console.error('Fout bij ophalen van zending:', err);
       } finally {
@@ -129,6 +133,8 @@ const ShipmentDetails = () => {
       // Sync with returned object
       const updated = await res.json()
       setShipmentStatus(updated.status)
+      setLastUpdatedBy(updated.lastUpdatedBy)
+      setLastUpdatedAt(updated.lastUpdatedAt)
     } catch (err) {
       console.error('Status update error', err)
       Alert.alert('❌ Kon status niet bijwerken')
