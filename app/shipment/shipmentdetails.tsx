@@ -6,7 +6,8 @@ import {
   Image,
   ActivityIndicator,
   BackHandler,
-  Animated
+  Animated,
+  Alert
 } from 'react-native';
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -108,10 +109,32 @@ const ShipmentDetails = () => {
     });
   };
 
-  const updateStatus = (newStatus: string) => {
-    setShipmentStatus(newStatus);
-    setStatusModalVisible(false);
-    // TODO: PUT to backend
+  const updateStatus = async (newStatus: string) => {
+    setShipmentStatus(newStatus)
+    setStatusModalVisible(false)
+  
+    try {
+      const res = await fetch(
+        `http://192.168.1.198:5070/api/shipments/${shipment.id}/status`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      )
+      if (!res.ok) {
+        throw new Error('Failed to update status')
+      }
+  
+      // Sync with returned object
+      const updated = await res.json()
+      setShipmentStatus(updated.status)
+    } catch (err) {
+      console.error('Status update error', err)
+      Alert.alert('❌ Kon status niet bijwerken')
+      // Roll back UI if needed
+      setShipmentStatus(shipment.status)
+    }
   };
 
   // Loading / placeholder state
