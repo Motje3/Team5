@@ -20,7 +20,10 @@ const fallbackImage = require('../../assets/images/default-profile.png');
 
 const EditProfile = () => {
   const router = useRouter();
-  const { user } = useAuth();
+
+  // ← Pull both user AND token here
+  const { user, token } = useAuth();
+
   const {
     username,
     setUsername,
@@ -43,19 +46,15 @@ const EditProfile = () => {
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
 
-  // Handle back navigation with animation
-  const handleBack = () => {
-    router.navigate("/(tabs)/profile");
-    return true; // Prevents default back behavior
-  };
-
-  // Handle hardware back button
+  // Handle hardware back
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress', 
-      handleBack
+      'hardwareBackPress',
+      () => {
+        router.navigate("/(tabs)/profile");
+        return true;
+      }
     );
-
     return () => backHandler.remove();
   }, []);
 
@@ -68,7 +67,12 @@ const EditProfile = () => {
           email: newEmail,
           imageUrl: profileImage || '',
         },
-        { headers: { Authorization: `Bearer ${useAuth().token}` } }
+        {
+          headers: {
+            // ← Use the token you pulled above, not another hook call
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       // Update context so UI matches
@@ -79,6 +83,7 @@ const EditProfile = () => {
       router.navigate("/(tabs)/profile");
     } catch (error) {
       console.error('❌ Fout bij opslaan profiel:', error);
+      // you might also want to show an Alert here
     }
   };
 
