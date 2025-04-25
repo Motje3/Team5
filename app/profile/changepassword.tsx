@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  BackHandler
+  BackHandler,
+  Keyboard
 } from 'react-native';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
@@ -47,6 +48,9 @@ const ChangePassword = () => {
   }, []);
 
   const handleSave = async () => {
+    // Dismiss keyboard immediately to avoid white flash
+    Keyboard.dismiss();
+
     setErrorMessage('');
     setSuccessMessage('');
 
