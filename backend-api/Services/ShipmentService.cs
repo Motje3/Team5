@@ -22,5 +22,16 @@ namespace backend_api.Services
         {
             return await _context.Shipments.FindAsync(id);
         }
+
+        public async Task<Shipment?> UpdateStatusAsync(int id, string newStatus)
+        {
+            var shipment = await _context.Shipments.FindAsync(id);
+            if (shipment == null) return null;
+
+            shipment.Status = newStatus;
+            await _context.SaveChangesAsync();
+            return shipment;
+        }
+
     }
 }
