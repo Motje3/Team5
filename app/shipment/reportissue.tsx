@@ -39,10 +39,9 @@ export default function ReportIssue() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // Handle back navigation with animation
   const handleBack = () => {
     router.navigate(`/shipment/shipmentdetails?qrData=${shipmentId}`);
-    return true; // Prevents default back behavior
+    return true;
   };
 
   // Handle hardware back button
@@ -217,10 +216,10 @@ export default function ReportIssue() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={handleBack}
-            style={{ flexDirection: 'row', alignItems: 'center' }}
-          >
+            <TouchableOpacity
+              onPress={handleBack}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
+            >
             <Image source={icons.arrowleft} style={{ width: wp(6), height: wp(6), marginRight: wp(2) }} />
             <Text style={{ color: theme.placeholder }}>Terug</Text>
           </TouchableOpacity>
