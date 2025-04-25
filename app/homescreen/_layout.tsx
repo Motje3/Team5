@@ -15,7 +15,7 @@ export default function HomescreenLayout() {
         
         // Animation settings for both forward and backward navigation
         animation: 'slide_from_right',
-        animationDuration: 100,
+        animationDuration: 150,
         
         // Enable gesture for back navigation
         gestureEnabled: true,

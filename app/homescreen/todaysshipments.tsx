@@ -23,7 +23,6 @@ const Todaysshipment = () => {
 
   // Handle back navigation with animation
   const handleBack = () => {
-    // Instead of router.back(), use router.navigate() to ensure the transition animation works properly
     router.navigate("/(tabs)");
     return true; // Prevents default back behavior
   };

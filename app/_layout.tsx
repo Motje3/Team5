@@ -18,7 +18,7 @@ export default function RootLayout() {
               },
               // Configure default animations for all screens
               animation: "slide_from_right",
-              animationDuration: 250,
+              animationDuration: 150,
               // Use card presentation for consistent background handling
               presentation: "card", 
               // Enable gestures for back navigation
