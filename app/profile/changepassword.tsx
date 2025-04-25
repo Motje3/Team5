@@ -20,7 +20,6 @@ const ChangePassword = () => {
   const { user, token } = useAuth();
   const { darkMode } = useApp();
 
-  // Inline theme palette
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
     card: darkMode ? '#1F2937' : '#f3f4f6',
@@ -48,19 +47,17 @@ const ChangePassword = () => {
   }, []);
 
   const handleSave = async () => {
-    // Dismiss keyboard immediately to avoid white flash
+    // Dismiss keyboard immediately to avoid flicker
     Keyboard.dismiss();
 
     setErrorMessage('');
     setSuccessMessage('');
 
-    // Validate new password length
     if (newPassword.length < 6) {
       setErrorMessage('❌ Nieuw wachtwoord moet minimaal 6 tekens zijn');
       return;
     }
 
-    // Validate confirmation match
     if (newPassword !== confirmPassword) {
       setErrorMessage('❌ Wachtwoorden komen niet overeen');
       return;
@@ -92,7 +89,7 @@ const ChangePassword = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior="padding"
       style={{
         flex: 1,
         backgroundColor: theme.background,
@@ -197,7 +194,6 @@ const ChangePassword = () => {
           {successMessage}
         </Text>
       ) : null}
-
     </KeyboardAvoidingView>
   );
 };
