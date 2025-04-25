@@ -19,7 +19,7 @@ const ChangePassword = () => {
   const { user, token } = useAuth();
   const { darkMode } = useApp();
 
-  // Inline theme palette based on darkMode
+  // Inline theme palette
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
     card: darkMode ? '#1F2937' : '#f3f4f6',
@@ -33,19 +33,16 @@ const ChangePassword = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Handle back navigation with animation
   const handleBack = () => {
     router.navigate("/(tabs)/profile");
-    return true; // Prevents default back behavior
+    return true;
   };
 
-  // Handle hardware back button
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress', 
+      'hardwareBackPress',
       handleBack
     );
-
     return () => backHandler.remove();
   }, []);
 
@@ -53,8 +50,15 @@ const ChangePassword = () => {
     setErrorMessage('');
     setSuccessMessage('');
 
+    // Validate new password length
+    if (newPassword.length < 6) {
+      setErrorMessage('❌ Nieuw wachtwoord moet minimaal 6 tekens zijn');
+      return;
+    }
+
+    // Validate confirmation match
     if (newPassword !== confirmPassword) {
-      setErrorMessage('Wachtwoorden komen niet overeen');
+      setErrorMessage('❌ Wachtwoorden komen niet overeen');
       return;
     }
 
@@ -68,10 +72,16 @@ const ChangePassword = () => {
       setSuccessMessage('✅ Wachtwoord succesvol gewijzigd');
       setTimeout(() => router.navigate("/(tabs)/profile"), 1500);
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 400) {
-        setErrorMessage('❌ Oud wachtwoord klopt niet');
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          setErrorMessage('❌ Oud wachtwoord klopt niet');
+        } else {
+          setErrorMessage(
+            `❌ ${error.response?.data?.message || 'Serverfout: probeer het later opnieuw'}`
+          );
+        }
       } else {
-        setErrorMessage('❌ Serverfout: probeer het later opnieuw');
+        setErrorMessage('❌ Onbekende fout, probeer het later opnieuw');
       }
     }
   };
@@ -98,7 +108,6 @@ const ChangePassword = () => {
         Wachtwoord wijzigen
       </Text>
 
-      {/* Oud wachtwoord */}
       <Text style={{ color: theme.secondaryText, fontSize: wp(4), marginBottom: hp(1) }}>
         Oud wachtwoord
       </Text>
@@ -119,7 +128,6 @@ const ChangePassword = () => {
         }}
       />
 
-      {/* Nieuw wachtwoord */}
       <Text style={{ color: theme.secondaryText, fontSize: wp(4), marginBottom: hp(1) }}>
         Nieuw wachtwoord
       </Text>
@@ -140,7 +148,6 @@ const ChangePassword = () => {
         }}
       />
 
-      {/* Bevestig nieuw wachtwoord */}
       <Text style={{ color: theme.secondaryText, fontSize: wp(4), marginBottom: hp(1) }}>
         Bevestig nieuw wachtwoord
       </Text>
@@ -161,20 +168,6 @@ const ChangePassword = () => {
         }}
       />
 
-      {/* Feedback */}
-      {errorMessage ? (
-        <Text style={{ color: '#EF4444', marginBottom: hp(1.5), fontSize: wp(3.8), textAlign: 'center' }}>
-          {errorMessage}
-        </Text>
-      ) : null}
-
-      {successMessage ? (
-        <Text style={{ color: '#10B981', marginBottom: hp(1.5), fontSize: wp(3.8), textAlign: 'center' }}>
-          {successMessage}
-        </Text>
-      ) : null}
-
-      {/* Opslaan knop */}
       <TouchableOpacity
         onPress={handleSave}
         style={{
@@ -188,6 +181,19 @@ const ChangePassword = () => {
           Opslaan
         </Text>
       </TouchableOpacity>
+
+      {errorMessage ? (
+        <Text style={{ color: '#EF4444', marginTop: hp(1.5), fontSize: wp(3.8), textAlign: 'center' }}>
+          {errorMessage}
+        </Text>
+      ) : null}
+
+      {successMessage ? (
+        <Text style={{ color: '#10B981', marginTop: hp(1.5), fontSize: wp(3.8), textAlign: 'center' }}>
+          {successMessage}
+        </Text>
+      ) : null}
+
     </KeyboardAvoidingView>
   );
 };
