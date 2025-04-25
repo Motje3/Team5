@@ -44,7 +44,6 @@ const EditProfile = () => {
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
 
-  // Handle hardware back
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
