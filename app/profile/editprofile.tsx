@@ -66,13 +66,11 @@ const EditProfile = () => {
         },
         {
           headers: {
-            // ← Use the token you pulled above, not another hook call
             Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      // Update context so UI matches
       setUsername(newName);
       setEmail(newEmail);
       setProfileImage(profileImage);
@@ -80,7 +78,6 @@ const EditProfile = () => {
       router.navigate("/(tabs)/profile");
     } catch (error) {
       console.error('❌ Fout bij opslaan profiel:', error);
-      // you might also want to show an Alert here
     }
   };
 
