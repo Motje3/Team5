@@ -21,7 +21,6 @@ const fallbackImage = require('../../assets/images/default-profile.png');
 const EditProfile = () => {
   const router = useRouter();
 
-  // ← Pull both user AND token here
   const { user, token } = useAuth();
 
   const {
