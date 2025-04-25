@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  BackHandler
+  BackHandler,
+  Keyboard
 } from 'react-native';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
@@ -56,6 +57,9 @@ const EditProfile = () => {
   }, []);
 
   const handleSave = async () => {
+
+    Keyboard.dismiss()
+
     try {
       await axios.put(
         `http://192.168.1.198:5070/api/profile/${user.id}`,
