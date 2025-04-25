@@ -1,6 +1,7 @@
 using backend_api.DTOs;
 using backend_api.Models;
 using backend_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api.Controllers
@@ -36,12 +37,17 @@ namespace backend_api.Controllers
         }
 
         [HttpPut("{id}/status")]
+        [Authorize]  // make sure only logged-in users can update
         public async Task<ActionResult<Shipment>> UpdateStatus(int id, StatusUpdateDto dto)
         {
-            var updated = await _service.UpdateStatusAsync(id, dto.Status);
+            // get the username from the JWT / cookie
+            var username = User.Identity?.Name ?? "unknown";
+
+            var updated = await _service.UpdateStatusAsync(id, dto.Status, username);
             if (updated == null) return NotFound();
             return Ok(updated);
         }
+
 
     }
 }
