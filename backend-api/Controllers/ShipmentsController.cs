@@ -1,3 +1,4 @@
+using backend_api.DTOs;
 using backend_api.Models;
 using backend_api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -33,5 +34,14 @@ namespace backend_api.Controllers
 
             return Ok(shipment);
         }
+
+        [HttpPut("{id}/status")]
+        public async Task<ActionResult<Shipment>> UpdateStatus(int id, StatusUpdateDto dto)
+        {
+            var updated = await _service.UpdateStatusAsync(id, dto.Status);
+            if (updated == null) return NotFound();
+            return Ok(updated);
+        }
+
     }
 }
