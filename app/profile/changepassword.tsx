@@ -22,6 +22,7 @@ const ChangePassword = () => {
   const router = useRouter();
   const { user, token } = useAuth();
   const { darkMode } = useApp();
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
@@ -38,14 +39,27 @@ const ChangePassword = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress', () => {
-        router.navigate("/(tabs)/profile");
-        return true;
-      }
-    );
-    return () => backHandler.remove();
+    // Listen to keyboard events
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
   }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (keyboardVisible) {
+        Keyboard.dismiss();
+        return true; // prevent default
+      }
+      router.navigate("/(tabs)/profile");
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [keyboardVisible]);
 
   const handleSave = async () => {
     Keyboard.dismiss();
@@ -75,7 +89,7 @@ const ChangePassword = () => {
         useNativeDriver: true,
       }).start();
 
-      // After 3 seconds, fade out and navigate away
+      // After 3 seconds, fade out and navigate
       setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
@@ -112,12 +126,14 @@ const ChangePassword = () => {
     );
   }
 
+  // Choose container: KeyboardAvoidingView on iOS, simple View on Android
+  const Container = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
+  const containerProps = Platform.OS === 'ios'
+    ? { behavior: 'padding' as 'padding', style: [styles.container, { backgroundColor: theme.background }] }
+    : { style: [styles.container, { backgroundColor: theme.background }] };
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
-      keyboardVerticalOffset={hp(4)}
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
+    <Container {...containerProps} keyboardVerticalOffset={hp(4)}>
       <Text style={[styles.title, { color: theme.text }]}>Wachtwoord wijzigen</Text>
 
       <Text style={[styles.label, { color: theme.secondaryText }]}>Oud wachtwoord</Text>
@@ -155,7 +171,7 @@ const ChangePassword = () => {
       </TouchableOpacity>
 
       {!!errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
-    </KeyboardAvoidingView>
+    </Container>
   );
 };
 
