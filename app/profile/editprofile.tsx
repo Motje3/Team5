@@ -34,7 +34,6 @@ const EditProfile = () => {
     darkMode,
   } = useApp();
 
-  // Inline theme
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
     text: darkMode ? '#ffffff' : '#0f0D23',
