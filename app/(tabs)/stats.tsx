@@ -123,7 +123,7 @@ const Stats = () => {
       <Modal
         visible={isModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setIsModalVisible(false)}
       >
         <View style={styles.modalContainer}>

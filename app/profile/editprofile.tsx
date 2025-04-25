@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  BackHandler
+  BackHandler,
+  Keyboard
 } from 'react-native';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
@@ -20,7 +21,9 @@ const fallbackImage = require('../../assets/images/default-profile.png');
 
 const EditProfile = () => {
   const router = useRouter();
-  const { user } = useAuth();
+
+  const { user, token } = useAuth();
+
   const {
     username,
     setUsername,
@@ -32,7 +35,6 @@ const EditProfile = () => {
     darkMode,
   } = useApp();
 
-  // Inline theme
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
     text: darkMode ? '#ffffff' : '#0f0D23',
@@ -43,23 +45,21 @@ const EditProfile = () => {
   const [newName, setNewName] = useState(username);
   const [newEmail, setNewEmail] = useState(email);
 
-  // Handle back navigation with animation
-  const handleBack = () => {
-    router.navigate("/(tabs)/profile");
-    return true; // Prevents default back behavior
-  };
-
-  // Handle hardware back button
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress', 
-      handleBack
+      'hardwareBackPress',
+      () => {
+        router.navigate("/(tabs)/profile");
+        return true;
+      }
     );
-
     return () => backHandler.remove();
   }, []);
 
   const handleSave = async () => {
+
+    Keyboard.dismiss()
+
     try {
       await axios.put(
         `http://192.168.1.198:5070/api/profile/${user.id}`,
@@ -68,10 +68,13 @@ const EditProfile = () => {
           email: newEmail,
           imageUrl: profileImage || '',
         },
-        { headers: { Authorization: `Bearer ${useAuth().token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
-      // Update context so UI matches
       setUsername(newName);
       setEmail(newEmail);
       setProfileImage(profileImage);
@@ -102,7 +105,7 @@ const EditProfile = () => {
         flex: 1,
         backgroundColor: theme.background,
         paddingHorizontal: wp(6),
-        paddingTop: hp(6),
+        paddingTop: hp(8),
       }}
     >
       <Text

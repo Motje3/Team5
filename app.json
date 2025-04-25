@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "bundler": "metro",
@@ -23,27 +24,36 @@
       "favicon": "./assets/images/logo.png"
     },
     "plugins": [
-  "expo-router",
-  [
-    "expo-splash-screen",
-    {
-      "image": "./assets/images/logo.png",
-      "imageWidth": 200,
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    }
-  ],
-  [
-    "expo-camera",
-    {
-      "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-      "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-      "recordAudioAndroid": true
-    }
-  ],
-  "expo-barcode-scanner"
-  ],
-  
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "manifestPlaceholders": {
+              "android:windowBackground": "#030014"
+            }
+          }
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      "expo-barcode-scanner"
+    ],
     "experiments": {
       "typedRoutes": true
     }

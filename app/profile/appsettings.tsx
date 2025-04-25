@@ -67,7 +67,7 @@ const AppSettings = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: wp(6), backgroundColor: theme.background }}>
+    <View style={{ flex: 1, padding: wp(6),paddingTop: hp(8), backgroundColor: theme.background }}>
       <Text
         style={{
           color: theme.text,
@@ -159,7 +159,7 @@ const AppSettings = () => {
         }}
       >
         <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>
-          Sluiten
+          Opslaan
         </Text>
       </TouchableOpacity>
     </View>
