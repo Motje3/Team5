@@ -91,7 +91,7 @@ export default function ReportIssue() {
           title,
           description,
           shipmentId: shipmentId ? parseInt(shipmentId) : undefined,
-        }),
+        }),  
       });
       if (!res.ok) throw new Error();
       Alert.alert('✅ Probleem succesvol gemeld!');

@@ -37,7 +37,6 @@ namespace backend_api.Controllers
         }
 
         [HttpPut("{id}/status")]
-        [Authorize]  // make sure only logged-in users can update
         public async Task<ActionResult<Shipment>> UpdateStatus(int id, StatusUpdateDto dto)
         {
             // get the username from the JWT / cookie
