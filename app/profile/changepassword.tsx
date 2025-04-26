@@ -1,3 +1,4 @@
+// app/components/ChangePassword.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -9,7 +10,7 @@ import {
   BackHandler,
   Keyboard,
   Animated,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 import { wp, hp } from '../utils/responsive';
 import { useRouter } from 'expo-router';
@@ -39,7 +40,6 @@ const ChangePassword = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Listen to keyboard events
     const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
     const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
     return () => {
@@ -52,7 +52,7 @@ const ChangePassword = () => {
     const backAction = () => {
       if (keyboardVisible) {
         Keyboard.dismiss();
-        return true; // prevent default
+        return true;
       }
       router.navigate("/(tabs)/profile");
       return true;
@@ -76,12 +76,11 @@ const ChangePassword = () => {
 
     try {
       await axios.post(
-        `http://192.168.1.198:5070/api/profile/${user.id}/change-password`,
+        `http://192.168.2.50:5070/api/profile/${user.id}/change-password`,
         { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Show success overlay
       setShowSuccess(true);
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -89,7 +88,6 @@ const ChangePassword = () => {
         useNativeDriver: true,
       }).start();
 
-      // After 3 seconds, fade out and navigate
       setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
@@ -114,7 +112,6 @@ const ChangePassword = () => {
     }
   };
 
-  // Success overlay
   if (showSuccess) {
     return (
       <Animated.View
@@ -126,7 +123,6 @@ const ChangePassword = () => {
     );
   }
 
-  // Choose container: KeyboardAvoidingView on iOS, simple View on Android
   const Container = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
   const containerProps = Platform.OS === 'ios'
     ? { behavior: 'padding' as 'padding', style: [styles.container, { backgroundColor: theme.background }] }
@@ -134,6 +130,13 @@ const ChangePassword = () => {
 
   return (
     <Container {...containerProps} keyboardVerticalOffset={hp(4)}>
+      {/* 🔥 Terug-knop */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.navigate("/(tabs)/profile")}>
+          <Ionicons name="arrow-back" size={28} color={theme.text} />
+        </TouchableOpacity>
+      </View>
+
       <Text style={[styles.title, { color: theme.text }]}>Wachtwoord wijzigen</Text>
 
       <Text style={[styles.label, { color: theme.secondaryText }]}>Oud wachtwoord</Text>
@@ -166,7 +169,7 @@ const ChangePassword = () => {
         style={[styles.input, { backgroundColor: theme.card, color: theme.text }]}
       />
 
-      <TouchableOpacity style={[styles.button]} onPress={handleSave}>
+      <TouchableOpacity style={styles.button} onPress={handleSave}>
         <Text style={styles.buttonText}>Opslaan</Text>
       </TouchableOpacity>
 
@@ -180,6 +183,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: wp(6),
     justifyContent: 'center',
+  },
+  header: {
+    position: 'absolute',
+    top: hp(6),
+    left: wp(6),
   },
   title: {
     fontSize: wp(6),
