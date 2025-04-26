@@ -62,7 +62,7 @@ const EditProfile = () => {
 
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}`,
+        `http://192.168.2.50:5070/api/profile/${user.id}`,
         {
           fullName: newName,
           email: newEmail,
