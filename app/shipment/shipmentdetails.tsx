@@ -65,7 +65,7 @@ const ShipmentDetails = () => {
     const fetchShipment = async () => {
       try {
         const id = Array.isArray(qrData) ? qrData[0] : qrData;
-        const res = await fetch(`http://192.168.1.198:5070/api/shipments/${id}`);
+        const res = await fetch(`http://192.168.2.50:5070/api/shipments/${id}`);
         const data = await res.json();
         setShipment(data);
         setShipmentStatus(data.status);
