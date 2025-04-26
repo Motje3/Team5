@@ -47,12 +47,12 @@ const AppSettings = () => {
     return () => backHandler.remove();
   }, []);
 
-  const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
+  const accentOptions = ['#A970FF', '#F97316', '#10B981', '#06B6D4',  '#rgb(137, 129, 129)'];
 
   const updateSettings = async (newDark = darkMode, newAccent = accentColor, newNotif = notificationsEnabled) => {
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        `http://192.168.2.50:5070/api/profile/${user.id}/settings`,
         {
           darkMode: newDark,
           accentColor: newAccent,
