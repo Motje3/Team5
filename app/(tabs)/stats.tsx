@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
 import { hp } from "../utils/responsive";
+import { useApp } from "../context/AppContext";
 
 const { width } = Dimensions.get("window");
 
@@ -12,6 +13,19 @@ const Stats = () => {
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { darkMode, accentColor } = useApp(); // 🔥 accentColor erbij!
+
+  const theme = {
+    background: darkMode ? (["#3D0F6E", "#030014"] as const) : (["#ffffff", "#f2f2f2"] as const),
+    cardBackground: darkMode
+      ? (["#17144F", "#090723"] as const)
+      : (["#f0f0f0", "#e4e4e4"] as const),
+    text: darkMode ? "#ffffff" : "#0f0D23",
+    secondaryText: darkMode ? "#9CA3AF" : "#6B7280",
+    borderColor: darkMode ? "#2D2D2D" : "#E5E7EB",
+    filterButtonBackground: darkMode ? "#17144F" : "#E5E7EB",
+    listItemBorder: darkMode ? "#444" : "#DDD",
+  };
 
   const shipmentStats = {
     total: 124,
@@ -42,7 +56,7 @@ const Stats = () => {
 
   return (
     <LinearGradient
-      colors={["#3D0F6E", "#030014"]}
+      colors={theme.background}
       locations={[0, 1]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
@@ -50,48 +64,48 @@ const Stats = () => {
     >
       {/* Page Header */}
       <View style={styles.header}>
-        <Image source={icons.stats} style={styles.headerIcon} />
+        <Image source={icons.stats} style={[styles.headerIcon, { tintColor: accentColor }]} />
       </View>
 
       {/* Shipment Overview */}
       <LinearGradient
-        colors={["#17144F", "#090723"]}
+        colors={theme.cardBackground}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.overviewBox}
       >
-        <Text style={styles.overviewTitle}>Jouw zendingen</Text>
+        <Text style={[styles.overviewTitle, { color: theme.text }]}>Jouw zendingen</Text>
         <View style={styles.overviewStats}>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>{shipmentStats.total}</Text>
-            <Text style={styles.statLabel}>Totaal</Text>
+            <Text style={[styles.statValue, { color: accentColor }]}>{shipmentStats.total}</Text>
+            <Text style={[styles.statLabel, { color: theme.secondaryText }]}>Totaal</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statValueCompleted}>{shipmentStats.completed}</Text>
-            <Text style={styles.statLabel}>Voltooid</Text>
+            <Text style={[styles.statLabel, { color: theme.secondaryText }]}>Voltooid</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statValuePending}>{shipmentStats.pending}</Text>
-            <Text style={styles.statLabel}>In behandeling</Text>
+            <Text style={[styles.statLabel, { color: theme.secondaryText }]}>In behandeling</Text>
           </View>
         </View>
       </LinearGradient>
 
       {/* Recent Activity */}
       <LinearGradient
-        colors={["#17144F", "#090723"]}
+        colors={theme.cardBackground}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.activityBox}
       >
-        <Text style={styles.activityTitle}>Recente activiteit</Text>
+        <Text style={[styles.activityTitle, { color: theme.text }]}>Recente activiteit</Text>
         <View style={styles.scrollableList}>
           <FlatList
             data={filteredShipments}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                <Text style={styles.listItemId}>{item.id}</Text>
+              <View style={[styles.listItem, { borderBottomColor: theme.listItemBorder }]}>
+                <Text style={[styles.listItemId, { color: theme.secondaryText }]}>{item.id}</Text>
                 <Text
                   style={[
                     styles.listItemStatus,
@@ -100,7 +114,7 @@ const Stats = () => {
                 >
                   {item.status}
                 </Text>
-                <Text style={styles.listItemDate}>{item.date}</Text>
+                <Text style={[styles.listItemDate, { color: theme.secondaryText }]}>{item.date}</Text>
               </View>
             )}
             showsVerticalScrollIndicator={false}
@@ -111,11 +125,11 @@ const Stats = () => {
       {/* Filters Button */}
       <TouchableOpacity
         onPress={() => setIsModalVisible(true)}
-        style={styles.filterButton}
+        style={[styles.filterButton, { backgroundColor: theme.filterButtonBackground }]}
       >
         <View style={styles.filterButtonContent}>
-          <Image source={icons.filter} style={styles.filterIcon} />
-          <Text style={styles.filterText}>Filter</Text>
+          <Image source={icons.filter} style={[styles.filterIcon, { tintColor: darkMode ? "#FFF" : "#0f0D23" }]} />
+          <Text style={[styles.filterText, { color: darkMode ? "#FFF" : "#0f0D23" }]}>Filter</Text>
         </View>
       </TouchableOpacity>
 
@@ -128,12 +142,12 @@ const Stats = () => {
       >
         <View style={styles.modalContainer}>
           <LinearGradient
-            colors={["#17144F", "#090723"]}
+            colors={theme.cardBackground}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.filterBox}
           >
-            <Text style={styles.filterTitle}>Filters</Text>
+            <Text style={[styles.filterTitle, { color: theme.text }]}>Filters</Text>
             <View style={styles.filterItem}>
               <LocationFilter label="Locatie" value={location} onChange={setLocation} />
             </View>
@@ -167,18 +181,16 @@ const styles = StyleSheet.create({
   headerIcon: {
     width: 40,
     height: 40,
-    tintColor: "#A970FF",
     marginTop: 40,
   },
   filterButton: {
     marginTop: 10,
-    alignSelf: "flex-start", // Align to the left
-    marginLeft: 20, // Add some spacing from the left
-    backgroundColor: "#17144F",
+    alignSelf: "flex-start",
+    marginLeft: 20,
     paddingVertical: 10,
     paddingLeft: 20,
     paddingRight: 25,
-    borderRadius: 25, // Makes it oval
+    borderRadius: 25,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.4,
@@ -192,11 +204,9 @@ const styles = StyleSheet.create({
   filterIcon: {
     width: 20,
     height: 20,
-    tintColor: "#FFF",
-    marginRight: 15, // Space between icon and text
+    marginRight: 15,
   },
   filterText: {
-    color: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -206,6 +216,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.4,
     shadowRadius: 10,
     elevation: 8,
     marginBottom: 15,
@@ -213,7 +224,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   overviewTitle: {
-    color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
@@ -228,7 +238,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statValue: {
-    color: "#A970FF",
     fontSize: 24,
     fontWeight: "bold",
   },
@@ -243,7 +252,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   statLabel: {
-    color: "#AAA",
     fontSize: 14,
   },
   activityBox: {
@@ -259,7 +267,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   activityTitle: {
-    color: "#FFF",
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
@@ -272,10 +279,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#444",
   },
   listItemId: {
-    color: "#AAA",
     fontSize: 14,
   },
   listItemStatus: {
@@ -283,7 +288,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   listItemDate: {
-    color: "#666",
     fontSize: 14,
   },
   modalContainer: {
@@ -298,7 +302,6 @@ const styles = StyleSheet.create({
     width: width * 0.9,
   },
   filterTitle: {
-    color: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
