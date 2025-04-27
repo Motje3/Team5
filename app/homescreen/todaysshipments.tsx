@@ -11,7 +11,6 @@ import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { wp, hp } from '../utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 
 const TodaysShipment = () => {
   const { token } = useAuth();
