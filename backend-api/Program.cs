@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,37 +17,31 @@ builder.Services.AddScoped<IIssueReportService, IssueReportService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
-// 🔐 JWT Auth & Authorization
-var key    = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
-var issuer = builder.Configuration["Jwt:Issuer"];
-var audience = builder.Configuration["Jwt:Audience"];
-
-builder.Services
-  .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-  .AddJwtBearer(options =>
-  {
-    options.TokenValidationParameters = new TokenValidationParameters
+// 🔐 JWT Auth setup
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-      ValidateIssuer           = true,
-      ValidateAudience         = true,
-      ValidateLifetime         = true,
-      ValidateIssuerSigningKey = true,
-      ValidIssuer              = issuer,
-      ValidAudience            = audience,
-      IssuerSigningKey         = new SymmetricSecurityKey(key),
-      NameClaimType            = ClaimTypes.Name
-    };
-  });
-
-builder.Services.AddAuthorization();
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
 
 // 🔓 CORS for frontend access
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-      policy.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 // 🧪 Swagger
@@ -70,10 +63,9 @@ if (app.Environment.IsDevelopment())
 // 🧱 Middleware
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
-
-// 🔐 Authentication & 🔓 Authorization
-app.UseAuthentication();
+app.UseAuthentication(); // 🔐 Important: must come before Authorization
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
