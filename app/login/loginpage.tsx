@@ -67,7 +67,7 @@ const Login = () => {
               <Image source={images.logo} style={styles.logo} />
 
               {/* Title and subtitle */}
-              <Text style={styles.title}>Welkom bij Lafber</Text>
+              <Text style={styles.title}>Welkom bij E.Lafeber</Text>
               <Text style={styles.subtitle}>Industriële verhuizing</Text>
 
               {/* Inputs */}
