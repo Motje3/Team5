@@ -1,29 +1,46 @@
-import { wp, hp } from '../utils/responsive';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  View, Text, TextInput, TouchableOpacity, Image,
-  Alert, KeyboardAvoidingView, Platform, ScrollView,
-  TouchableWithoutFeedback, Keyboard
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  BackHandler,
+  StyleSheet,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import { LinearGradient } from 'expo-linear-gradient'; // Add this import
-import { icons } from "@/constants/icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { wp, hp } from "../utils/responsive";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
+import { images } from "@/constants/images";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
 
+  // block back
+  useEffect(() => {
+    const backAction = () => true;
+    const sub = BackHandler.addEventListener("hardwareBackPress", backAction);
+    return () => sub.remove();
+  }, []);
+
   const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Fout", "Vul alstublieft zowel gebruikersnaam als wachtwoord in.");
+      Alert.alert("Fout", "Vul alstublieft gebruikersnaam en wachtwoord in.");
       return;
     }
-
     try {
       await login(username, password);
       router.replace("/");
@@ -32,123 +49,82 @@ const Login = () => {
     }
   };
 
-  const handleForgotPassword = () => {
-    Alert.alert("Niet geïmplementeerd", "Wachtwoord vergeten functie komt nog.");
-  };
-
   return (
     <LinearGradient
       colors={["#3E1F92", "#230F52"]}
       locations={[0.3, 1]}
-      style={{
-        flex: 1,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      }}
+      style={styles.background}
     >
       <ExpoStatusBar hidden />
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
-          style={{ flex: 1 }}
+          style={styles.flex}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-              <View style={{ flex: 1, padding: wp(6) }}>
-                
-                {/* 🔹 Header */}
-                <View style={{
-                  height: hp(9),
-                  borderBottomLeftRadius: wp(8),
-                  borderBottomRightRadius: wp(8),
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}>
-                  <Text style={{ color: "#fff", fontSize: wp(5), fontWeight: "bold", marginTop: hp(1.5) }}>
-                    Login
-                  </Text>
-                </View>
+            <View style={styles.container}>
+              {/* Logo at top */}
+              <Image source={images.logo} style={styles.logo} />
 
-                {/* 🔹 Logo & Welcome */}
-                <View style={{ alignItems: "center", marginBottom: hp(6) }}>
-                  <Image
-                    source={icons.user}
-                    style={{ width: wp(14), height: wp(14), tintColor: "#fff", marginTop: hp(5) }}
+              {/* Title and subtitle */}
+              <Text style={styles.title}>Welkom bij Lafber</Text>
+              <Text style={styles.subtitle}>Industriële verhuizing</Text>
+
+              {/* Inputs */}
+              <View style={styles.form}>
+                <View style={styles.inputRow}>
+                  <Ionicons
+                    name="person-outline"
+                    size={wp(5)}
+                    color="#A8A8A8"
                   />
-                  <Text style={{ color: "#fff", fontSize: wp(6), fontWeight: "bold", marginTop: hp(2) }}>
-                    Welkom
-                  </Text>
-                </View>
-
-                {/* 🔹 Form */}
-                <View>
-                  <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
-                    Gebruikersnaam
-                  </Text>
                   <TextInput
-                    placeholder="jouwgebruikersnaam"
+                    placeholder="Gebruikersnaam"
                     placeholderTextColor="#A8A8A8"
                     value={username}
                     onChangeText={setUsername}
-                    style={{
-                      backgroundColor: "#1E1B33",
-                      color: "#fff",
-                      paddingHorizontal: wp(4),
-                      paddingVertical: hp(1.5),
-                      borderRadius: wp(2),
-                      marginBottom: hp(2),
-                      fontSize: wp(4),
-                    }}
+                    style={styles.input}
                   />
-
-                  <Text style={{ color: "#fff", marginBottom: hp(1), fontSize: wp(4) }}>
-                    Wachtwoord
-                  </Text>
+                </View>
+                <View style={styles.inputRow}>
+                  <Ionicons
+                    name="lock-closed-outline"
+                    size={wp(5)}
+                    color="#A8A8A8"
+                  />
                   <TextInput
-                    placeholder="••••••••"
+                    placeholder="Wachtwoord"
                     placeholderTextColor="#A8A8A8"
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     value={password}
                     onChangeText={setPassword}
-                    style={{
-                      backgroundColor: "#1E1B33",
-                      color: "#fff",
-                      paddingHorizontal: wp(4),
-                      paddingVertical: hp(1.5),
-                      borderRadius: wp(2),
-                      marginBottom: hp(2.5),
-                      fontSize: wp(4),
-                    }}
+                    style={styles.input}
                   />
-
                   <TouchableOpacity
-                    onPress={handleForgotPassword}
-                    style={{ alignSelf: "flex-end", marginBottom: hp(2) }}
+                    onPress={() => setShowPassword((prev) => !prev)}
                   >
-                    <Text style={{ color: "#D8B4FE", fontSize: wp(3.5), fontWeight: "500" }}>
-                      Wachtwoord vergeten?
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={handleLogin}
-                    style={{
-                      backgroundColor: "#7C3AED",
-                      paddingVertical: hp(1.8),
-                      borderRadius: wp(2),
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text style={{ color: "#fff", fontSize: wp(4.5), fontWeight: "600" }}>
-                      Inloggen
-                    </Text>
+                    <Ionicons
+                      name={showPassword ? "eye-outline" : "eye-off-outline"}
+                      size={wp(5)}
+                      color="#A8A8A8"
+                    />
                   </TouchableOpacity>
                 </View>
+
+                <TouchableOpacity
+                  style={styles.loginButton}
+                  onPress={handleLogin}
+                >
+                  <Text style={styles.loginText}>INLOGGEN</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => Alert.alert("Jammer", "Daar gaat je werk")}
+                >
+                  <Text style={styles.forgot}>Wachtwoord vergeten?</Text>
+                </TouchableOpacity>
               </View>
-            </ScrollView>
+            </View>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -156,8 +132,70 @@ const Login = () => {
   );
 };
 
-Login.options = {
-  headerShown: false,
-};
+const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  background: { flex: 1 },
+  container: {
+    flex: 1,
+    paddingHorizontal: wp(6),
+    justifyContent: "flex-start", // align content to top
+  },
+  logo: {
+    width: wp(60),
+    height: wp(60),
+    resizeMode: "contain",
+    alignSelf: "center",
+    marginTop: hp(10), // position near top
+    marginBottom: hp(2),
+    opacity: 1,
+  },
+  title: {
+    color: "#fff",
+    fontSize: wp(8),
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  subtitle: {
+    color: "#DDD",
+    fontSize: wp(3.5),
+    textAlign: "center",
+    marginBottom: hp(4),
+  },
+  form: {
+    marginTop: hp(2),
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#1E1B33",
+    borderRadius: wp(2),
+    paddingHorizontal: wp(3),
+    marginBottom: hp(2),
+  },
+  input: {
+    flex: 1,
+    color: "#fff",
+    paddingVertical: hp(1.5),
+    marginLeft: wp(2),
+  },
+  loginButton: {
+    backgroundColor: "#A970FF",
+    paddingVertical: hp(2),
+    borderRadius: wp(2),
+    alignItems: "center",
+    marginBottom: hp(2),
+  },
+  loginText: {
+    color: "#fff",
+    fontSize: wp(4.5),
+    fontWeight: "600",
+  },
+  forgot: {
+    color: "#D8B4FE",
+    fontSize: wp(3.5),
+    textAlign: "center",
+  },
+});
 
+Login.options = { headerShown: false };
 export default Login;

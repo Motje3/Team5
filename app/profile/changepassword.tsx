@@ -21,7 +21,7 @@ import { Ionicons } from '@expo/vector-icons';
 const ChangePassword = () => {
   const router = useRouter();
   const { user, token } = useAuth();
-  const { darkMode } = useApp();
+  const { darkMode, accentColor  } = useApp();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   const theme = {
@@ -48,18 +48,16 @@ const ChangePassword = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const backAction = () => {
-      if (keyboardVisible) {
-        Keyboard.dismiss();
-        return true; // prevent default
-      }
-      router.navigate("/(tabs)/profile");
+  // Navigate back to profile tab
+    const handleBack = () => {
+      router.navigate('/(tabs)/profile');
       return true;
     };
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-    return () => backHandler.remove();
-  }, [keyboardVisible]);
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBack);
+      return () => backHandler.remove();
+    }, [router]);
+  
 
   const handleSave = async () => {
     Keyboard.dismiss();
@@ -134,7 +132,19 @@ const ChangePassword = () => {
 
   return (
     <Container {...containerProps} keyboardVerticalOffset={hp(4)}>
-      <Text style={[styles.title, { color: theme.text }]}>Wachtwoord wijzigen</Text>
+
+      {/* 🔑 Big key icon above the header */}
+      <Ionicons
+        name="key-outline"
+        size={wp(20)}
+        color={theme.text}
+        style={{ alignSelf: 'center', marginBottom: hp(2) }}
+      />
+
+      <Text style={[styles.title, { color: theme.text }]}>
+        Wachtwoord wijzigen
+      </Text>
+
 
       <Text style={[styles.label, { color: theme.secondaryText }]}>Oud wachtwoord</Text>
       <TextInput
@@ -169,6 +179,27 @@ const ChangePassword = () => {
       <TouchableOpacity style={[styles.button]} onPress={handleSave}>
         <Text style={styles.buttonText}>Opslaan</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+              onPress={handleBack}
+              style={{
+                alignSelf: 'flex-end',
+                marginTop: hp(2),               // space below Opslaan
+                paddingVertical: hp(1),         // ~1/3 of the Opslaan’s paddingVertical
+                paddingHorizontal: wp(5),       // adjust for width
+                borderWidth: 2,
+                borderColor: accentColor,       // or '#7C3AED'
+                borderRadius: wp(4),           // pill shape
+              }}
+            >
+              <Text style={{
+                color: accentColor,
+                fontSize: wp(3.5),
+                fontWeight: '600',
+              }}>
+                Terug
+              </Text>
+            </TouchableOpacity>
 
       {!!errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
     </Container>

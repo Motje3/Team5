@@ -8,5 +8,12 @@ namespace backend_api.Services
     {
         Task<IEnumerable<Shipment>> GetAllShipmentsAsync();
         Task<Shipment?> GetShipmentByIdAsync(int id);
+        Task<Shipment?> UpdateStatusAsync(int id, string newStatus, string updatedBy);
+        Task<IEnumerable<Shipment>> GetShipmentsForUserAsync(string username, DateTime date);
+        Task<IEnumerable<Shipment>> GetShipmentsForUserAsync(string username);
+
+
+
+
     }
 }

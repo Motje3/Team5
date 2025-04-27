@@ -4,11 +4,9 @@ namespace backend_api.DTOs
 {
     public class CreateIssueReportDto
     {
-        [Required]
-        public string Title { get; set; }
+        public required string Title { get; set; }
 
-        [Required]
-        public string Description { get; set; }
+        public required string Description { get; set; }
 
         public string? ImageUrl { get; set; }
 

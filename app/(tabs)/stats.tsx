@@ -1,44 +1,105 @@
-import React, { useState } from "react";
-import { View, Text, Image, FlatList, Dimensions, StyleSheet, Modal, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  Dimensions,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  ActivityIndicator
+} from "react-native";
+import { useAuth } from '../context/AuthContext';
 import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
-import { hp } from "../utils/responsive";
+import { hp, wp } from "../utils/responsive";
 
 const { width } = Dimensions.get("window");
 
 const Stats = () => {
+  const { token } = useAuth();
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const shipmentStats = {
-    total: 124,
-    completed: 98,
-    pending: 26,
-  };
+  // fetched shipments for this user
+  const [shipments, setShipments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const shipments = [
-    { id: "SHIP-101", location: "Amsterdam", status: "Afgerond", date: "2025-04-20" },
-    { id: "SHIP-102", location: "Rotterdam", status: "In afwachting", date: "2025-04-21" },
-    { id: "SHIP-103", location: "Utrecht", status: "Afgerond", date: "2025-04-20" },
-    { id: "SHIP-104", location: "Amsterdam", status: "In afwachting", date: "2025-04-22" },
-    { id: "SHIP-105", location: "Rotterdam", status: "Afgerond", date: "2025-04-21" },
-    { id: "SHIP-106", location: "Utrecht", status: "In afwachting", date: "2025-04-23" },
-    { id: "SHIP-107", location: "Amsterdam", status: "Afgerond", date: "2025-04-22" },
-    { id: "SHIP-108", location: "Rotterdam", status: "In afwachting", date: "2025-04-24" },
-    { id: "SHIP-109", location: "Utrecht", status: "Afgerond", date: "2025-04-23" },
-    { id: "SHIP-110", location: "Amsterdam", status: "In afwachting", date: "2025-04-25" },
-  ];
+  useEffect(() => {
+    const fetchShipments = async () => {
+      try {
+        const response = await fetch(
+          'http://192.168.1.198:5070/api/shipments/me',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+          }
+        );
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        setShipments(data);
+      } catch (err) {
+        console.error("Error fetching shipments:", err);
+        setError("Kon zendingen niet ophalen");
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (token) fetchShipments();
+    else {
+      setLoading(false);
+      setError("Niet ingelogd");
+    }
+  }, [token]);
 
-  const filteredShipments = shipments.filter((shipment) => {
+  // derive stats from all shipments
+  const total = shipments.length;
+  const completed = shipments.filter(s => s.status === 'Geleverd').length;
+  const pending = total - completed;
+
+  // filter for recent activity
+  const filteredShipments = shipments.filter(shipment => {
     const matchesLocation = location
       ? shipment.location.toLowerCase().includes(location.toLowerCase())
       : true;
     const matchesDate = date ? shipment.date === date : true;
     return matchesLocation && matchesDate;
   });
+
+  // loading state
+  if (loading) {
+    return (
+      <LinearGradient
+        colors={["#3D0F6E", "#030014"]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}
+      >
+        <ActivityIndicator size="large" />
+      </LinearGradient>
+    );
+  }
+
+  // error state
+  if (error) {
+    return (
+      <LinearGradient
+        colors={["#3D0F6E", "#030014"]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: wp(6) }]}
+      >
+        <Text style={{ color: 'white', fontSize: wp(4) }}>{error}</Text>
+      </LinearGradient>
+    );
+  }
 
   return (
     <LinearGradient
@@ -63,15 +124,15 @@ const Stats = () => {
         <Text style={styles.overviewTitle}>Jouw zendingen</Text>
         <View style={styles.overviewStats}>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>{shipmentStats.total}</Text>
+            <Text style={styles.statValue}>{total}</Text>
             <Text style={styles.statLabel}>Totaal</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statValueCompleted}>{shipmentStats.completed}</Text>
+            <Text style={styles.statValueCompleted}>{completed}</Text>
             <Text style={styles.statLabel}>Voltooid</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statValuePending}>{shipmentStats.pending}</Text>
+            <Text style={styles.statValuePending}>{pending}</Text>
             <Text style={styles.statLabel}>In behandeling</Text>
           </View>
         </View>
@@ -93,10 +154,14 @@ const Stats = () => {
               <View style={styles.listItem}>
                 <Text style={styles.listItemId}>{item.id}</Text>
                 <Text
-                  style={[
-                    styles.listItemStatus,
-                    { color: item.status === "Afgerond" ? "#22C55E" : "#FACC15" },
-                  ]}
+                  style={{
+                    ...styles.listItemStatus,
+                    color: item.status === "Geleverd"
+                      ? "#22C55E"
+                      : item.status === "Vertraagd"
+                        ? "#F59E0B"
+                        : "#FACC15"
+                  }}
                 >
                   {item.status}
                 </Text>
@@ -172,13 +237,13 @@ const styles = StyleSheet.create({
   },
   filterButton: {
     marginTop: 10,
-    alignSelf: "flex-start", // Align to the left
-    marginLeft: 20, // Add some spacing from the left
+    alignSelf: "flex-start",
+    marginLeft: 20,
     backgroundColor: "#17144F",
     paddingVertical: 10,
     paddingLeft: 20,
     paddingRight: 25,
-    borderRadius: 25, // Makes it oval
+    borderRadius: 25,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.4,
@@ -193,7 +258,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     tintColor: "#FFF",
-    marginRight: 15, // Space between icon and text
+    marginRight: 15,
   },
   filterText: {
     color: "#FFF",
