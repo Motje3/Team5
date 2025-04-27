@@ -1,9 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
-import Accounts from './pages/Accounts';
-import Issues from './pages/Issues';
-import Shipments from './pages/Shipments';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import Accounts from "./pages/Accounts";
+import Issues from "./pages/Issues";
+import Shipments from "./pages/Shipments";
+import './index.css';
+
 
 const App = () => {
   return (
