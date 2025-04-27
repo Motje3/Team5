@@ -160,7 +160,7 @@ const EditProfile = () => {
       <TouchableOpacity
         onPress={handleBack}
         style={{
-          alignSelf: 'center',
+          alignSelf: 'flex-end',
           marginTop: hp(2),               // space below Opslaan
           paddingVertical: hp(1),         // ~1/3 of the Opslaan’s paddingVertical
           paddingHorizontal: wp(5),       // adjust for width
