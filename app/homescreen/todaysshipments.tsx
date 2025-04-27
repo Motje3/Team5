@@ -8,27 +8,30 @@ import {
   StatusBar
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { wp, hp } from '../utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const TodaysShipment = () => {
   const { token } = useAuth();
+  const router = useRouter();
   const [shipments, setShipments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle hardware back button
+  // Handle hardware back button: go to tabs index
   useEffect(() => {
+    const handleBack = () => {
+      router.replace('/(tabs)');
+      return true; // prevent default
+    };
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      () => {
-        // Simply exit the screen or go back in your navigation stack
-        return false;
-      }
+      handleBack
     );
     return () => backHandler.remove();
-  }, []);
+  }, [router]);
 
   // Fetch today's shipments for the authenticated user
   useEffect(() => {
@@ -102,7 +105,6 @@ const TodaysShipment = () => {
       style={{ flex: 1, paddingHorizontal: wp(6), paddingTop: hp(6) }}
     >
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-
 
       {/* Header */}
       <View style={{ marginBottom: hp(2) }}>
