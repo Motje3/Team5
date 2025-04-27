@@ -58,6 +58,14 @@ namespace backend_api.Controllers
             return Ok(list);
         }
 
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Shipment>>> GetMine()
+        {
+            var username = User.Identity!.Name!;
+            var list = await _service.GetShipmentsForUserAsync(username);
+            return Ok(list);
+        }
 
 
     }
