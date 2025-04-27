@@ -16,6 +16,8 @@ import Modal from 'react-native-modal';
 import { icons } from '@/constants/icons';
 import { wp, hp } from '../utils/responsive';
 import { useApp } from '../context/AppContext';
+import { useAuth } from '../context/AuthContext';
+
 
 const ShipmentDetails = () => {
   const router = useRouter();
@@ -34,11 +36,15 @@ const ShipmentDetails = () => {
   };
 
   const [shipment, setShipment] = useState<any>(null);
+
   const [shipmentStatus, setShipmentStatus] = useState<string>('Geleverd');
   const [lastUpdatedBy, setLastUpdatedBy]   = useState<string | null>(null);
   const [lastUpdatedAt, setLastUpdatedAt]   = useState<string | null>(null);
+  const { token } = useAuth();
+
   const [statusModalVisible, setStatusModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  
   
   // Handle back navigation
   const handleBack = () => {
@@ -122,7 +128,9 @@ const ShipmentDetails = () => {
         `http://192.168.1.198:5070/api/shipments/${shipment.id}/status`,
         {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` })
+           },
           body: JSON.stringify({ status: newStatus }),
         }
       )

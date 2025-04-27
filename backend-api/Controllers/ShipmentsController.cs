@@ -37,6 +37,7 @@ namespace backend_api.Controllers
         }
 
         [HttpPut("{id}/status")]
+        [Authorize]
         public async Task<ActionResult<Shipment>> UpdateStatus(int id, StatusUpdateDto dto)
         {
             // get the username from the JWT / cookie
