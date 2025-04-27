@@ -55,6 +55,7 @@ const Profile = () => {
           borderBottomRightRadius: wp(8),
           justifyContent: 'center',
           alignItems: 'center',
+          paddingTop: hp(2),
         }}
       >
         <Text style={{ color: '#fff', fontSize: wp(5), fontWeight: 'bold', marginTop: hp(2) }}>
