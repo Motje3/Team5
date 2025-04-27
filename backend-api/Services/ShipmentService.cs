@@ -46,5 +46,13 @@ namespace backend_api.Services
                         .Where(s => DateTime.TryParse(s.ExpectedDelivery, out DateTime expectedDate) && expectedDate == today);
         }
 
+        public async Task<IEnumerable<Shipment>> GetShipmentsForUserAsync(string username)
+        {
+            return await _context.Shipments
+                         .Where(s => s.AssignedTo == username)
+                         .ToListAsync();
+        }
+
+
     }
 }

@@ -48,16 +48,16 @@ const EditProfile = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        router.navigate("/(tabs)/profile");
-        return true;
-      }
-    );
-    return () => backHandler.remove();
-  }, [router]);
+
+  // Navigate back to profile tab
+    const handleBack = () => {
+      router.navigate('/(tabs)/profile');
+      return true;
+    };
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBack);
+      return () => backHandler.remove();
+    }, [router]);
 
   const handleSave = async () => {
     Keyboard.dismiss();
@@ -122,6 +122,8 @@ const EditProfile = () => {
 
   return (
     <Container {...containerProps} keyboardVerticalOffset={hp(4)}>
+
+
       <Text style={[styles.title, { color: theme.text }]}>Profiel Bewerken</Text>
 
       <TouchableOpacity onPress={handlePickImage} style={styles.imagePicker}>
@@ -154,6 +156,28 @@ const EditProfile = () => {
       <TouchableOpacity onPress={handleSave} style={[styles.saveButton, { backgroundColor: accentColor }]}>        
         <Text style={styles.saveText}>Opslaan</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={handleBack}
+        style={{
+          alignSelf: 'center',
+          marginTop: hp(2),               // space below Opslaan
+          paddingVertical: hp(1),         // ~1/3 of the Opslaan’s paddingVertical
+          paddingHorizontal: wp(5),       // adjust for width
+          borderWidth: 2,
+          borderColor: accentColor,       // or '#7C3AED'
+          borderRadius: wp(10),           // pill shape
+        }}
+      >
+        <Text style={{
+          color: accentColor,
+          fontSize: wp(3.5),
+          fontWeight: '600',
+        }}>
+          Terug
+        </Text>
+      </TouchableOpacity>
+
     </Container>
   );
 };
@@ -162,7 +186,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: wp(6),
-    paddingTop: hp(8),
+    paddingTop: hp(15),
   },
   title: {
     fontSize: wp(5.5),

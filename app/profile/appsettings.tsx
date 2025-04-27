@@ -94,12 +94,21 @@ const AppSettings = () => {
         backgroundColor: theme.background,
       }}
     >
+
+      <Ionicons
+        name="settings-outline"
+        size={wp(30)}
+        color={theme.text}       
+        style={{ alignSelf: 'center', marginBottom: hp(2), paddingTop: hp(2) }}
+      />
+
       <Text
         style={{
           color: theme.text,
           fontSize: wp(5.5),
           fontWeight: 'bold',
           marginBottom: hp(3),
+          textAlign: 'center',
         }}
       >
         App Instellingen
