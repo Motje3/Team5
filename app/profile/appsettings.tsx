@@ -1,169 +1,160 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
-  Switch,
-  BackHandler
+  FlatList,
+  ActivityIndicator,
+  BackHandler,
+  StatusBar
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { wp, hp } from '../utils/responsive';
-import axios from 'axios';
-import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { wp, hp } from '../utils/responsive';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const AppSettings = () => {
+const TodaysShipment = () => {
+  const { token } = useAuth();
   const router = useRouter();
-  const { user, token } = useAuth();
-  const {
-    darkMode,
-    setDarkMode,
-    notificationsEnabled,
-    setNotificationsEnabled,
-    accentColor,
-    setAccentColor,
-  } = useApp();
+  const [shipments, setShipments] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Inline theme palette
-  const theme = {
-    background: darkMode ? '#0f0D23' : '#ffffff',
-    text: darkMode ? '#ffffff' : '#0f0D23',
-    secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
-  };
-
-  // Handle back navigation with animation
-  const handleBack = () => {
-    router.navigate("/(tabs)/profile");
-    return true; // Prevents default back behavior
-  };
-
-  // Handle hardware back button
+  // Handle hardware back button to go to tabs index instead of profile
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress', 
+    const handleBack = () => {
+      // Replace current route with the root tabs index
+      router.replace('/(tabs)');
+      return true; // prevents default back behavior
+    };
+
+    const subscription = BackHandler.addEventListener(
+      'hardwareBackPress',
       handleBack
     );
+    return () => subscription.remove();
+  }, [router]);
 
-    return () => backHandler.remove();
-  }, []);
+  // Fetch today's shipments for the authenticated user
+  useEffect(() => {
+    const fetchShipments = async () => {
+      try {
+        const response = await fetch(
+          'http://192.168.1.198:5070/api/shipments/me/today',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+          }
+        );
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        setShipments(data);
+      } catch (err) {
+        console.error("Error fetching today's shipments:", err);
+        setError('Kon zendingen niet ophalen.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
-
-  const updateSettings = async (newDark = darkMode, newAccent = accentColor, newNotif = notificationsEnabled) => {
-    try {
-      await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
-        {
-          darkMode: newDark,
-          accentColor: newAccent,
-          notificationsEnabled: newNotif,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      console.log('✅ Instellingen opgeslagen in de backend');
-    } catch (error) {
-      console.error('❌ Fout bij opslaan instellingen:', error);
+    if (token) {
+      fetchShipments();
+    } else {
+      setLoading(false);
+      setError('Niet ingelogd');
     }
-  };
+  }, [token]);
+
+  // Render loading state
+  if (loading) {
+    return (
+      <LinearGradient
+        colors={['#3D0F6E', '#030014']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.25 }}
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      >
+        <ActivityIndicator size="large" />
+      </LinearGradient>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <LinearGradient
+        colors={['#3D0F6E', '#030014']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 0.25 }}
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: wp(6) }}
+      >
+        <Text style={{ color: 'white', fontSize: wp(4) }}>{error}</Text>
+      </LinearGradient>
+    );
+  }
+
+  const total = shipments.length;
 
   return (
-    <View style={{ flex: 1, padding: wp(6),paddingTop: hp(8), backgroundColor: theme.background }}>
-      <Text
-        style={{
-          color: theme.text,
-          fontSize: wp(5.5),
-          fontWeight: 'bold',
-          marginBottom: hp(3),
-        }}
-      >
-        App Instellingen
-      </Text>
+    <LinearGradient
+      colors={['#3D0F6E', '#030014']}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 0.25 }}
+      style={{ flex: 1, paddingHorizontal: wp(6), paddingTop: hp(6) }}
+    >
+      {/* Match Stats page status bar */}
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
-      {/* Donker thema */}
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: hp(2),
-        }}
-      >
-        <Text style={{ color: theme.text, fontSize: wp(4.5) }}>Donker thema</Text>
-        <Switch
-          value={darkMode}
-          onValueChange={value => {
-            setDarkMode(value);
-            updateSettings(value);
-          }}
-          trackColor={{ false: '#767577', true: '#6D28D9' }}
-          thumbColor={darkMode ? '#A970FF' : '#f4f3f4'}
-        />
-      </View>
-
-      {/* Meldingen */}
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: hp(2),
-        }}
-      >
-        <Text style={{ color: theme.text, fontSize: wp(4.5) }}>Meldingen</Text>
-        <Switch
-          value={notificationsEnabled}
-          onValueChange={value => {
-            setNotificationsEnabled(value);
-            updateSettings(darkMode, accentColor, value);
-          }}
-          trackColor={{ false: '#767577', true: '#6D28D9' }}
-          thumbColor={notificationsEnabled ? '#A970FF' : '#f4f3f4'}
-        />
-      </View>
-
-      {/* Accentkleur */}
-      <Text
-        style={{ color: theme.text, fontSize: wp(4.5), marginBottom: hp(1.5) }}
-      >
-        Accentkleur
-      </Text>
-      <View style={{ flexDirection: 'row', marginBottom: hp(3) }}>
-        {accentOptions.map(color => (
-          <TouchableOpacity
-            key={color}
-            onPress={() => {
-              setAccentColor(color);
-              updateSettings(darkMode, color);
-            }}
-            style={{
-              backgroundColor: color,
-              width: wp(8),
-              height: wp(8),
-              borderRadius: wp(4),
-              marginRight: wp(3),
-              borderWidth: accentColor === color ? 3 : 0,
-              borderColor: '#fff',
-            }}
-          />
-        ))}
-      </View>
-
-      {/* Sluiten knop */}
-      <TouchableOpacity
-        onPress={handleBack}
-        style={{
-          backgroundColor: accentColor,
-          paddingVertical: hp(2),
-          borderRadius: wp(3),
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>
-          Opslaan
+      {/* Header */}
+      <View style={{ marginBottom: hp(2) }}>
+        <Text style={{ color: 'white', fontSize: wp(6), fontWeight: 'bold' }}>
+          Zendingen van vandaag
         </Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={{ color: 'gray', fontSize: wp(3.5) }}>
+          Totale openstaande zendingen vandaag: {total}
+        </Text>
+      </View>
+
+      {/* Shipments list */}
+      {total > 0 ? (
+        <FlatList
+          data={shipments}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <LinearGradient
+              colors={['#17144F', '#090723']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={{
+                padding: wp(4),
+                borderRadius: wp(2.5),
+                marginBottom: hp(1.5),
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 5 },
+                shadowOpacity: 0.4,
+                shadowRadius: 10,
+                elevation: 8,
+              }}
+            >
+              <Text style={{ color: 'white', fontSize: wp(4.2), marginBottom: hp(0.5) }}>
+                #{item.id} — {item.status}
+              </Text>
+              <Text style={{ color: 'gray', fontSize: wp(3.2) }}>
+                Bestemming: {item.destination}
+              </Text>
+            </LinearGradient>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <Text style={{ color: 'gray', fontSize: wp(3.5) }}>
+          Geen zendingen voor vandaag.
+        </Text>
+      )}
+    </LinearGradient>
   );
 };
 
-export default AppSettings;
+export default TodaysShipment;

@@ -4,7 +4,8 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  BackHandler
+  BackHandler,
+  StatusBar
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
@@ -101,7 +102,8 @@ const TodaysShipment = () => {
       end={{ x: 0.5, y: 0.25 }}
       style={{ flex: 1, paddingHorizontal: wp(6), paddingTop: hp(6) }}
     >
-      <ExpoStatusBar hidden />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+
 
       {/* Header */}
       <View style={{ marginBottom: hp(2) }}>
