@@ -61,7 +61,7 @@ const Stats = () => {
 
   // derive stats from all shipments
   const total = shipments.length;
-  const completed = shipments.filter(s => s.status === 'Afgerond').length;
+  const completed = shipments.filter(s => s.status === 'Geleverd').length;
   const pending = total - completed;
 
   // filter for recent activity
@@ -154,10 +154,14 @@ const Stats = () => {
               <View style={styles.listItem}>
                 <Text style={styles.listItemId}>{item.id}</Text>
                 <Text
-                  style={[
-                    styles.listItemStatus,
-                    { color: item.status === "Afgerond" ? "#22C55E" : "#FACC15" },
-                  ]}
+                  style={{
+                    ...styles.listItemStatus,
+                    color: item.status === "Geleverd"
+                      ? "#22C55E"
+                      : item.status === "Vertraagd"
+                        ? "#F59E0B"
+                        : "#FACC15"
+                  }}
                 >
                   {item.status}
                 </Text>
