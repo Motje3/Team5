@@ -13,6 +13,8 @@ namespace backend_api.Models
 
         public string? Destination { get; set; }
 
+        public string? AssignedTo { get; set; }
+
         public string? ExpectedDelivery { get; set; }
 
         public string? Weight { get; set; }

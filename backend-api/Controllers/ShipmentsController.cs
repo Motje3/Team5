@@ -48,6 +48,17 @@ namespace backend_api.Controllers
             return Ok(updated);
         }
 
+        [HttpGet("me/today")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Shipment>>> GetMyShipmentsForToday()
+        {
+            var username = User.Identity!.Name!;
+            var today = DateTime.UtcNow;
+            var list = await _service.GetShipmentsForUserAsync(username, today);
+            return Ok(list);
+        }
+
+
 
     }
 }
