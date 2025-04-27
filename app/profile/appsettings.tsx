@@ -1,16 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   Switch,
-  BackHandler
+  BackHandler,
+  Animated,
+  StyleSheet
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { wp, hp } from '../utils/responsive';
 import axios from 'axios';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
+import { Ionicons } from '@expo/vector-icons';
 
 const AppSettings = () => {
   const router = useRouter();
@@ -24,50 +27,73 @@ const AppSettings = () => {
     setAccentColor,
   } = useApp();
 
-  // Inline theme palette
   const theme = {
     background: darkMode ? '#0f0D23' : '#ffffff',
     text: darkMode ? '#ffffff' : '#0f0D23',
     secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
   };
 
-  // Handle back navigation with animation
+  const [showSuccess, setShowSuccess] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  // Navigate back to profile tab
   const handleBack = () => {
-    router.navigate("/(tabs)/profile");
-    return true; // Prevents default back behavior
+    router.navigate('/(tabs)/profile');
+    return true;
   };
-
-  // Handle hardware back button
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress', 
-      handleBack
-    );
-
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBack);
     return () => backHandler.remove();
-  }, []);
+  }, [router]);
 
-  const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
-
-  const updateSettings = async (newDark = darkMode, newAccent = accentColor, newNotif = notificationsEnabled) => {
+  // Save settings and show success overlay
+  const handleSave = async () => {
     try {
       await axios.put(
         `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
-        {
-          darkMode: newDark,
-          accentColor: newAccent,
-          notificationsEnabled: newNotif,
-        },
+        { darkMode, accentColor, notificationsEnabled },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log('✅ Instellingen opgeslagen in de backend');
+      // Show success overlay
+      setShowSuccess(true);
+      Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+      // After 3s, fade out and navigate back
+      setTimeout(() => {
+        Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
+          router.navigate('/(tabs)/profile');
+        });
+      }, 3000);
     } catch (error) {
       console.error('❌ Fout bij opslaan instellingen:', error);
     }
   };
 
+  // Success overlay
+  if (showSuccess) {
+    return (
+      <Animated.View
+        style={[
+          styles.successContainer,
+          { backgroundColor: theme.background, opacity: fadeAnim },
+        ]}
+      >
+        <Ionicons name="checkmark-circle" size={wp(20)} color="#10B981" />
+        <Text style={[styles.successText, { color: '#10B981' }]}>App-instellingen bijgewerkt!</Text>
+      </Animated.View>
+    );
+  }
+
+  const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
+
   return (
-    <View style={{ flex: 1, padding: wp(6),paddingTop: hp(8), backgroundColor: theme.background }}>
+    <View
+      style={{
+        flex: 1,
+        padding: wp(6),
+        paddingTop: hp(8),
+        backgroundColor: theme.background,
+      }}
+    >
       <Text
         style={{
           color: theme.text,
@@ -91,10 +117,7 @@ const AppSettings = () => {
         <Text style={{ color: theme.text, fontSize: wp(4.5) }}>Donker thema</Text>
         <Switch
           value={darkMode}
-          onValueChange={value => {
-            setDarkMode(value);
-            updateSettings(value);
-          }}
+          onValueChange={value => setDarkMode(value)}
           trackColor={{ false: '#767577', true: '#6D28D9' }}
           thumbColor={darkMode ? '#A970FF' : '#f4f3f4'}
         />
@@ -112,29 +135,21 @@ const AppSettings = () => {
         <Text style={{ color: theme.text, fontSize: wp(4.5) }}>Meldingen</Text>
         <Switch
           value={notificationsEnabled}
-          onValueChange={value => {
-            setNotificationsEnabled(value);
-            updateSettings(darkMode, accentColor, value);
-          }}
+          onValueChange={value => setNotificationsEnabled(value)}
           trackColor={{ false: '#767577', true: '#6D28D9' }}
           thumbColor={notificationsEnabled ? '#A970FF' : '#f4f3f4'}
         />
       </View>
 
       {/* Accentkleur */}
-      <Text
-        style={{ color: theme.text, fontSize: wp(4.5), marginBottom: hp(1.5) }}
-      >
+      <Text style={{ color: theme.text, fontSize: wp(4.5), marginBottom: hp(1.5) }}>
         Accentkleur
       </Text>
       <View style={{ flexDirection: 'row', marginBottom: hp(3) }}>
         {accentOptions.map(color => (
           <TouchableOpacity
             key={color}
-            onPress={() => {
-              setAccentColor(color);
-              updateSettings(darkMode, color);
-            }}
+            onPress={() => setAccentColor(color)}
             style={{
               backgroundColor: color,
               width: wp(8),
@@ -148,9 +163,9 @@ const AppSettings = () => {
         ))}
       </View>
 
-      {/* Sluiten knop */}
+      {/* Opslaan knop */}
       <TouchableOpacity
-        onPress={handleBack}
+        onPress={handleSave}
         style={{
           backgroundColor: accentColor,
           paddingVertical: hp(2),
@@ -165,5 +180,19 @@ const AppSettings = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  successContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  successText: {
+    fontSize: wp(6),
+    marginTop: hp(2),
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 export default AppSettings;
