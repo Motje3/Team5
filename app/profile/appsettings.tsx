@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,14 @@ import {
   Switch,
   BackHandler,
   Animated,
-  StyleSheet
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { wp, hp } from '../utils/responsive';
-import axios from 'axios';
-import { useApp } from '../context/AppContext';
-import { useAuth } from '../context/AuthContext';
-import { Ionicons } from '@expo/vector-icons';
+  StyleSheet,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { wp, hp } from "../utils/responsive";
+import axios from "axios";
+import { useApp } from "../context/AppContext";
+import { useAuth } from "../context/AuthContext";
+import { Ionicons } from "@expo/vector-icons";
 
 const AppSettings = () => {
   const router = useRouter();
@@ -28,9 +28,9 @@ const AppSettings = () => {
   } = useApp();
 
   const theme = {
-    background: darkMode ? '#0f0D23' : '#ffffff',
-    text: darkMode ? '#ffffff' : '#0f0D23',
-    secondaryText: darkMode ? '#9CA3AF' : '#6B7280',
+    background: darkMode ? "#0f0D23" : "#ffffff",
+    text: darkMode ? "#ffffff" : "#0f0D23",
+    secondaryText: darkMode ? "#9CA3AF" : "#6B7280",
   };
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -38,11 +38,14 @@ const AppSettings = () => {
 
   // Navigate back to profile tab
   const handleBack = () => {
-    router.navigate('/(tabs)/profile');
+    router.navigate("/(tabs)/profile");
     return true;
   };
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBack);
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBack
+    );
     return () => backHandler.remove();
   }, [router]);
 
@@ -56,15 +59,23 @@ const AppSettings = () => {
       );
       // Show success overlay
       setShowSuccess(true);
-      Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
       // After 3s, fade out and navigate back
       setTimeout(() => {
-        Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
-          router.navigate('/(tabs)/profile');
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => {
+          router.navigate("/(tabs)/profile");
         });
       }, 3000);
     } catch (error) {
-      console.error('❌ Fout bij opslaan instellingen:', error);
+      console.error("❌ Fout bij opslaan instellingen:", error);
     }
   };
 
@@ -78,37 +89,38 @@ const AppSettings = () => {
         ]}
       >
         <Ionicons name="checkmark-circle" size={wp(20)} color="#10B981" />
-        <Text style={[styles.successText, { color: '#10B981' }]}>App-instellingen bijgewerkt!</Text>
+        <Text style={[styles.successText, { color: "#10B981" }]}>
+          App-instellingen bijgewerkt!
+        </Text>
       </Animated.View>
     );
   }
 
-  const accentOptions = ['#A970FF', '#F59E0B', '#10B981', '#EF4444'];
+  const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444"];
 
   return (
     <View
       style={{
         flex: 1,
         padding: wp(6),
-        paddingTop: hp(8),
+        paddingTop: hp(10),
         backgroundColor: theme.background,
       }}
     >
-
       <Ionicons
         name="settings-outline"
         size={wp(30)}
-        color={theme.text}       
-        style={{ alignSelf: 'center', marginBottom: hp(2), paddingTop: hp(2) }}
+        color={theme.text}
+        style={{ alignSelf: "center", marginBottom: hp(2), paddingTop: hp(2) }}
       />
 
       <Text
         style={{
           color: theme.text,
           fontSize: wp(5.5),
-          fontWeight: 'bold',
+          fontWeight: "bold",
           marginBottom: hp(3),
-          textAlign: 'center',
+          textAlign: "center",
         }}
       >
         App Instellingen
@@ -117,45 +129,49 @@ const AppSettings = () => {
       {/* Donker thema */}
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: hp(2),
         }}
       >
-        <Text style={{ color: theme.text, fontSize: wp(4.5) }}>Donker thema</Text>
+        <Text style={{ color: theme.text, fontSize: wp(4.5) }}>
+          Donker thema
+        </Text>
         <Switch
           value={darkMode}
-          onValueChange={value => setDarkMode(value)}
-          trackColor={{ false: '#767577', true: '#6D28D9' }}
-          thumbColor={darkMode ? '#A970FF' : '#f4f3f4'}
+          onValueChange={(value) => setDarkMode(value)}
+          trackColor={{ false: "#767577", true: "#6D28D9" }}
+          thumbColor={darkMode ? "#A970FF" : "#f4f3f4"}
         />
       </View>
 
       {/* Meldingen */}
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
           marginBottom: hp(2),
         }}
       >
         <Text style={{ color: theme.text, fontSize: wp(4.5) }}>Meldingen</Text>
         <Switch
           value={notificationsEnabled}
-          onValueChange={value => setNotificationsEnabled(value)}
-          trackColor={{ false: '#767577', true: '#6D28D9' }}
-          thumbColor={notificationsEnabled ? '#A970FF' : '#f4f3f4'}
+          onValueChange={(value) => setNotificationsEnabled(value)}
+          trackColor={{ false: "#767577", true: "#6D28D9" }}
+          thumbColor={notificationsEnabled ? "#A970FF" : "#f4f3f4"}
         />
       </View>
 
       {/* Accentkleur */}
-      <Text style={{ color: theme.text, fontSize: wp(4.5), marginBottom: hp(1.5) }}>
+      <Text
+        style={{ color: theme.text, fontSize: wp(4.5), marginBottom: hp(1.5) }}
+      >
         Accentkleur
       </Text>
-      <View style={{ flexDirection: 'row', marginBottom: hp(3) }}>
-        {accentOptions.map(color => (
+      <View style={{ flexDirection: "row", marginBottom: hp(3) }}>
+        {accentOptions.map((color) => (
           <TouchableOpacity
             key={color}
             onPress={() => setAccentColor(color)}
@@ -166,7 +182,7 @@ const AppSettings = () => {
               borderRadius: wp(4),
               marginRight: wp(3),
               borderWidth: accentColor === color ? 3 : 0,
-              borderColor: '#fff',
+              borderColor: "#fff",
             }}
           />
         ))}
@@ -179,11 +195,34 @@ const AppSettings = () => {
           backgroundColor: accentColor,
           paddingVertical: hp(2),
           borderRadius: wp(3),
-          alignItems: 'center',
+          alignItems: "center",
         }}
       >
-        <Text style={{ color: '#fff', fontSize: wp(4.5), fontWeight: 'bold' }}>
+        <Text style={{ color: "#fff", fontSize: wp(4.5), fontWeight: "bold" }}>
           Opslaan
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={handleBack}
+        style={{
+          alignSelf: "flex-end",
+          marginTop: hp(2), // space below Opslaan
+          paddingVertical: hp(1), // ~1/3 of the Opslaan’s paddingVertical
+          paddingHorizontal: wp(5), // adjust for width
+          borderWidth: 2,
+          borderColor: accentColor, // or '#7C3AED'
+          borderRadius: wp(4), // pill shape
+        }}
+      >
+        <Text
+          style={{
+            color: accentColor,
+            fontSize: wp(3.5),
+            fontWeight: "600",
+          }}
+        >
+          Terug
         </Text>
       </TouchableOpacity>
     </View>
@@ -193,14 +232,14 @@ const AppSettings = () => {
 const styles = StyleSheet.create({
   successContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   successText: {
     fontSize: wp(6),
     marginTop: hp(2),
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
