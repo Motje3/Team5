@@ -166,7 +166,7 @@ const EditProfile = () => {
           paddingHorizontal: wp(5),       // adjust for width
           borderWidth: 2,
           borderColor: accentColor,       // or '#7C3AED'
-          borderRadius: wp(10),           // pill shape
+          borderRadius: wp(4),           // pill shape
         }}
       >
         <Text style={{
