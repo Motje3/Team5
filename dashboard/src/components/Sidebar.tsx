@@ -1,10 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, ShoppingCart, Users, FileText, Globe, BarChart2, Settings, Activity } from 'lucide-react';
+import { Home, ShoppingCart, Users, FileText, Settings, User } from 'lucide-react';
+import { tokens } from '../theme';
 
-const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
+  // Get the sidebar color from theme tokens
+  const sidebarBgColor = tokens.custom.sidebar;
+
   return (
-    <div className="h-screen w-64 fixed left-0 top-0 bg-indigo-950 text-white flex flex-col">
+    <div 
+      className={`h-screen fixed left-0 top-0 text-white flex flex-col transition-all duration-300 ease-in-out z-20 ${
+        isOpen ? 'w-64' : 'w-0 -translate-x-full'
+      }`}
+      style={{ backgroundColor: sidebarBgColor }}
+    >
       <div className="p-6 border-b border-indigo-900">
         <h1 className="text-2xl font-bold text-yellow-200">E. Lafeber</h1>
       </div>
@@ -12,8 +25,7 @@ const Sidebar = () => {
       <div className="flex-1 overflow-y-auto">
         <nav className="mt-4">
           <div className="px-6 py-3">
-            <p className="text-gray-400 text-sm uppercase font-semibold mb-2">Dashboard</p>
-            <Link to="/dashboard" className="flex items-center py-2 px-4 rounded-md bg-indigo-900 text-white hover:bg-indigo-800">
+            <Link to="/dashboard" className="flex items-center py-2 px-4 rounded-md hover:bg-indigo-800">
               <Home size={20} className="mr-3" />
               <span>Dashboard</span>
             </Link>
@@ -23,19 +35,25 @@ const Sidebar = () => {
             <p className="text-gray-400 text-sm uppercase font-semibold mb-2">Client Facing</p>
             <ul className="space-y-2">
               <li>
-                <Link to="/products" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-900">
+                <Link to="/shipments" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
                   <ShoppingCart size={20} className="mr-3" />
                   <span>Zendingen</span>
                 </Link>
               </li>
               <li>
-                <Link to="/customers" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-900">
+                <Link to="/new-shipment" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
+                  <ShoppingCart size={20} className="mr-3" />
+                  <span>Zending maken</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/statistics" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
                   <Users size={20} className="mr-3" />
                   <span>Statistieken</span>
                 </Link>
               </li>
               <li>
-                <Link to="/transactions" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-900">
+                <Link to="/issues" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
                   <FileText size={20} className="mr-3" />
                   <span>Problemen</span>
                 </Link>
@@ -47,9 +65,16 @@ const Sidebar = () => {
             <p className="text-gray-400 text-sm uppercase font-semibold mb-2">Management</p>
             <ul className="space-y-2">
               <li>
-                <Link to="/admin" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-900">
+                <Link to="/accounts" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
                   <Settings size={20} className="mr-3" />
                   <span>Accounts</span>
+                </Link>
+              </li>
+              {/* New Account Settings link */}
+              <li>
+                <Link to="/account-settings" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
+                  <User size={20} className="mr-3" />
+                  <span>Account Settings</span>
                 </Link>
               </li>
             </ul>

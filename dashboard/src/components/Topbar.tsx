@@ -1,10 +1,34 @@
 import React from 'react';
-import { Search, Moon, Settings, Download } from 'lucide-react';
+import { Search, Moon, Settings, Download, Menu } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { tokens } from '../theme';
 
-const Topbar = () => {
+interface TopbarProps {
+  toggleSidebar: () => void;
+  isSidebarOpen: boolean;
+}
+
+const Topbar: React.FC<TopbarProps> = ({ toggleSidebar, isSidebarOpen }) => {
+  // Get the background color from theme tokens
+  const bgColor = tokens.custom.background;
+
   return (
-    <div className="h-16 bg-indigo-950 flex items-center justify-between px-6 fixed top-0 right-0 left-64 z-10">
+    <div 
+      className={`h-16 flex items-center justify-between px-6 fixed top-0 right-0 z-10 transition-all duration-300 ease-in-out ${
+        isSidebarOpen ? 'left-64' : 'left-0'
+      }`}
+      style={{ backgroundColor: bgColor }}
+    >
       <div className="flex items-center">
+        {/* Hamburger menu button to toggle sidebar */}
+        <button 
+          onClick={toggleSidebar}
+          className="text-gray-300 hover:text-white mr-4"
+          aria-label="Toggle sidebar"
+        >
+          <Menu size={24} />
+        </button>
+        
         <div className="relative">
           <input
             type="text"
@@ -19,9 +43,9 @@ const Topbar = () => {
         <button className="text-gray-300 hover:text-white">
           <Moon size={20} />
         </button>
-        <button className="text-gray-300 hover:text-white">
+        <Link to="/account-settings" className="text-gray-300 hover:text-white">
           <Settings size={20} />
-        </button>
+        </Link>
         <button className="bg-yellow-200 text-indigo-950 px-4 py-2 rounded flex items-center font-medium">
           <Download size={18} className="mr-2" />
           Rapport downloaden

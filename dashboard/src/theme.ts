@@ -28,9 +28,14 @@ export const tokens = {
     800: "#080b12",
     900: "#040509",
   },
+  // Added custom colors to match the second screenshot
+  custom: {
+    sidebar: "#1e0d40", // Sidebar color
+    background: "#0d0625", // Main background color - darker purple
+  }
 };
 
-// 👉 THIS IS THE IMPORTANT PART
+// Updated theme with darker background
 export const theme = createTheme({
   palette: {
     primary: {
@@ -40,7 +45,7 @@ export const theme = createTheme({
       main: tokens.grey[500],
     },
     background: {
-      default: tokens.primary[500],
+      default: tokens.custom.background, // Set to darker purple background
     },
   },
 });
