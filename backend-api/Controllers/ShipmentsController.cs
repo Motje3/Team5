@@ -1,5 +1,7 @@
+using backend_api.DTOs;
 using backend_api.Models;
 using backend_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_api.Controllers
@@ -33,5 +35,38 @@ namespace backend_api.Controllers
 
             return Ok(shipment);
         }
+
+        [HttpPut("{id}/status")]
+        [Authorize]
+        public async Task<ActionResult<Shipment>> UpdateStatus(int id, StatusUpdateDto dto)
+        {
+            // get the username from the JWT / cookie
+            var username = User.Identity?.Name ?? "unknown";
+
+            var updated = await _service.UpdateStatusAsync(id, dto.Status, username);
+            if (updated == null) return NotFound();
+            return Ok(updated);
+        }
+
+        [HttpGet("me/today")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Shipment>>> GetMyShipmentsForToday()
+        {
+            var username = User.Identity!.Name!;
+            var today = DateTime.UtcNow;
+            var list = await _service.GetShipmentsForUserAsync(username, today);
+            return Ok(list);
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Shipment>>> GetMine()
+        {
+            var username = User.Identity!.Name!;
+            var list = await _service.GetShipmentsForUserAsync(username);
+            return Ok(list);
+        }
+
+
     }
 }
