@@ -6,15 +6,15 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="mb-4">
         <h1 className="text-3xl font-bold text-white">DASHBOARD</h1>
-        <p className="text-gray-400">Wekom bij je dashboard</p>
+        <p className="text-gray-400">Welkom bij je dashboard</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Customers Card */}
+        {/* Totaal Klanten Kaart */}
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-300 mb-2">Totaale klanten</p>
+              <p className="text-gray-300 mb-2">Totaal klanten</p>
               <h2 className="text-3xl font-bold text-white">5251</h2>
               <p className="text-green-400 mt-2">+14%</p>
             </div>
@@ -25,7 +25,7 @@ const Dashboard = () => {
           <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
 
-        {/* Sales Today Card */}
+        {/* Zendingen Vandaag Kaart */}
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
@@ -40,11 +40,11 @@ const Dashboard = () => {
           <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
 
-        {/* Monthly Sales Card */}
+        {/* Maandelijkse Zendingen Kaart */}
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-300 mb-2">Maandelijk zendingen</p>
+              <p className="text-gray-300 mb-2">Maandelijkse zendingen</p>
               <h2 className="text-3xl font-bold text-white">59525</h2>
               <p className="text-green-400 mt-2">+5%</p>
             </div>
@@ -55,11 +55,11 @@ const Dashboard = () => {
           <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
 
-        {/* Yearly Sales Card */}
+        {/* Jaarlijkse Verkoop Kaart */}
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-300 mb-2">Yearly Sales</p>
+              <p className="text-gray-300 mb-2">Jaarlijkse verkoop</p>
               <h2 className="text-3xl font-bold text-white">65152</h2>
               <p className="text-green-400 mt-2">+43%</p>
             </div>
@@ -71,25 +71,25 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Chart placeholder */}
+      {/* Grafiek Placeholder */}
       <div className="bg-indigo-900 rounded-lg p-6 h-80 relative">
-        <h3 className="text-white font-semibold mb-4">Sales Trends</h3>
+        <h3 className="text-white font-semibold mb-4">Verkooptrends</h3>
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-gray-400">Chart will be implemented here</p>
+          <p className="text-gray-400">Grafiek wordt hier geïmplementeerd</p>
         </div>
       </div>
 
-      {/* Table placeholder */}
+      {/* Tabel Placeholder */}
       <div className="bg-indigo-900 rounded-lg p-6">
-        <h3 className="text-white font-semibold mb-4">Recent Transactions</h3>
+        <h3 className="text-white font-semibold mb-4">Recente transacties</h3>
         <table className="w-full text-left">
           <thead>
             <tr className="text-gray-400 border-b border-indigo-800">
               <th className="py-3 px-4">ID</th>
-              <th className="py-3 px-4">User ID</th>
-              <th className="py-3 px-4">CreatedAt</th>
-              <th className="py-3 px-4"># of Products</th>
-              <th className="py-3 px-4">Cost</th>
+              <th className="py-3 px-4">Gebruikers-ID</th>
+              <th className="py-3 px-4">Aangemaakt op</th>
+              <th className="py-3 px-4">Aantal producten</th>
+              <th className="py-3 px-4">Kosten</th>
             </tr>
           </thead>
           <tbody className="text-gray-300">
@@ -99,16 +99,16 @@ const Dashboard = () => {
                 <td className="py-3 px-4">637010cf103233{row}c0000124</td>
                 <td className="py-3 px-4">2022-11-29T01:09:39.558Z</td>
                 <td className="py-3 px-4">{row}</td>
-                <td className="py-3 px-4">${(row * 500 + 123.45).toFixed(2)}</td>
+                <td className="py-3 px-4">€{(row * 500 + 123.45).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <div className="flex justify-between items-center mt-4 text-gray-400">
-          <div>Rows per page: 10</div>
+          <div>Rijen per pagina: 10</div>
           <div className="flex gap-2">
-            <button className="px-3 py-1 border border-indigo-800 rounded">Previous</button>
-            <button className="px-3 py-1 border border-indigo-800 rounded">Next</button>
+            <button className="px-3 py-1 border border-indigo-800 rounded">Vorige</button>
+            <button className="px-3 py-1 border border-indigo-800 rounded">Volgende</button>
           </div>
         </div>
       </div>
