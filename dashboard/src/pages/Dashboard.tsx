@@ -6,7 +6,7 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="mb-4">
         <h1 className="text-3xl font-bold text-white">DASHBOARD</h1>
-        <p className="text-gray-400">Welcome to your dashboard</p>
+        <p className="text-gray-400">Wekom bij je dashboard</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -14,7 +14,7 @@ const Dashboard = () => {
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-300 mb-2">Total Customers</p>
+              <p className="text-gray-300 mb-2">Totaale klanten</p>
               <h2 className="text-3xl font-bold text-white">5251</h2>
               <p className="text-green-400 mt-2">+14%</p>
             </div>
@@ -22,14 +22,14 @@ const Dashboard = () => {
               <Mail className="text-yellow-200" size={24} />
             </div>
           </div>
-          <p className="text-gray-400 text-sm mt-4">Since last month</p>
+          <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
 
         {/* Sales Today Card */}
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-300 mb-2">Sales Today</p>
+              <p className="text-gray-300 mb-2">Zendingen vandaag</p>
               <h2 className="text-3xl font-bold text-white">7916</h2>
               <p className="text-green-400 mt-2">+21%</p>
             </div>
@@ -37,14 +37,14 @@ const Dashboard = () => {
               <Phone className="text-yellow-200" size={24} />
             </div>
           </div>
-          <p className="text-gray-400 text-sm mt-4">Since last month</p>
+          <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
 
         {/* Monthly Sales Card */}
         <div className="bg-indigo-900 rounded-lg p-6">
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-gray-300 mb-2">Monthly Sales</p>
+              <p className="text-gray-300 mb-2">Maandelijk zendingen</p>
               <h2 className="text-3xl font-bold text-white">59525</h2>
               <p className="text-green-400 mt-2">+5%</p>
             </div>
@@ -52,7 +52,7 @@ const Dashboard = () => {
               <Users className="text-yellow-200" size={24} />
             </div>
           </div>
-          <p className="text-gray-400 text-sm mt-4">Since last month</p>
+          <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
 
         {/* Yearly Sales Card */}
@@ -67,7 +67,7 @@ const Dashboard = () => {
               <DollarSign className="text-yellow-200" size={24} />
             </div>
           </div>
-          <p className="text-gray-400 text-sm mt-4">Since last month</p>
+          <p className="text-gray-400 text-sm mt-4">Sinds vorige maand</p>
         </div>
       </div>
 

@@ -24,15 +24,15 @@ const Topbar = () => {
         </button>
         <button className="bg-yellow-200 text-indigo-950 px-4 py-2 rounded flex items-center font-medium">
           <Download size={18} className="mr-2" />
-          DOWNLOAD REPORTS
+          Rapport downloaden
         </button>
         <div className="flex items-center ml-4">
           <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-white">
-            <span className="font-bold">S</span>
+            <span className="font-bold">T</span>
           </div>
           <div className="ml-2">
-            <p className="text-white text-sm">Shelly</p>
-            <p className="text-gray-400 text-xs">Pharmacist</p>
+            <p className="text-white text-sm">Team-5</p>
+            <p className="text-gray-400 text-xs">Legends</p>
           </div>
         </div>
       </div>
