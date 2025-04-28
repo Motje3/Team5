@@ -8,41 +8,49 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
+import { useApp } from "../context/AppContext";
 import { icons } from "@/constants/icons";
 import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
 import { hp, wp } from "../utils/responsive";
-import { useApp } from "../context/AppContext";
 
 const { width } = Dimensions.get("window");
 
 const Stats = () => {
   const { token } = useAuth();
+  const { darkMode, accentColor } = useApp();
+
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // fetched shipments for this user
   const [shipments, setShipments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const theme = {
+    background: darkMode ? ["#3D0F6E", "#030014"] as const : ["#ffffff", "#f2f2f2"] as const,
+    cardBackground: darkMode ? ["#17144F", "#090723"] as const : ["#f0f0f0", "#e4e4e4"] as const,
+    text: darkMode ? "#ffffff" : "#0f0D23",
+    secondaryText: darkMode ? "#9CA3AF" : "#6B7280",
+    borderColor: darkMode ? "#2D2D2D" : "#E5E7EB",
+    filterButtonBackground: darkMode ? "#17144F" : "#E5E7EB",
+    listItemBorder: darkMode ? "#444" : "#DDD",
+  };
+
   useEffect(() => {
     const fetchShipments = async () => {
       try {
-        const response = await fetch(
-          'http://192.168.1.198:5070/api/shipments/me',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token && { Authorization: `Bearer ${token}` }),
-            },
-          }
-        );
+        const response = await fetch('http://192.168.2.50:5070/api/shipments/me', {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         setShipments(data);
@@ -53,6 +61,7 @@ const Stats = () => {
         setLoading(false);
       }
     };
+
     if (token) fetchShipments();
     else {
       setLoading(false);
@@ -60,44 +69,40 @@ const Stats = () => {
     }
   }, [token]);
 
-  // derive stats from all shipments
   const total = shipments.length;
-  const completed = shipments.filter(s => s.status === 'Geleverd').length;
+  const completed = shipments.filter((s) => s.status === "Geleverd").length;
   const pending = total - completed;
 
-  // filter for recent activity
-  const filteredShipments = shipments.filter(shipment => {
+  const filteredShipments = shipments.filter((shipment) => {
     const matchesLocation = location
-      ? shipment.location.toLowerCase().includes(location.toLowerCase())
+      ? shipment.location?.toLowerCase().includes(location.toLowerCase())
       : true;
     const matchesDate = date ? shipment.date === date : true;
     return matchesLocation && matchesDate;
   });
 
-  // loading state
   if (loading) {
     return (
       <LinearGradient
-        colors={["#3D0F6E", "#030014"]}
+        colors={theme.background}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
-        style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}
+        style={[styles.container, { justifyContent: "center", alignItems: "center" }]}
       >
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={accentColor} />
       </LinearGradient>
     );
   }
 
-  // error state
   if (error) {
     return (
       <LinearGradient
-        colors={["#3D0F6E", "#030014"]}
+        colors={theme.background}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
-        style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: wp(6) }]}
+        style={[styles.container, { justifyContent: "center", alignItems: "center", padding: wp(6) }]}
       >
-        <Text style={{ color: 'white', fontSize: wp(4) }}>{error}</Text>
+        <Text style={{ color: theme.text, fontSize: wp(4) }}>{error}</Text>
       </LinearGradient>
     );
   }
@@ -105,17 +110,16 @@ const Stats = () => {
   return (
     <LinearGradient
       colors={theme.background}
-      locations={[0, 1]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       style={[styles.container, { paddingTop: hp(3) }]}
     >
-      {/* Page Header */}
+      {/* Header */}
       <View style={styles.header}>
         <Image source={icons.stats} style={[styles.headerIcon, { tintColor: accentColor }]} />
       </View>
 
-      {/* Shipment Overview */}
+      {/* Overview */}
       <LinearGradient
         colors={theme.cardBackground}
         start={{ x: 0, y: 0 }}
@@ -139,7 +143,7 @@ const Stats = () => {
         </View>
       </LinearGradient>
 
-      {/* Recent Activity */}
+      {/* Activity */}
       <LinearGradient
         colors={theme.cardBackground}
         start={{ x: 0, y: 0 }}
@@ -150,19 +154,22 @@ const Stats = () => {
         <View style={styles.scrollableList}>
           <FlatList
             data={filteredShipments}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={[styles.listItem, { borderBottomColor: theme.listItemBorder }]}>
                 <Text style={[styles.listItemId, { color: theme.secondaryText }]}>{item.id}</Text>
                 <Text
-                  style={{
-                    ...styles.listItemStatus,
-                    color: item.status === "Geleverd"
-                      ? "#22C55E"
-                      : item.status === "Vertraagd"
-                        ? "#F59E0B"
-                        : "#FACC15"
-                  }}
+                  style={[
+                    styles.listItemStatus,
+                    {
+                      color:
+                        item.status === "Geleverd"
+                          ? "#22C55E"
+                          : item.status === "Vertraagd"
+                          ? "#F59E0B"
+                          : "#FACC15",
+                    },
+                  ]}
                 >
                   {item.status}
                 </Text>
@@ -185,10 +192,10 @@ const Stats = () => {
         </View>
       </TouchableOpacity>
 
-      {/* Filters Modal */}
+      {/* Filter Modal */}
       <Modal
         visible={isModalVisible}
-        transparent={true}
+        transparent
         animationType="fade"
         onRequestClose={() => setIsModalVisible(false)}
       >
@@ -223,168 +230,36 @@ const Stats = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  headerIcon: {
-    width: 40,
-    height: 40,
-    marginTop: 40,
-  },
-  filterButton: {
-    marginTop: 10,
-    alignSelf: "flex-start",
-    marginLeft: 20,
-    backgroundColor: "#17144F",
-    paddingVertical: 10,
-    paddingLeft: 20,
-    paddingRight: 25,
-    borderRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
-  },
-  filterButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  filterIcon: {
-    width: 20,
-    height: 20,
-    tintColor: "#FFF",
-    marginRight: 15,
-  },
-  filterText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  overviewBox: {
-    padding: 20,
-    borderRadius: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
-    marginBottom: 15,
-    width: width * 0.9,
-    alignSelf: "center",
-  },
-  overviewTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  overviewStats: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingHorizontal: 10,
-  },
-  statBox: {
-    alignItems: "center",
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  statValueCompleted: {
-    color: "#22C55E",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  statValuePending: {
-    color: "#FACC15",
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  statLabel: {
-    fontSize: 14,
-  },
-  activityBox: {
-    padding: 20,
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
-    marginBottom: 15,
-    width: width * 0.9,
-    alignSelf: "center",
-  },
-  activityTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  scrollableList: {
-    maxHeight: 200,
-  },
-  listItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-  },
-  listItemId: {
-    fontSize: 14,
-  },
-  listItemStatus: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  listItemDate: {
-    fontSize: 14,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-  },
-  filterBox: {
-    padding: 20,
-    borderRadius: 20,
-    width: width * 0.9,
-  },
-  filterTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  filterItem: {
-    marginBottom: 10,
-  },
-  resetButton: {
-    marginTop: 10,
-    backgroundColor: "#FF4D4D",
-    padding: 10,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  resetButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: "#1E90FF",
-    padding: 10,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  closeButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
+  container: { flex: 1 },
+  header: { alignItems: "center", marginBottom: 20 },
+  headerIcon: { width: 40, height: 40, marginTop: 40 },
+  filterButton: { marginTop: 10, alignSelf: "flex-start", marginLeft: 20, paddingVertical: 10, paddingLeft: 20, paddingRight: 25, borderRadius: 25, shadowColor: "#000", shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 8 },
+  filterButtonContent: { flexDirection: "row", alignItems: "center" },
+  filterIcon: { width: 20, height: 20, marginRight: 15 },
+  filterText: { fontSize: 16, fontWeight: "bold" },
+  overviewBox: { padding: 20, borderRadius: 20, alignItems: "center", shadowColor: "#000", shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 8, marginBottom: 15, width: width * 0.9, alignSelf: "center" },
+  overviewTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  overviewStats: { flexDirection: "row", justifyContent: "space-between", width: "100%", paddingHorizontal: 10 },
+  statBox: { alignItems: "center" },
+  statValue: { fontSize: 24, fontWeight: "bold" },
+  statValueCompleted: { color: "#22C55E", fontSize: 24, fontWeight: "bold" },
+  statValuePending: { color: "#FACC15", fontSize: 24, fontWeight: "bold" },
+  statLabel: { fontSize: 14 },
+  activityBox: { padding: 20, borderRadius: 20, shadowColor: "#000", shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.4, shadowRadius: 10, elevation: 8, marginBottom: 15, width: width * 0.9, alignSelf: "center" },
+  activityTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+  scrollableList: { maxHeight: 200 },
+  listItem: { flexDirection: "row", justifyContent: "space-between", paddingVertical: 10, borderBottomWidth: 1 },
+  listItemId: { fontSize: 14 },
+  listItemStatus: { fontSize: 16, fontWeight: "bold" },
+  listItemDate: { fontSize: 14 },
+  modalContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.7)" },
+  filterBox: { padding: 20, borderRadius: 20, width: width * 0.9 },
+  filterTitle: { fontSize: 16, fontWeight: "bold", marginBottom: 10 },
+  filterItem: { marginBottom: 10 },
+  resetButton: { marginTop: 10, backgroundColor: "#FF4D4D", padding: 10, borderRadius: 8, alignItems: "center" },
+  resetButtonText: { color: "#FFF", fontWeight: "bold" },
+  closeButton: { marginTop: 20, backgroundColor: "#1E90FF", padding: 10, borderRadius: 8, alignItems: "center" },
+  closeButtonText: { color: "#FFF", fontWeight: "bold" },
 });
 
 export default Stats;
