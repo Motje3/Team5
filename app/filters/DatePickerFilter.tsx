@@ -33,7 +33,7 @@ const DatePickerFilter: React.FC<DatePickerFilterProps> = ({ label, value, onCha
         onPress={() => setIsPickerVisible(true)}
       >
         <Text style={{ color: darkMode ? "#FFF" : "#0f0D23" }}>
-          {value || `Selecteer ${label.toLowerCase()}`}
+          {value || `Select ${label.toLowerCase()}`}
         </Text>
       </TouchableOpacity>
       {isPickerVisible && (
