@@ -15,6 +15,8 @@ import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 
+const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444"]; // HIER BUITEN DE FUNCTIE
+
 const AppSettings = () => {
   const router = useRouter();
   const { user, token } = useAuth();
@@ -41,6 +43,7 @@ const AppSettings = () => {
     router.navigate("/(tabs)/profile");
     return true;
   };
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -51,9 +54,6 @@ const AppSettings = () => {
 
   // Save settings and show success overlay
   const handleSave = async () => {
-  const accentOptions = ['#A970FF', '#F97316', '#10B981', '#06B6D4',  '#rgb(137, 129, 129)'];
-
-  const updateSettings = async (newDark = darkMode, newAccent = accentColor, newNotif = notificationsEnabled) => {
     try {
       await axios.put(
         `http://192.168.2.50:5070/api/profile/${user.id}/settings`,
@@ -98,8 +98,6 @@ const AppSettings = () => {
       </Animated.View>
     );
   }
-
-  const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444"];
 
   return (
     <View
@@ -210,12 +208,12 @@ const AppSettings = () => {
         onPress={handleBack}
         style={{
           alignSelf: "flex-end",
-          marginTop: hp(2), // space below Opslaan
-          paddingVertical: hp(1), // ~1/3 of the Opslaan’s paddingVertical
-          paddingHorizontal: wp(5), // adjust for width
+          marginTop: hp(2),
+          paddingVertical: hp(1),
+          paddingHorizontal: wp(5),
           borderWidth: 2,
-          borderColor: accentColor, // or '#7C3AED'
-          borderRadius: wp(4), // pill shape
+          borderColor: accentColor,
+          borderRadius: wp(4),
         }}
       >
         <Text
