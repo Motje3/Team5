@@ -5,17 +5,12 @@ import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Animated, {
-  FadeIn,
-  FadeOut,
-  LinearTransition,
-} from "react-native-reanimated";
+import Animated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
 import { useApp } from "../context/AppContext";
-import { BlurView } from "expo-blur"; // 👈 import blur
+import { BlurView } from "expo-blur";
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
-// static dark bg for the container
 const CONTAINER_BG = "#130057";
 const ICON_INACTIVE = "#ffffff";
 
@@ -24,7 +19,7 @@ export default function CustomNavBar({ state, descriptors, navigation }: BottomT
 
   return (
     <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
-      <View style={[styles.container, { backgroundColor: 'transparent' }]}>
+      <View key={accentColor} style={[styles.container, { backgroundColor: 'transparent' }]}>
         {state.routes.map((route, idx) => {
           if (["_sitemap", "+not-found"].includes(route.name)) return null;
 
@@ -100,7 +95,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     bottom: 20,
     borderRadius: 40,
-    overflow: "hidden", // zodat blur niet uitsteekt
+    overflow: "hidden",
   },
   container: {
     flexDirection: "row",
