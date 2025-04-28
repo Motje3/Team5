@@ -1,5 +1,6 @@
 /* With Tailwind CSS v4, you don't need directives anymore with the Vite plugin */
 /* But we'll add some basic styles */
+@import 'tailwindcss';
 
 body {
   margin: 0;
