@@ -77,7 +77,7 @@ const ShipmentDetails = () => {
       try {
         const id = Array.isArray(qrData) ? qrData[0] : qrData;
         const res = await fetch(
-          `http://192.168.1.198:5070/api/shipments/${id}`,
+          `http://192.168.2.50:5070/api/shipments/${id}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -101,7 +101,7 @@ const ShipmentDetails = () => {
     setStatusModalVisible(false);
     try {
       const res = await fetch(
-        `http://192.168.1.198:5070/api/shipments/${shipment.id}/status`,
+        `http://192.168.2.50:5070/api/shipments/${shipment.id}/status`,
         {
           method: "PUT",
           headers: {
