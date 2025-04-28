@@ -15,7 +15,7 @@ import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 
-const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444"]; // HIER BUITEN DE FUNCTIE
+const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444", '#0EA5E9' ,"#9CA3AF"]; // HIER BUITEN DE FUNCTIE
 
 const AppSettings = () => {
   const router = useRouter();
@@ -64,19 +64,19 @@ const AppSettings = () => {
       setShowSuccess(true);
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 100,
         useNativeDriver: true,
       }).start();
       // After 3s, fade out and navigate back
       setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 300,
+          duration: 100,
           useNativeDriver: true,
         }).start(() => {
           router.navigate("/(tabs)/profile");
         });
-      }, 3000);
+      }, 1000);
     } catch (error) {
       console.error("❌ Fout bij opslaan instellingen:", error);
     }
