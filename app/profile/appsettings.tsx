@@ -15,6 +15,8 @@ import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 
+const accentOptions = ["#7C3AED", "#10B981", "#EC4899", "#3B82F6", "#64748B"];
+
 const AppSettings = () => {
   const router = useRouter();
   const { user, token } = useAuth();
@@ -41,6 +43,7 @@ const AppSettings = () => {
     router.navigate("/(tabs)/profile");
     return true;
   };
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -61,19 +64,19 @@ const AppSettings = () => {
       setShowSuccess(true);
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 300,
+        duration: 100,
         useNativeDriver: true,
       }).start();
       // After 3s, fade out and navigate back
       setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
-          duration: 300,
+          duration: 100,
           useNativeDriver: true,
         }).start(() => {
           router.navigate("/(tabs)/profile");
         });
-      }, 3000);
+      }, 1000);
     } catch (error) {
       console.error("❌ Fout bij opslaan instellingen:", error);
     }
@@ -95,8 +98,6 @@ const AppSettings = () => {
       </Animated.View>
     );
   }
-
-  const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444"];
 
   return (
     <View
@@ -207,12 +208,12 @@ const AppSettings = () => {
         onPress={handleBack}
         style={{
           alignSelf: "flex-end",
-          marginTop: hp(2), // space below Opslaan
-          paddingVertical: hp(1), // ~1/3 of the Opslaan’s paddingVertical
-          paddingHorizontal: wp(5), // adjust for width
+          marginTop: hp(2),
+          paddingVertical: hp(1),
+          paddingHorizontal: wp(5),
           borderWidth: 2,
-          borderColor: accentColor, // or '#7C3AED'
-          borderRadius: wp(4), // pill shape
+          borderColor: accentColor,
+          borderRadius: wp(4),
         }}
       >
         <Text

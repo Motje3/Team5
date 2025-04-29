@@ -11,6 +11,7 @@ import {
   StatusBar as RNStatusBar,
   Modal,
   StyleSheet,
+  ImageSourcePropType
 } from "react-native";
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -28,8 +29,8 @@ const ShipmentDetails = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const theme = {
-    background: darkMode ? "#090723" : "#ffffff",
-    cardBg: darkMode ? "#1E1B4B" : "#f3f4f6",
+    background: darkMode ? ["#090723", "#0a0a23"] : ["#ffffff", "#f2f2f2"],
+    cardBg: darkMode ? ["#1E1B4B", "#13112D"] : ["#f3f4f6", "#e5e7eb"],
     text: darkMode ? "#ffffff" : "#0f0D23",
     secondaryText: darkMode ? "#D1D5DB" : "#6B7280",
   };
@@ -59,16 +60,13 @@ const ShipmentDetails = () => {
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      router.navigate("/(tabs)/scan");
+      router.navigate("/(tabs)")  // Change to navigate to "todayShipments"
     });
     return true;
   };
 
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBack
-    );
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBack);
     return () => backHandler.remove();
   }, [router]);
 
@@ -76,15 +74,12 @@ const ShipmentDetails = () => {
     const fetchShipment = async () => {
       try {
         const id = Array.isArray(qrData) ? qrData[0] : qrData;
-        const res = await fetch(
-          `http://192.168.1.198:5070/api/shipments/${id}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...(token && { Authorization: `Bearer ${token}` }),
-            },
-          }
-        );
+        const res = await fetch(`http://192.168.1.198:5070/api/shipments/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
         const data = await res.json();
         setShipment(data);
         setShipmentStatus(data.status);
@@ -100,17 +95,14 @@ const ShipmentDetails = () => {
   const updateStatus = async (newStatus: string) => {
     setStatusModalVisible(false);
     try {
-      const res = await fetch(
-        `http://192.168.1.198:5070/api/shipments/${shipment.id}/status`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
-          },
-          body: JSON.stringify({ status: newStatus }),
-        }
-      );
+      const res = await fetch(`http://192.168.1.198:5070/api/shipments/${shipment.id}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
       if (!res.ok) throw new Error("Failed to update status");
       const updated = await res.json();
       setShipmentStatus(updated.status);
@@ -150,26 +142,20 @@ const ShipmentDetails = () => {
   return (
     <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
       <LinearGradient
-        colors={["#17144F", "#090723"]}
+        colors={theme.background as [string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{ flex: 1, paddingHorizontal: wp(6), paddingTop: hp(9) }}
       >
         <RNStatusBar hidden />
-        <View style={{ height: hp(4) }} />
-
+        {/* Success Checkmark */}
         <Image
-          source={icons.checked}
-          style={{
-            width: wp(20),
-            height: wp(20),
-            alignSelf: "center",
-            marginBottom: hp(1.5),
-          }}
+          source={icons.checked as ImageSourcePropType}
+          style={{ width: wp(20), height: wp(20), alignSelf: "center", marginBottom: hp(2) }}
         />
         <Text
           style={{
-            color: "#10B981",
+            color: "#10B981", // Groen voor 'Succesvol gescand'
             fontSize: wp(6),
             fontWeight: "bold",
             textAlign: "center",
@@ -178,13 +164,12 @@ const ShipmentDetails = () => {
         >
           Succesvol gescand
         </Text>
-
+        {/* Zending Details */}
         <LinearGradient
-          colors={[theme.cardBg, "#13112D"]}
+          colors={darkMode ? ["#1E1B4B", "#13112D"] : ["#f3f4f6", "#e5e7eb"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
-            width: "100%",
             padding: wp(5),
             borderRadius: wp(5),
             marginBottom: hp(3),
@@ -195,80 +180,48 @@ const ShipmentDetails = () => {
             elevation: 10,
           }}
         >
-          <Text
-            style={{
-              color: theme.text,
-              fontSize: wp(5),
-              fontWeight: "bold",
-              marginBottom: hp(2),
-            }}
-          >
+          <Text style={{ color: theme.text, fontSize: wp(5), fontWeight: "bold", marginBottom: hp(2) }}>
             Zendingdetails
           </Text>
-          <Text
-            style={{
-              color: theme.secondaryText,
-              fontSize: wp(4.2),
-              marginBottom: hp(0.5),
-            }}
-          >
+          <Text style={{ color: theme.secondaryText, fontSize: wp(4.2) }}>
             🚚 Status: <Text style={{ color: "#FACC15" }}>{shipmentStatus}</Text>
           </Text>
-          <Text
-            style={{
-              color: theme.secondaryText,
-              fontSize: wp(4.2),
-              marginBottom: hp(0.5),
-            }}
-          >
-            📍 Bestemming:{" "}
-            <Text style={{ color: "#60A5FA" }}>{shipment.destination}</Text>
+          <Text style={{ color: theme.secondaryText, fontSize: wp(4.2) }}>
+            📍 Bestemming: <Text style={{ color: "#60A5FA" }}>{shipment.destination}</Text>
           </Text>
-          <Text
-            style={{
-              color: theme.secondaryText,
-              fontSize: wp(4.2),
-              marginBottom: hp(0.5),
-            }}
-          >
-            ⏳ Verwachte leveringtijd:{" "}
-            <Text style={{ color: "#C084FC" }}>
-              {shipment.expectedDelivery}
-            </Text>
+          <Text style={{ color: theme.secondaryText, fontSize: wp(4.2) }}>
+            ⏳ Verwachte leveringtijd: <Text style={{ color: "#C084FC" }}>{shipment.expectedDelivery}</Text>
           </Text>
           <Text style={{ color: theme.secondaryText, fontSize: wp(4.2) }}>
             ⚖️ Gewicht: <Text style={{ color: "#F87171" }}>{shipment.weight}</Text>
           </Text>
         </LinearGradient>
-
+        {/* Status Wijzigen */}
         <TouchableOpacity
           onPress={() => setStatusModalVisible(true)}
           style={{
             width: "100%",
             padding: wp(5),
             borderRadius: wp(5),
-            backgroundColor: theme.cardBg,
+            backgroundColor: accentColor, // Hier de accentkleur voor de knop
             marginBottom: hp(3),
             alignItems: "center",
+            shadowColor: "#000", // Toevoegen van schaduw om de knop beter zichtbaar te maken
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.5,
+            shadowRadius: 10,
+            elevation: 10, // Dit zorgt voor schaduw op Android-apparaten
           }}
         >
-          <Text style={{ color: theme.text, fontSize: wp(4.5), fontWeight: "bold" }}>
+          <Text style={{ color: "#fff", fontSize: wp(4.5), fontWeight: "bold" }}>
             📦 Status wijzigen
           </Text>
         </TouchableOpacity>
 
         {/* Action Buttons */}
-        <View
-          style={{
-            flexDirection: "row",
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
+        <View style={{ flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
           <TouchableOpacity
-            onPress={() =>
-              router.push(`/shipment/reportissue?shipmentId=${shipment.id}`)
-            }
+            onPress={() => router.push(`/shipment/reportissue?shipmentId=${shipment.id}`)}
             style={{
               flex: 1,
               marginRight: wp(2),
@@ -283,18 +236,15 @@ const ShipmentDetails = () => {
               elevation: 6,
             }}
           >
-            <Image source={icons.issue} style={{ width: wp(10), height: wp(10), marginBottom: hp(1) }} />
+            <Image source={icons.issue as ImageSourcePropType} style={{ width: wp(10), height: wp(10), marginBottom: hp(1) }} />
             <Text style={{ color: "#fff", fontSize: wp(3.8), fontWeight: "600" }}>
               Probleem melden
             </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => {
-              Animated.timing(fadeAnim, {
-                toValue: 0,
-                duration: 150,
-                useNativeDriver: true,
-              }).start(() => router.navigate("/(tabs)/scan"));
+              Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => router.navigate("/(tabs)/scan"));
             }}
             style={{
               flex: 1,
@@ -310,35 +260,21 @@ const ShipmentDetails = () => {
               elevation: 6,
             }}
           >
-            <Image
-              source={icons.qrcode}
-              style={{ width: wp(9), height: wp(9), tintColor: "#fff", marginBottom: hp(1) }}
-            />
-            <Text style={{ color: "#fff", fontSize: wp(3.8), fontWeight: "600" }}>
-              Volgende scannen
-            </Text>
+            <Image source={icons.qrcode as ImageSourcePropType} style={{ width: wp(9), height: wp(9), tintColor: "#fff", marginBottom: hp(1) }} />
+            <Text style={{ color: "#fff", fontSize: wp(3.8), fontWeight: "600" }}>Volgende scannen</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Terug Button under the row, aligned right */}
+        {/* Terug */}
         <TouchableOpacity
           onPress={handleBack}
-          style={[
-            styles.backButton,
-            {
-              borderColor: accentColor,
-              alignSelf: "flex-end",
-              marginTop: hp(2),
-              paddingHorizontal: wp(4),
-              paddingVertical: hp(1),
-            },
-          ]}
+          style={[styles.backButton, { borderColor: accentColor, alignSelf: "flex-end", marginTop: hp(2), paddingHorizontal: wp(4), paddingVertical: hp(1) }]}
         >
-          <Image source={icons.arrowleft} style={styles.backIcon} />
+          <Image source={icons.arrowleft as ImageSourcePropType} style={styles.backIcon} />
           <Text style={[styles.backText, { color: accentColor }]}>Terug</Text>
         </TouchableOpacity>
 
-        {/* Status Modal */}
+        {/* Modal Status Wijzigen */}
         <Modal
           visible={statusModalVisible}
           transparent
@@ -346,58 +282,23 @@ const ShipmentDetails = () => {
           statusBarTranslucent
           onRequestClose={() => setStatusModalVisible(false)}
         >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              paddingTop: RNStatusBar.currentHeight,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: theme.cardBg,
-                width: "85%",
-                padding: wp(6),
-                borderRadius: wp(5),
-              }}
-            >
-              <Text
-                style={{
-                  color: theme.text,
-                  fontSize: wp(5),
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginBottom: hp(2),
-                }}
-              >
-                📦 Kies nieuwe status
+          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" }}>
+            <View style={{ backgroundColor: theme.cardBg[0], width: "85%", padding: wp(6), borderRadius: wp(5) }}>
+              <Text style={{ color: theme.text, fontSize: wp(5), fontWeight: "bold", textAlign: "center", marginBottom: hp(2) }}>
+                Kies nieuwe status
               </Text>
               {["Onderweg", "Geleverd", "Vertraagd"].map(option => (
                 <TouchableOpacity
                   key={option}
                   onPress={() => updateStatus(option)}
-                  style={{
-                    backgroundColor: "#7C3AED",
-                    paddingVertical: hp(2),
-                    borderRadius: wp(3),
-                    alignItems: "center",
-                    marginBottom: hp(1.5),
-                  }}
+                  style={{ backgroundColor: accentColor, paddingVertical: hp(2), borderRadius: wp(3), alignItems: "center", marginBottom: hp(1.5) }}
                 >
                   <Text style={{ color: "#fff", fontSize: wp(4.2) }}>{option}</Text>
                 </TouchableOpacity>
               ))}
               <TouchableOpacity
                 onPress={() => setStatusModalVisible(false)}
-                style={{
-                  backgroundColor: "#374151",
-                  paddingVertical: hp(2),
-                  borderRadius: wp(3),
-                  alignItems: "center",
-                  marginTop: hp(2),
-                }}
+                style={{ backgroundColor: "#374151", paddingVertical: hp(2), borderRadius: wp(3), alignItems: "center", marginTop: hp(2) }}
               >
                 <Text style={{ color: "#fff", fontSize: wp(4.2) }}>Annuleren</Text>
               </TouchableOpacity>
@@ -410,21 +311,9 @@ const ShipmentDetails = () => {
 };
 
 const styles = StyleSheet.create({
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 2,
-    borderRadius: wp(4),
-  },
-  backIcon: {
-    width: wp(6),
-    height: wp(6),
-    marginRight: wp(2),
-  },
-  backText: {
-    fontSize: wp(3.5),
-    fontWeight: "600",
-  },
+  backButton: { flexDirection: "row", alignItems: "center", borderWidth: 2, borderRadius: wp(4) },
+  backIcon: { width: wp(6), height: wp(6), marginRight: wp(2) },
+  backText: { fontSize: wp(3.5), fontWeight: "600" },
 });
 
 export default ShipmentDetails;

@@ -12,7 +12,8 @@ import {
   Platform,
   BackHandler,
   Animated,
-  StyleSheet
+  StyleSheet,
+  ImageSourcePropType  // Added this import
 } from 'react-native';
 import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
@@ -126,7 +127,7 @@ export default function ReportIssue() {
         >
           <ScrollView contentContainerStyle={styles.scroll}>
             <Image
-              source={icons.reportproblem}
+              source={icons.reportproblem as ImageSourcePropType}
               style={styles.image}
             />
             <Text style={[styles.heading, { color: theme.text }]}>Probleem melden</Text>
@@ -183,7 +184,7 @@ export default function ReportIssue() {
               onPress={handleBack}
               style={[styles.backButton, { borderColor: accentColor }]}
             >
-              <Image source={icons.arrowleft} style={styles.backIcon} />
+              <Image source={icons.arrowleft as ImageSourcePropType} style={styles.backIcon} />
               <Text style={[styles.backText, { color: accentColor }]}>Terug</Text>
             </TouchableOpacity>
           </ScrollView>
