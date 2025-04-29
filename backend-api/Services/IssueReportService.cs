@@ -15,7 +15,7 @@ namespace backend_api.Services
 
         public async Task<IEnumerable<IssueReport>> GetAllAsync()
         {
-            return await _context.IssueReports.Include(r => r.Shipment).ToListAsync();
+            return await _context.IssueReports.Include(r => r.Shipment).OrderBy(i => i.CreatedAt).ToListAsync();
         }
 
         public async Task<IssueReport> CreateAsync(IssueReport report)
