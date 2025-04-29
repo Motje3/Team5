@@ -29,29 +29,92 @@ export default function ForgotPassword() {
 
     // hardware back → login
     useEffect(() => {
-    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-        router.replace('/login');
-        return true;
-    });
-    return () => sub.remove();
+        const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+            router.replace('/login');
+            return true;
+        });
+        return () => sub.remove();
     }, [router]);
 
     const submit = async () => {
-    if (!email || !newPass || newPass !== confirm) {
-        return Alert.alert('Controleer je invoer', 'Vul e-mail in en 2x hetzelfde nieuw wachtwoord');
-    }
-    try {
-        const res = await fetch('http://192.168.1.198:5070/api/PasswordReset', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, newPassword: newPass }),
-        });
-        if (!res.ok) throw new Error();
-        Alert.alert('Verzoek ingediend', 'De administrator zal je wachtwoord aanpassen.');
-        router.replace('/login');
-    } catch {
-        Alert.alert('Fout', 'Kon verzoek niet versturen');
-    }
+        if (!email || !newPass || newPass !== confirm) {
+            return Alert.alert('Controleer je invoer', 'Vul e-mail in en 2x hetzelfde nieuw wachtwoord');
+        }
+        try {
+            const res = await fetch('http://192.168.1.198:5070/api/PasswordReset', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, newPassword: newPass }),
+            });
+            if (!res.ok) throw new Error();
+            Alert.alert('Verzoek ingediend', 'De administrator zal je wachtwoord aanpassen.');
+            router.replace('/login');
+        } catch {
+            Alert.alert('Fout', 'Kon verzoek niet versturen');
+        }
     };
+
+    return (
+        <LinearGradient
+          colors={['#3E1F92', '#230F52']}
+          locations={[0.3, 1]}
+          style={styles.bg}
+        >
+          <SafeAreaView style={styles.container}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{ flex: 1 }}
+            >
+              <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.title}>Wachtwoord vergeten</Text>
+    
+                  <TextInput
+                    style={styles.input}
+                    placeholder="E-mail"
+                    placeholderTextColor="#AAA"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nieuw wachtwoord"
+                    placeholderTextColor="#AAA"
+                    secureTextEntry
+                    value={newPass}
+                    onChangeText={setNewPass}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Bevestig wachtwoord"
+                    placeholderTextColor="#AAA"
+                    secureTextEntry
+                    value={confirm}
+                    onChangeText={setConfirm}
+                  />
+    
+                  <TouchableOpacity
+                    style={[styles.button, { backgroundColor: accentColor }]}
+                    onPress={submit}
+                  >
+                    <Text style={styles.buttonText}>Verstuur verzoek</Text>
+                  </TouchableOpacity>
+    
+                  <TouchableOpacity
+                    style={[styles.backLink, { borderColor: accentColor }]}
+                    onPress={() => router.replace('/login')}
+                  >
+                    <Text style={[styles.backText, { color: accentColor }]}>
+                      Terug naar inloggen
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+          </SafeAreaView>
+        </LinearGradient>
+    );
 
 }
