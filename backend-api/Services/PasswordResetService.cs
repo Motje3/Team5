@@ -13,5 +13,35 @@ namespace backend_api.Services
         {
             _context = context;
         }
+
+        public async Task<PasswordResetRequest> CreateAsync(PasswordResetRequestDto dto)
+        {
+            var request = new PasswordResetRequest
+            {
+                Email = dto.Email,
+                RequestedNewPassword = dto.NewPassword,
+                RequestedAt = DateTime.UtcNow,
+                Processed = false
+            };
+
+            _context.PasswordResetRequests.Add(request);
+            await _context.SaveChangesAsync();
+            return request;
+        }
+
+        public async Task<IEnumerable<PasswordResetRequest>> GetAllAsync()
+        {
+            return await _context.PasswordResetRequests.ToListAsync();
+        }
+
+        public async Task<bool> MarkAsProcessed(int id)
+        {
+            var request = await _context.PasswordResetRequests.FindAsync(id);
+            if (request == null) return false;
+
+            request.Processed = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
