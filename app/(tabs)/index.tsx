@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
+import { View, Text, Image, TouchableOpacity, StatusBar,ImageSourcePropType } from "react-native";
 import React from "react";
 import { icons } from "@/constants/icons";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -59,7 +59,7 @@ const Home = () => {
               alignItems: "center"
             }}
           >
-            <Image source={icons.orders} style={{ width: wp(10), height: wp(10), tintColor: "#fff" }} />
+            <Image source={icons.orders as ImageSourcePropType} style={{ width: wp(10), height: wp(10), tintColor: "#fff" }} />
             <Text style={{ color: "#fff", fontSize: wp(4), marginTop: hp(1) }}>Zendingen van vandaag</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -78,7 +78,7 @@ const Home = () => {
               alignItems: "center"
             }}
           >
-            <Image source={icons.scaninfo} style={{ width: wp(10), height: wp(10), tintColor: "#fff" }} />
+            <Image source={icons.scaninfo as ImageSourcePropType} style={{ width: wp(10), height: wp(10), tintColor: "#fff" }} />
             <Text style={{ color: "#fff", fontSize: wp(4), marginTop: hp(1) }}>Scannen voor Info</Text>
           </LinearGradient>
         </TouchableOpacity>

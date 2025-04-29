@@ -1,5 +1,5 @@
 // Profile.tsx
-import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, ImageSourcePropType } from 'react-native';
 import React from 'react';
 import { icons } from '@/constants/icons';
 import { useRouter } from 'expo-router';
@@ -90,7 +90,7 @@ const Profile = () => {
             }}
           >
             <Image
-              source={item.icon}
+              source={item.icon as ImageSourcePropType}
               style={{
                 width: wp(6),
                 height: wp(6),
