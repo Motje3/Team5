@@ -15,7 +15,7 @@ import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
 
-const accentOptions = ["#A970FF", "#F59E0B", "#10B981", "#EF4444", '#0EA5E9' ,"#9CA3AF"]; // HIER BUITEN DE FUNCTIE
+const accentOptions = ["#7C3AED", "#10B981", "#EC4899", "#3B82F6", "#64748B"];
 
 const AppSettings = () => {
   const router = useRouter();
