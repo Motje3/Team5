@@ -16,7 +16,7 @@ namespace backend_api.Services
 
         public async Task<PasswordResetRequest> CreateAsync(PasswordResetRequestDto dto)
         {
-            var request = new PasswordResetRequest
+            var req = new PasswordResetRequest
             {
                 Email = dto.Email,
                 RequestedNewPassword = dto.NewPassword,
@@ -24,9 +24,9 @@ namespace backend_api.Services
                 Processed = false
             };
 
-            _context.PasswordResetRequests.Add(request);
+            _context.PasswordResetRequests.Add(req);
             await _context.SaveChangesAsync();
-            return request;
+            return req;
         }
 
         public async Task<IEnumerable<PasswordResetRequest>> GetAllAsync()
