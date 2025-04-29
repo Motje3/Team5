@@ -11,6 +11,7 @@ import {
   StatusBar as RNStatusBar,
   Modal,
   StyleSheet,
+  ImageSourcePropType
 } from "react-native";
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -149,7 +150,7 @@ const ShipmentDetails = () => {
         <RNStatusBar hidden />
         {/* Success Checkmark */}
         <Image
-          source={icons.checked}
+          source={icons.checked as ImageSourcePropType}
           style={{ width: wp(20), height: wp(20), alignSelf: "center", marginBottom: hp(2) }}
         />
         <Text
@@ -235,7 +236,7 @@ const ShipmentDetails = () => {
               elevation: 6,
             }}
           >
-            <Image source={icons.issue} style={{ width: wp(10), height: wp(10), marginBottom: hp(1) }} />
+            <Image source={icons.issue as ImageSourcePropType} style={{ width: wp(10), height: wp(10), marginBottom: hp(1) }} />
             <Text style={{ color: "#fff", fontSize: wp(3.8), fontWeight: "600" }}>
               Probleem melden
             </Text>
@@ -259,7 +260,7 @@ const ShipmentDetails = () => {
               elevation: 6,
             }}
           >
-            <Image source={icons.qrcode} style={{ width: wp(9), height: wp(9), tintColor: "#fff", marginBottom: hp(1) }} />
+            <Image source={icons.qrcode as ImageSourcePropType} style={{ width: wp(9), height: wp(9), tintColor: "#fff", marginBottom: hp(1) }} />
             <Text style={{ color: "#fff", fontSize: wp(3.8), fontWeight: "600" }}>Volgende scannen</Text>
           </TouchableOpacity>
         </View>
@@ -269,7 +270,7 @@ const ShipmentDetails = () => {
           onPress={handleBack}
           style={[styles.backButton, { borderColor: accentColor, alignSelf: "flex-end", marginTop: hp(2), paddingHorizontal: wp(4), paddingVertical: hp(1) }]}
         >
-          <Image source={icons.arrowleft} style={styles.backIcon} />
+          <Image source={icons.arrowleft as ImageSourcePropType} style={styles.backIcon} />
           <Text style={[styles.backText, { color: accentColor }]}>Terug</Text>
         </TouchableOpacity>
 

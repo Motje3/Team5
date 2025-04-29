@@ -9,6 +9,7 @@ import {
   Modal,
   TouchableOpacity,
   ActivityIndicator,
+  ImageSourcePropType, // Add this import
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { useApp } from "../context/AppContext";
@@ -116,7 +117,11 @@ const Stats = () => {
     >
       {/* Header */}
       <View style={styles.header}>
-        <Image source={icons.stats} style={[styles.headerIcon, { tintColor: accentColor }]} />
+        {/* Fixed Image component */}
+        <Image 
+          source={icons.stats as ImageSourcePropType} 
+          style={[styles.headerIcon, { tintColor: accentColor }]} 
+        />
       </View>
 
       {/* Overview */}
@@ -187,7 +192,10 @@ const Stats = () => {
         style={[styles.filterButton, { backgroundColor: theme.filterButtonBackground }]}
       >
         <View style={styles.filterButtonContent}>
-          <Image source={icons.filter} style={[styles.filterIcon, { tintColor: darkMode ? "#FFF" : "#0f0D23" }]} />
+          <Image 
+            source={icons.filter as ImageSourcePropType} 
+            style={[styles.filterIcon, { tintColor: darkMode ? "#FFF" : "#0f0D23" }]} 
+          />
           <Text style={[styles.filterText, { color: darkMode ? "#FFF" : "#0f0D23" }]}>Filter</Text>
         </View>
       </TouchableOpacity>
