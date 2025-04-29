@@ -116,5 +116,52 @@ export default function ForgotPassword() {
           </SafeAreaView>
         </LinearGradient>
     );
-
 }
+
+const styles = StyleSheet.create({
+    bg: { flex: 1 },
+    container: {
+        flex: 1,
+        paddingHorizontal: wp(6),
+        justifyContent: 'center',
+    },
+    title: {
+        fontSize: wp(6),
+        fontWeight: 'bold',
+        color: '#fff',
+        textAlign: 'center',
+        marginBottom: hp(4),
+    },
+    input: {
+        backgroundColor: '#1E1B33',
+        color: '#fff',
+        paddingHorizontal: wp(4),
+        paddingVertical: hp(1.5),
+        borderRadius: wp(2),
+        marginBottom: hp(2),
+        fontSize: wp(4),
+    },
+    button: {
+        paddingVertical: hp(1.8),
+        borderRadius: wp(2),
+        alignItems: 'center',
+        marginTop: hp(1),
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: wp(4.5),
+        fontWeight: '600',
+    },
+    backLink: {
+        marginTop: hp(2),
+        alignSelf: 'center',
+        borderWidth: 1,
+        borderRadius: wp(2),
+        paddingVertical: hp(1),
+        paddingHorizontal: wp(4),
+    },
+    backText: {
+        fontSize: wp(3.8),
+        fontWeight: '500',
+    },
+});
