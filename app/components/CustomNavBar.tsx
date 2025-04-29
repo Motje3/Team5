@@ -5,7 +5,11 @@ import Feather from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Animated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from "react-native-reanimated";
 import { useApp } from "../context/AppContext";
 import { BlurView } from "expo-blur";
 
@@ -14,12 +18,26 @@ const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 const CONTAINER_BG = "#130057";
 const ICON_INACTIVE = "#ffffff";
 
-export default function CustomNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
+export default function CustomNavBar({
+  state,
+  descriptors,
+  navigation,
+}: BottomTabBarProps) {
   const { accentColor } = useApp();
 
   return (
-    <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
-      <View key={accentColor} style={[styles.container, { backgroundColor: 'transparent' }]}>
+    <BlurView
+      intensity={30}
+      tint="dark"
+      style={[
+        styles.blurContainer,
+        { backgroundColor: accentColor + "20" }, // add alpha if you like
+      ]}
+    >
+      <View
+        key={accentColor}
+        style={[styles.container, { backgroundColor: "transparent" }]}
+      >
         {state.routes.map((route, idx) => {
           if (["_sitemap", "+not-found"].includes(route.name)) return null;
 

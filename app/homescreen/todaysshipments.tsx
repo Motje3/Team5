@@ -1,3 +1,4 @@
+// src/components/TodaysShipment.tsx
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -17,7 +18,7 @@ import { wp, hp } from "../utils/responsive";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useApp } from "../context/AppContext";
 
-const TodaysShipment = () => {
+const TodaysShipment: React.FC = () => {
   const { token } = useAuth();
   const { darkMode, accentColor } = useApp();
   const router = useRouter();
@@ -69,10 +70,13 @@ const TodaysShipment = () => {
     else setLoading(false);
   }, [token]);
 
+  // Loading state
   if (loading) {
     return (
       <LinearGradient
-        colors={[`${accentColor}cc`, darkMode ? "#030014" : "#ffffff"]}
+        colors={[`${accentColor}cc`, theme.background]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
         style={styles.fullscreen}
       >
         <ActivityIndicator size="large" color={accentColor} />
@@ -80,10 +84,13 @@ const TodaysShipment = () => {
     );
   }
 
+  // Error state
   if (error) {
     return (
       <LinearGradient
-        colors={[`${accentColor}cc`, darkMode ? "#030014" : "#ffffff"]}
+        colors={[`${accentColor}cc`, theme.background]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
         style={styles.fullscreen}
       >
         <Text style={styles.error}>{error}</Text>
@@ -93,26 +100,19 @@ const TodaysShipment = () => {
 
   const total = shipments.length;
 
+  // Main content with gradient background
   return (
-    <View style={{ flex: 1, backgroundColor: theme.background }}>
+    <LinearGradient
+      colors={[`${accentColor}cc`, theme.background]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 0.5 }}
+      style={{ flex: 1 }}
+    >
       <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
-      {/* Fade accent achtergrond */}
-      <LinearGradient
-        colors={[
-          `${accentColor}cc`,
-          "transparent",
-          darkMode ? "#030014" : "#ffffff",
-        ]}
-        locations={[1, 0.35, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFillObject}
-      />
-
       <View style={{ flex: 1, paddingHorizontal: wp(6), paddingTop: hp(6) }}>
-        {/* Terug button + titel */}
+        {/* Back button + title */}
         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: hp(2) }}>
           <TouchableOpacity onPress={handleBack} style={{ marginRight: wp(2) }}>
             <Ionicons name="arrow-back" size={30} color={theme.backIcon} />
@@ -120,7 +120,7 @@ const TodaysShipment = () => {
           <Text style={[styles.headerTitle, { color: theme.text }]}>Ritten van Vandaag</Text>
         </View>
 
-        {/* Truck icoon */}
+        {/* Truck icon */}
         <MaterialCommunityIcons
           name="truck-delivery"
           size={wp(24)}
@@ -170,7 +170,7 @@ const TodaysShipment = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
