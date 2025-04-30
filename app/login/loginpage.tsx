@@ -118,9 +118,7 @@ const Login = () => {
                   <Text style={styles.loginText}>INLOGGEN</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => Alert.alert("Jammer", "Daar gaat je werk")}
-                >
+                <TouchableOpacity onPress={() => router.push('/login/forgotpassword')}>
                   <Text style={styles.forgot}>Wachtwoord vergeten?</Text>
                 </TouchableOpacity>
               </View>
