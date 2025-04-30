@@ -12,6 +12,7 @@ import {
   Keyboard,
   BackHandler,
   StyleSheet,
+  ImageSourcePropType
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
@@ -64,7 +65,7 @@ const Login = () => {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
               {/* Logo at top */}
-              <Image source={images.logo} style={styles.logo} />
+              <Image source={images.logo as ImageSourcePropType} style={styles.logo} />
 
               {/* Title and subtitle */}
               <Text style={styles.title}>Welkom bij E.Lafeber</Text>

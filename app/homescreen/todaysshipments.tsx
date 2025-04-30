@@ -1,3 +1,4 @@
+// src/components/TodaysShipment.tsx
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -9,26 +10,35 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { wp, hp } from "../utils/responsive";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import { useApp } from "../context/AppContext";
 
-const TodaysShipment = () => {
+const TodaysShipment: React.FC = () => {
   const { token } = useAuth();
+  const { darkMode, accentColor } = useApp();
   const router = useRouter();
 
   const [shipments, setShipments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Back to main tabs
+  const theme = {
+    background: darkMode ? "#030014" : "#ffffff",
+    text: darkMode ? "#ffffff" : "#0f0D23",
+    secondaryText: darkMode ? "#9CA3AF" : "#6B7280",
+    backIcon: darkMode ? "#ffffff" : "#0f0D23",
+  };
+
   const handleBack = () => {
     router.replace("/(tabs)");
     return true;
   };
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
@@ -37,7 +47,6 @@ const TodaysShipment = () => {
     return () => backHandler.remove();
   }, [router]);
 
-  // Fetch all assigned shipments (no date filter)
   useEffect(() => {
     const fetchShipments = async () => {
       try {
@@ -61,17 +70,29 @@ const TodaysShipment = () => {
     else setLoading(false);
   }, [token]);
 
-  // Loading & error
+  // Loading state
   if (loading) {
     return (
-      <LinearGradient colors={["#3D0F6E", "#030014"]} style={styles.fullscreen}>
-        <ActivityIndicator size="large" />
+      <LinearGradient
+        colors={[`${accentColor}cc`, theme.background]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.fullscreen}
+      >
+        <ActivityIndicator size="large" color={accentColor} />
       </LinearGradient>
     );
   }
+
+  // Error state
   if (error) {
     return (
-      <LinearGradient colors={["#3D0F6E", "#030014"]} style={styles.fullscreen}>
+      <LinearGradient
+        colors={[`${accentColor}cc`, theme.background]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.fullscreen}
+      >
         <Text style={styles.error}>{error}</Text>
       </LinearGradient>
     );
@@ -79,58 +100,76 @@ const TodaysShipment = () => {
 
   const total = shipments.length;
 
+  // Main content with gradient background
   return (
-    <LinearGradient colors={["#3D0F6E", "#030014"]} style={styles.container}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
+    <LinearGradient
+      colors={[`${accentColor}cc`, theme.background]}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 0.5 }}
+      style={{ flex: 1 }}
+    >
+      <ExpoStatusBar style="light" translucent backgroundColor="transparent" />
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
-      {/* Top Icon and Title */}
-      <MaterialCommunityIcons
-        name="truck-delivery"
-        size={wp(24)}
-        color="#A970FF"
-        style={{ alignSelf: "center", marginBottom: hp(1) }}
-      />
-      <Text style={styles.headerTitle}>Ritten van Vandaag</Text>
-      <Text style={styles.subTitle}>Je hebt {total} ritten vandaag</Text>
+      <View style={{ flex: 1, paddingHorizontal: wp(6), paddingTop: hp(6) }}>
+        {/* Back button + title */}
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: hp(2) }}>
+          <TouchableOpacity onPress={handleBack} style={{ marginRight: wp(2) }}>
+            <Ionicons name="arrow-back" size={30} color={theme.backIcon} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Ritten van Vandaag</Text>
+        </View>
 
-      {/* List of shipments */}
-      <FlatList
-        data={shipments}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ paddingBottom: hp(4) }}
-        renderItem={({ item }) => (
-          <LinearGradient
-            colors={["#17144F", "#090723"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.card}
-          >
-            <View style={styles.cardContent}>
-              <Ionicons name="cube-outline" size={wp(8)} color="#60A5FA" />
-              <View style={{ marginLeft: wp(4), flex: 1 }}>
-                <Text style={styles.cardTitle}>#{item.id}</Text>
-                <Text style={styles.cardText}>
-                  Bestemming: {item.destination}
-                </Text>
-                <Text style={styles.cardText}>Status: {item.status}</Text>
+        {/* Truck icon */}
+        <MaterialCommunityIcons
+          name="truck-delivery"
+          size={wp(24)}
+          color={accentColor}
+          style={{ alignSelf: "center", marginBottom: hp(1) }}
+        />
+
+        <Text style={[styles.subTitle, { color: theme.secondaryText }]}>
+          Je hebt {total} ritten vandaag
+        </Text>
+
+        <FlatList
+          data={shipments}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ paddingBottom: hp(6) }}
+          renderItem={({ item }) => (
+            <LinearGradient
+              colors={darkMode ? ["#17144F", "#090723"] : ["#ffffff", "#ffffff"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.card}
+            >
+              <View style={styles.cardContent}>
+                <Ionicons name="cube-outline" size={wp(8)} color={accentColor} />
+                <View style={{ marginLeft: wp(4), flex: 1 }}>
+                  <Text style={[styles.cardTitle, { color: theme.text }]}>#{item.id}</Text>
+                  <Text style={[styles.cardText, { color: theme.secondaryText }]}>
+                    Bestemming: {item.destination}
+                  </Text>
+                  <Text style={[styles.cardText, { color: theme.secondaryText }]}>
+                    Status: {item.status}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push({
+                      pathname: "/shipment/shipmentdetails",
+                      params: { qrData: item.id.toString() },
+                    })
+                  }
+                >
+                  <Ionicons name="chevron-forward" size={wp(6)} color={theme.text} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() =>
-                  router.push(
-                    `http://192.168.1.198:5070/api/shipment/${item.id}`
-                  )
-                }
-              >
-                <Ionicons name="chevron-forward" size={wp(6)} color="#FFF" />
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
-        )}
-      />
+            </LinearGradient>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </LinearGradient>
   );
 };
@@ -141,20 +180,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  container: {
-    flex: 1,
-    paddingHorizontal: wp(6),
-    paddingTop: hp(6),
-  },
   headerTitle: {
-    color: "#FFF",
     fontSize: wp(6),
     fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: hp(0.5),
   },
   subTitle: {
-    color: "#AAA",
     fontSize: wp(4),
     textAlign: "center",
     marginBottom: hp(3),
@@ -163,23 +193,26 @@ const styles = StyleSheet.create({
     padding: wp(4),
     borderRadius: wp(3),
     marginBottom: hp(2),
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
   },
   cardContent: {
     flexDirection: "row",
     alignItems: "center",
   },
   cardTitle: {
-    color: "#FFF",
     fontSize: wp(4.5),
     fontWeight: "bold",
   },
   cardText: {
-    color: "#DDD",
     fontSize: wp(3.5),
     marginTop: hp(0.5),
   },
   error: {
-    color: "white",
+    color: "#ffffff",
     fontSize: wp(4),
   },
 });
