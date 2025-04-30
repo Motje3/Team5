@@ -30,7 +30,7 @@ export default function ForgotPassword() {
     // hardware back → login
     useEffect(() => {
         const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-            router.replace('/login');
+            router.replace('/login/loginpage');
             return true;
         });
         return () => sub.remove();
@@ -48,7 +48,7 @@ export default function ForgotPassword() {
             });
             if (!res.ok) throw new Error();
             Alert.alert('Verzoek ingediend', 'De administrator zal je wachtwoord aanpassen.');
-            router.replace('/login');
+            router.replace('/login/loginpage');
         } catch {
             Alert.alert('Fout', 'Kon verzoek niet versturen');
         }
@@ -104,7 +104,7 @@ export default function ForgotPassword() {
     
                   <TouchableOpacity
                     style={[styles.backLink, { borderColor: accentColor }]}
-                    onPress={() => router.replace('/login')}
+                    onPress={() => router.replace('/login/loginpage')}
                   >
                     <Text style={[styles.backText, { color: accentColor }]}>
                       Terug naar inloggen
