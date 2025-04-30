@@ -12,5 +12,6 @@ namespace backend_api.Data
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<IssueReport> IssueReports { get; set; }
+        public DbSet<PasswordResetRequest> PasswordResetRequests { get; set; }
     }
 }
