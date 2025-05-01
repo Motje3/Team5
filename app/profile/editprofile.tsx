@@ -19,6 +19,7 @@ import { useAuth } from '../context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
+import { API_BASE_URL } from "../config/env";
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
@@ -63,7 +64,7 @@ const EditProfile = () => {
     Keyboard.dismiss();
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}`,
+        `${API_BASE_URL}/api/profile/${user.id}`,
         {
           fullName: newName,
           email: newEmail,

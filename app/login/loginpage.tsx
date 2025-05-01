@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -12,12 +12,13 @@ import {
   Keyboard,
   BackHandler,
   StyleSheet,
+  ScrollView,
   ImageSourcePropType
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { wp, hp } from "../utils/responsive";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "expo-router";
@@ -27,6 +28,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
   const { login } = useAuth();
   const router = useRouter();
 
@@ -50,6 +52,10 @@ const Login = () => {
     }
   };
 
+  const scrollTo = (y: number) => {
+    scrollRef.current?.scrollTo({ y, animated: true });
+  };
+
   return (
     <LinearGradient
       colors={["#3E1F92", "#230F52"]}
@@ -60,50 +66,45 @@ const Login = () => {
       <SafeAreaView style={styles.flex}>
         <KeyboardAvoidingView
           style={styles.flex}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          keyboardVerticalOffset={hp(2)}
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
-              {/* Logo at top */}
+            <ScrollView
+              ref={scrollRef}
+              contentContainerStyle={[styles.container, { minHeight: hp(150)}]}
+              keyboardShouldPersistTaps="handled"
+            >
               <Image source={images.logo as ImageSourcePropType} style={styles.logo} />
-
-              {/* Title and subtitle */}
               <Text style={styles.title}>Welkom bij E.Lafeber</Text>
               <Text style={styles.subtitle}>Industriële verhuizing</Text>
 
-              {/* Inputs */}
               <View style={styles.form}>
                 <View style={styles.inputRow}>
-                  <Ionicons
-                    name="person-outline"
-                    size={wp(5)}
-                    color="#A8A8A8"
-                  />
+                  <Ionicons name="person-outline" size={wp(5)} color="#A8A8A8" />
                   <TextInput
                     placeholder="Gebruikersnaam"
                     placeholderTextColor="#A8A8A8"
                     value={username}
                     onChangeText={setUsername}
+                    onFocus={() => scrollTo(270)} // tweak offset here
+                    onBlur={() => scrollTo(0)}
                     style={styles.input}
                   />
                 </View>
                 <View style={styles.inputRow}>
-                  <Ionicons
-                    name="lock-closed-outline"
-                    size={wp(5)}
-                    color="#A8A8A8"
-                  />
+                  <Ionicons name="lock-closed-outline" size={wp(5)} color="#A8A8A8" />
                   <TextInput
                     placeholder="Wachtwoord"
                     placeholderTextColor="#A8A8A8"
                     secureTextEntry={!showPassword}
                     value={password}
                     onChangeText={setPassword}
+                    onFocus={() => scrollTo(271)} // tweak offset here
+                    onBlur={() => scrollTo(0)}
                     style={styles.input}
                   />
-                  <TouchableOpacity
-                    onPress={() => setShowPassword((prev) => !prev)}
-                  >
+                  <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}>
                     <Ionicons
                       name={showPassword ? "eye-outline" : "eye-off-outline"}
                       size={wp(5)}
@@ -112,10 +113,7 @@ const Login = () => {
                   </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity
-                  style={styles.loginButton}
-                  onPress={handleLogin}
-                >
+                <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                   <Text style={styles.loginText}>INLOGGEN</Text>
                 </TouchableOpacity>
 
@@ -123,7 +121,7 @@ const Login = () => {
                   <Text style={styles.forgot}>Wachtwoord vergeten?</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: wp(6),
-    justifyContent: "flex-start", // align content to top
+    paddingBottom: hp(20),
   },
   logo: {
     width: wp(60),

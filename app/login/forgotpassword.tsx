@@ -17,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { wp, hp } from '../utils/responsive';
 import { useApp } from '../context/AppContext';
-
+import { API_BASE_URL } from "../config/env";
 
 export default function ForgotPassword() {
     const router = useRouter();
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
             return Alert.alert('Controleer je invoer', 'Vul e-mail in en 2x hetzelfde nieuw wachtwoord');
         }
         try {
-            const res = await fetch('http://192.168.1.198:5070/api/PasswordReset', {
+            const res = await fetch(`${API_BASE_URL}/api/PasswordReset`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, newPassword: newPass }),

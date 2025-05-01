@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { wp, hp } from "../utils/responsive";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useApp } from "../context/AppContext";
+import { API_BASE_URL } from "../config/env";
 
 const TodaysShipment: React.FC = () => {
   const { token } = useAuth();
@@ -50,7 +51,7 @@ const TodaysShipment: React.FC = () => {
   useEffect(() => {
     const fetchShipments = async () => {
       try {
-        const res = await fetch("http://192.168.1.198:5070/api/shipments/me", {
+        const res = await fetch(`${API_BASE_URL}/api/shipments/me`, {
           headers: {
             "Content-Type": "application/json",
             ...(token && { Authorization: `Bearer ${token}` }),

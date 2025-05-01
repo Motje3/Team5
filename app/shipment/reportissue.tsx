@@ -21,6 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { icons } from '@/constants/icons';
 import { wp, hp } from '../utils/responsive';
 import { useApp } from '../context/AppContext';
+import { API_BASE_URL } from "../config/env";
 
 export default function ReportIssue() {
   const router = useRouter();
@@ -79,7 +80,7 @@ export default function ReportIssue() {
     }
     setSubmitting(true);
     try {
-      const res = await fetch('http://192.168.1.198:5070/api/IssueReport', {
+      const res = await fetch(`${API_BASE_URL}/api/IssueReport`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
