@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { View, Text } from "react-native";
 import { useAuth } from "./AuthContext";
+import { API_BASE_URL } from "../config/env";
 
 type AppContextType = {
   username: string;
@@ -40,7 +41,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       if (user && token) {
         try {
           const res = await axios.get(
-            `http://192.168.1.198:5070/api/profile/${user.id}`,
+            `${API_BASE_URL}/api/profile/${user.id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           const data = res.data;
@@ -84,7 +85,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        `${API_BASE_URL}/api/profile/${user.id}/settings`,
         { accentColor, darkMode, notificationsEnabled },
         { headers: { Authorization: `Bearer ${token}` } }
       );
