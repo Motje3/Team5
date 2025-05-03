@@ -61,7 +61,7 @@ const ShipmentDetails = () => {
       duration: 200,
       useNativeDriver: true,
     }).start(() => {
-      router.navigate("/(tabs)")  // Change to navigate to "todayShipments"
+      router.navigate("/homescreen/todaysshipments")  // Change to navigate to "todayShipments"
     });
     return true;
   };

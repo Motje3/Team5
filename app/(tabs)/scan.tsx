@@ -1,23 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, AppState } from 'react-native';
-import { Camera, CameraView } from 'expo-camera';
-import { useRouter } from 'expo-router';
-import { useApp } from '../context/AppContext';
-import { useIsFocused } from '@react-navigation/native';
-import { wp, hp } from '../utils/responsive'; // ✅ Responsive helpers
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  AppState,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
+import { Camera, CameraView } from "expo-camera";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useApp } from "../context/AppContext";
+import { useIsFocused } from "@react-navigation/native";
+import { wp, hp } from "../utils/responsive";
 
 const Scan = () => {
   const { darkMode } = useApp();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [torchOn, setTorchOn] = useState(false);
   const appState = useRef(AppState.currentState);
   const qrLock = useRef(false);
+  const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
 
   useEffect(() => {
     const initializeCamera = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      setHasPermission(status === "granted");
     };
 
     initializeCamera();
@@ -56,6 +66,7 @@ const Scan = () => {
       <CameraView
         style={StyleSheet.absoluteFillObject}
         facing="back"
+        // flashMode={torchOn ? 'torch' : 'off'}
         onBarcodeScanned={({ data }) => {
           if (data && !qrLock.current) {
             qrLock.current = true;
@@ -65,22 +76,92 @@ const Scan = () => {
           }
         }}
       />
+
+
+      {/* Overlay */}
+      <View style={styles.overlay}>
+        <View style={styles.topOverlay} />
+        <View style={styles.middleRow}>
+          <View style={styles.sideOverlay} />
+          <View style={styles.scanArea} />
+          <View style={styles.sideOverlay} />
+        </View>
+        <View style={styles.bottomOverlay} />
+      </View>
+
+      {/* Top Buttons */}
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={wp(8)} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setTorchOn((prev) => !prev)}>
+          <Ionicons
+            name={torchOn ? "flashlight" : "flashlight-outline"}
+            size={wp(8)}
+            color="#fff"
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
+const boxSize = wp(75);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: wp(4),
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: "#000",
+    position: "relative",
   },
   infoText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: wp(4),
-    textAlign: 'center',
+    textAlign: "center",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  topOverlay: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  middleRow: {
+    flexDirection: "row",
+  },
+  sideOverlay: {
+    width: (wp(100) - boxSize) / 2,
+    height: boxSize,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  scanArea: {
+    width: boxSize,
+    height: boxSize,
+    borderWidth: 2,
+    borderColor: "#00FFAA",
+    borderRadius: wp(5),
+    backgroundColor: "rgba(0,0,0,0.2)",
+  },
+  bottomOverlay: {
+    flex: 1,
+    width: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  topBar: {
+    position: "absolute",
+    top: Platform.OS === "ios" ? hp(6) : hp(3),
+    left: wp(4),
+    right: wp(4),
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 
