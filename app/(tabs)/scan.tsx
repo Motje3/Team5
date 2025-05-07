@@ -145,8 +145,8 @@ const styles = StyleSheet.create({
     width: boxSize,
     height: boxSize,
     borderWidth: 2,
-    borderColor: "#00FFAA",
-    borderRadius: wp(5),
+    borderColor: "#FFFFFF",
+    borderRadius: wp(0),
     backgroundColor: "rgba(0,0,0,0.2)",
   },
   bottomOverlay: {
