@@ -11,11 +11,13 @@ import {
   StatusBar as RNStatusBar,
   Modal,
   StyleSheet,
+  Platform,
   ImageSourcePropType
 } from "react-native";
 import { useRouter, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { icons } from "@/constants/icons";
+import { Ionicons } from "@expo/vector-icons";
 import { wp, hp } from "../utils/responsive";
 import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
@@ -136,6 +138,12 @@ const ShipmentDetails = () => {
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
         <Text style={{ color: theme.text }}>Zending niet gevonden</Text>
+        {/* Top Buttons */}
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={wp(8)} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
     );
   }
@@ -315,6 +323,15 @@ const styles = StyleSheet.create({
   backButton: { flexDirection: "row", alignItems: "center", borderWidth: 2, borderRadius: wp(4) },
   backIcon: { width: wp(6), height: wp(6), marginRight: wp(2) },
   backText: { fontSize: wp(3.5), fontWeight: "600" },
+  topBar: {
+      position: "absolute",
+      top: Platform.OS === "ios" ? hp(6) : hp(3),
+      left: wp(4),
+      right: wp(4),
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
 });
 
 export default ShipmentDetails;
