@@ -7,9 +7,11 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Input
+  Input,
+  Select,
+  SelectItem,
+  Button
 } from '@nextui-org/react';
-import { Select, SelectItem, Button } from '@nextui-org/react';
 
 interface Shipment {
   id: number;
@@ -28,6 +30,7 @@ const Shipments = () => {
   const [filtered, setFiltered] = useState<Shipment[]>([]);
   const [query, setQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+
   const uniqueStatuses = [...new Set(shipments.map(s => s.status))];
 
   useEffect(() => {
@@ -41,23 +44,55 @@ const Shipments = () => {
 
   useEffect(() => {
     const lower = query.toLowerCase();
-    setFiltered(shipments.filter(s =>
-      s.destination?.toLowerCase().includes(lower) ||
-      s.status?.toLowerCase().includes(lower) ||
-      s.assignedTo?.toLowerCase().includes(lower)
-    ));
-  }, [query, shipments]);
+    const filteredList = shipments.filter(s =>
+      (s.destination?.toLowerCase().includes(lower) ||
+        s.status?.toLowerCase().includes(lower) ||
+        s.assignedTo?.toLowerCase().includes(lower)) &&
+      (selectedStatus ? s.status === selectedStatus : true)
+    );
+    setFiltered(filteredList);
+  }, [query, shipments, selectedStatus]);
 
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-3xl font-bold text-white">Zendingen</h1>
-      <Input
-        isClearable
-        placeholder="Zoek op status, bestemming of toegewezen persoon"
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        className="max-w-md"
-      />
+
+      <div className="flex flex-wrap gap-4 items-center">
+        <Input
+          isClearable
+          placeholder="Zoek op status, bestemming of toegewezen persoon"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          className="max-w-md"
+        />
+
+        <Select
+          label="Filter op status"
+          selectedKeys={selectedStatus ? [selectedStatus] : []}
+          onSelectionChange={(keys) => {
+            const key = Array.from(keys)[0] as string;
+            setSelectedStatus(key === selectedStatus ? null : key);
+          }}
+          className="max-w-xs"
+          disallowEmptySelection
+        >
+          {uniqueStatuses.map(status => (
+            <SelectItem key={status}>{status}</SelectItem>
+          ))}
+        </Select>
+
+        <Button
+          color="danger"
+          variant="flat"
+          onPress={() => {
+            setQuery('');
+            setSelectedStatus(null);
+          }}
+        >
+          Reset filters
+        </Button>
+      </div>
+
       <Table aria-label="Zendingen tabel" removeWrapper>
         <TableHeader>
           <TableColumn>ID</TableColumn>
@@ -82,7 +117,6 @@ const Shipments = () => {
       </Table>
     </div>
   );
-
 };
 
 export default Shipments;
