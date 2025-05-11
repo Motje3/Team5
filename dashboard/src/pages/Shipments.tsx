@@ -9,6 +9,7 @@ import {
   TableCell,
   Input
 } from '@nextui-org/react';
+import { Select, SelectItem, Button } from '@nextui-org/react';
 
 interface Shipment {
   id: number;
@@ -26,6 +27,8 @@ const Shipments = () => {
   const [shipments, setShipments] = useState<Shipment[]>([]);
   const [filtered, setFiltered] = useState<Shipment[]>([]);
   const [query, setQuery] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const uniqueStatuses = [...new Set(shipments.map(s => s.status))];
 
   useEffect(() => {
     axios.get('http://localhost:5070/api/Shipments')
