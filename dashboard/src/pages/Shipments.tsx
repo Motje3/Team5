@@ -8,8 +8,6 @@ import {
   TableRow,
   TableCell,
   Input,
-  Select,
-  SelectItem,
   Button
 } from '@nextui-org/react';
 
@@ -24,6 +22,50 @@ interface Shipment {
   lastUpdatedBy: string;
   lastUpdatedAt: string;
 }
+
+const CustomDropdown = ({
+  options,
+  selected,
+  setSelected,
+  placeholder = "Kies een status",
+}: {
+  options: string[];
+  selected: string | null;
+  setSelected: (val: string) => void;
+  placeholder?: string;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative inline-block min-w-[200px]">
+      <button
+        onClick={() => setOpen(!open)}
+        className="bg-[#1E1B33] text-white w-full px-4 py-2 rounded flex justify-between items-center"
+      >
+        {selected || placeholder}
+        <span className="ml-2 transform transition-transform" style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>
+          ▼
+        </span>
+      </button>
+      {open && (
+        <ul className="absolute z-10 bg-[#1E1B33] w-full mt-1 rounded shadow-lg border border-[#333]">
+          {options.map((option) => (
+            <li
+              key={option}
+              onClick={() => {
+                setSelected(option);
+                setOpen(false);
+              }}
+              className="px-4 py-2 hover:bg-[#2A2745] cursor-pointer"
+            >
+              {option}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
 
 const Shipments = () => {
   const [shipments, setShipments] = useState<Shipment[]>([]);
@@ -57,7 +99,7 @@ const Shipments = () => {
     <div className="p-6 space-y-4">
       <h1 className="text-3xl font-bold text-white">Zendingen</h1>
 
-      <div className="flex flex-wrap gap-4 items-center">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <Input
           isClearable
           placeholder="Zoek op status, bestemming of toegewezen persoon"
@@ -66,31 +108,25 @@ const Shipments = () => {
           className="max-w-md"
         />
 
-        <Select
-          label="Filter op status"
-          selectedKeys={selectedStatus ? [selectedStatus] : []}
-          onSelectionChange={(keys) => {
-            const key = Array.from(keys)[0] as string;
-            setSelectedStatus(key === selectedStatus ? null : key);
-          }}
-          className="max-w-xs"
-          disallowEmptySelection
-        >
-          {uniqueStatuses.map(status => (
-            <SelectItem key={status}>{status}</SelectItem>
-          ))}
-        </Select>
+        <div className="flex items-center gap-4">
+          <CustomDropdown
+            options={uniqueStatuses}
+            selected={selectedStatus}
+            setSelected={setSelectedStatus}
+            placeholder="Filter op status"
+          />
 
-        <Button
-          color="danger"
-          variant="flat"
-          onPress={() => {
-            setQuery('');
-            setSelectedStatus(null);
-          }}
-        >
-          Reset filters
-        </Button>
+          <Button
+            className="min-w-[200px]"
+            variant="light"
+            onClick={() => {
+              setQuery('');
+              setSelectedStatus(null);
+            }}
+          >
+            Reset filters
+          </Button>
+        </div>
       </div>
 
       <Table aria-label="Zendingen tabel" removeWrapper>
