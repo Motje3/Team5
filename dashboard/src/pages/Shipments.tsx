@@ -130,12 +130,12 @@ const Shipments = () => {
 
       <Table aria-label="Zendingen tabel" removeWrapper>
         <TableHeader>
-          <TableColumn>ID</TableColumn>
-          <TableColumn>Status</TableColumn>
-          <TableColumn>Bestemming</TableColumn>
-          <TableColumn>Toegewezen</TableColumn>
-          <TableColumn>Verwacht</TableColumn>
-          <TableColumn>Gewicht</TableColumn>
+          <TableColumn className="text-left">ID</TableColumn>
+          <TableColumn className="text-left">Status</TableColumn>
+          <TableColumn className="text-left">Bestemming</TableColumn>
+          <TableColumn className="text-left">Toegewezen</TableColumn>
+          <TableColumn className="text-left">Verwacht</TableColumn>
+          <TableColumn className="text-left">Gewicht</TableColumn>
         </TableHeader>
         <TableBody emptyContent={"Geen zendingen gevonden."}>
           {filtered.map((shipment) => (
