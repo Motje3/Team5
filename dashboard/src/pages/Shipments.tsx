@@ -95,6 +95,8 @@ const Shipments = () => {
     setFiltered(filteredList);
   }, [query, shipments, selectedStatus]);
 
+  const inputButtonStyle = "bg-[#1E1B33] text-white rounded";
+
   return (
     <div className="p-6 space-y-4">
       <h1 className="text-3xl font-bold text-white">Zendingen</h1>
@@ -104,7 +106,7 @@ const Shipments = () => {
           placeholder="Zoek op status, bestemming of toegewezen persoon"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          className="max-w-md"
+          className={`max-w-md ${inputButtonStyle}`}
         />
 
         <div className="flex items-center gap-4">
@@ -116,7 +118,7 @@ const Shipments = () => {
           />
 
           <Button
-            className="min-w-[200px]"
+            className={`min-w-[200px] ${inputButtonStyle}`}
             variant="light"
             onClick={() => {
               setQuery('');
