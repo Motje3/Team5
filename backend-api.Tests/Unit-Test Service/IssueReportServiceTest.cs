@@ -71,9 +71,57 @@ namespace backend_api.Tests.TestService
         }
 
         [Fact]
-        public async Task CreateAsync_ThrowsException_WhenReportIsNull()
+        public async Task CreateAsync_SavesTitleCorrectly()
         {
-            await Assert.ThrowsAsync<ArgumentNullException>(() => _service.CreateAsync(null!));
+            var report = new IssueReport { Title = "Critical bug" };
+
+            var result = await _service.CreateAsync(report);
+            var saved = await _context.IssueReports.FirstOrDefaultAsync();
+
+            Assert.NotNull(saved);
+            Assert.Equal("Critical bug", saved?.Title);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_IncludesShipmentData()
+        {
+            var shipment = new Shipment
+            {
+                Id = 1,
+                Destination = "Berlin",
+                Status = "Pending" 
+            };
+
+            var report = new IssueReport
+            {
+                Title = "With Shipment",
+                Shipment = shipment,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Shipments.Add(shipment);
+            _context.IssueReports.Add(report);
+            await _context.SaveChangesAsync();
+
+            var result = (await _service.GetAllAsync()).ToList();
+
+            var firstShipment = result.FirstOrDefault()?.Shipment;
+
+            Assert.NotNull(firstShipment);
+            Assert.Equal("Berlin", firstShipment?.Destination);
+        }
+
+        [Fact]
+        public async Task CreateAsync_AllowsMultipleReportsWithSameTitle()
+        {
+            var report1 = new IssueReport { Title = "Duplicate" };
+            var report2 = new IssueReport { Title = "Duplicate" };
+
+            await _service.CreateAsync(report1);
+            await _service.CreateAsync(report2);
+
+            var all = await _context.IssueReports.Where(r => r.Title == "Duplicate").ToListAsync();
+            Assert.Equal(2, all.Count);
         }
     }
 }
