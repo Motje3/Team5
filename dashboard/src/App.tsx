@@ -7,6 +7,8 @@ import Accounts from './pages/Accounts'; // Import the Accounts page
 import AccountSettings from './pages/AccountSettings';
 import Shipments from './pages/Shipments'; 
 import Stats from './pages/Stats';
+import Issues from './pages/Issues'
+import NewShipments from './pages/NewShipment';
 
 function App() {
   return (
@@ -46,6 +48,20 @@ function App() {
         <Route path="/stats" element={
           <DashboardLayout>
             <Stats />
+          </DashboardLayout>
+        } />
+
+        {/* Stats Route */}
+        <Route path="/Issues" element={
+          <DashboardLayout>
+            <Issues />
+          </DashboardLayout>
+        } />
+
+        {/* Stats Route */}
+        <Route path="/NewShipment" element={
+          <DashboardLayout>
+            <NewShipments />
           </DashboardLayout>
         } />
 
