@@ -114,4 +114,21 @@ const statOptions = [
       </ResponsiveContainer>
     ),
   },
-]
+  {
+    key: 'jaarOmzet',
+    label: 'Jaarlijkse omzet',
+    value: `€${mockStats.jaarOmzet}`,
+    graph: (
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart data={omzetData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="maand" stroke="#c7d2fe" />
+          <YAxis stroke="#c7d2fe" />
+          <Tooltip />
+          <Bar dataKey="omzet" fill="#f59e42" />
+        </BarChart>
+      </ResponsiveContainer>
+    ),
+  },
+];
+
