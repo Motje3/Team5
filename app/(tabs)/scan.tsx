@@ -20,6 +20,7 @@ const Scan = () => {
   const [torchOn, setTorchOn] = useState(false);
   const appState = useRef(AppState.currentState);
   const qrLock = useRef(false);
+  // lege var voor camera
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
