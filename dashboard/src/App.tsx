@@ -5,6 +5,7 @@ import DashboardLayout from '../src/layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts'; // Import the Accounts page
 import AccountSettings from './pages/AccountSettings';
+import Shipments from './pages/Shipments'; 
 
 function App() {
   return (
@@ -30,6 +31,13 @@ function App() {
         <Route path="/account-settings" element={
           <DashboardLayout>
             <AccountSettings />
+          </DashboardLayout>
+        } />
+
+        {/* Shipments Route */}
+        <Route path="/shipments" element={
+          <DashboardLayout>
+            <Shipments />
           </DashboardLayout>
         } />
         
