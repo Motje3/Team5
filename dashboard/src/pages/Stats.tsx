@@ -132,3 +132,38 @@ const statOptions = [
   },
 ];
 
+const Stats = () => {
+  const [selected, setSelected] = useState('jaarOmzet');
+
+  const selectedStat = statOptions.find(opt => opt.key === selected);
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold text-white mb-4">Statistieken</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statOptions.map(opt => (
+          <button
+            key={opt.key}
+            onClick={() => setSelected(opt.key)}
+            className={`bg-indigo-900 rounded-lg p-6 text-left transition border-2 ${
+              selected === opt.key
+                ? 'border-yellow-400 shadow-lg'
+                : 'border-transparent hover:border-indigo-400'
+            }`}
+            style={{ cursor: 'pointer' }}
+          >
+            <p className="text-gray-300 mb-2">{opt.label}</p>
+            <h2 className="text-3xl font-bold text-white">{opt.value}</h2>
+          </button>
+        ))}
+      </div>
+
+      <div className="bg-indigo-900 rounded-lg p-6">
+        <h3 className="text-white font-semibold mb-4">{selectedStat?.label} grafiek</h3>
+        {selectedStat?.graph}
+      </div>
+    </div>
+  );
+};
+
+export default Stats;
