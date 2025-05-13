@@ -97,6 +97,7 @@ const Scan = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setTorchOn((prev) => !prev)}>
           <Ionicons
+            // feature voor flashlight
             name={torchOn ? "flashlight" : "flashlight-outline"}
             size={wp(8)}
             color="#fff"
