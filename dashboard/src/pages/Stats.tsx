@@ -82,4 +82,19 @@ const statOptions = [
       </ResponsiveContainer>
     ),
   },
-]
+  {
+    key: 'zendingenVandaag',
+    label: 'Zendingen vandaag',
+    value: mockStats.zendingenVandaag,
+    graph: (
+      <ResponsiveContainer width="100%" height={350}>
+        <LineChart data={zendingenData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="dag" stroke="#c7d2fe" />
+          <YAxis stroke="#c7d2fe" />
+          <Tooltip />
+          <Line type="monotone" dataKey="aantal" stroke="#fbbf24" strokeWidth={3} />
+        </LineChart>
+      </ResponsiveContainer>
+    ),
+}]
