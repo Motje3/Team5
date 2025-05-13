@@ -35,3 +35,54 @@ const zendingenData = [
   { dag: 'Zo', aantal: 1100 },
 ];
 
+const Stats = () => (
+  <div className="space-y-8">
+    <h1 className="text-3xl font-bold text-white mb-4">Statistieken</h1>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="bg-indigo-900 rounded-lg p-6">
+        <p className="text-gray-300 mb-2">Totaal klanten</p>
+        <h2 className="text-3xl font-bold text-white">{mockStats.totaalKlanten}</h2>
+      </div>
+      <div className="bg-indigo-900 rounded-lg p-6">
+        <p className="text-gray-300 mb-2">Zendingen vandaag</p>
+        <h2 className="text-3xl font-bold text-white">{mockStats.zendingenVandaag}</h2>
+      </div>
+      <div className="bg-indigo-900 rounded-lg p-6">
+        <p className="text-gray-300 mb-2">Maandelijkse zendingen</p>
+        <h2 className="text-3xl font-bold text-white">{mockStats.maandZendingen}</h2>
+      </div>
+      <div className="bg-indigo-900 rounded-lg p-6">
+        <p className="text-gray-300 mb-2">Jaarlijkse omzet</p>
+        <h2 className="text-3xl font-bold text-white">€{mockStats.jaarOmzet}</h2>
+      </div>
+    </div>
+
+    <div className="bg-indigo-900 rounded-lg p-6">
+      <h3 className="text-white font-semibold mb-4">Omzet per maand</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={omzetData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="maand" stroke="#c7d2fe" />
+          <YAxis stroke="#c7d2fe" />
+          <Tooltip />
+          <Bar dataKey="omzet" fill="#6366f1" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+
+    <div className="bg-indigo-900 rounded-lg p-6">
+      <h3 className="text-white font-semibold mb-4">Zendingen deze week</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={zendingenData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="dag" stroke="#c7d2fe" />
+          <YAxis stroke="#c7d2fe" />
+          <Tooltip />
+          <Line type="monotone" dataKey="aantal" stroke="#fbbf24" strokeWidth={3} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
+
+export default Stats;
