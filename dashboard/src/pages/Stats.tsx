@@ -24,3 +24,14 @@ const omzetData = [
   { maand: 'Nov', omzet: 7200 },
   { maand: 'Dec', omzet: 8100 },
 ];
+
+const zendingenData = [
+  { dag: 'Ma', aantal: 1200 },
+  { dag: 'Di', aantal: 2100 },
+  { dag: 'Wo', aantal: 800 },
+  { dag: 'Do', aantal: 1600 },
+  { dag: 'Vr', aantal: 900 },
+  { dag: 'Za', aantal: 1700 },
+  { dag: 'Zo', aantal: 1100 },
+];
+
