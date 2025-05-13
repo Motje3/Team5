@@ -28,6 +28,7 @@ const Scan = () => {
   const router = useRouter();
   const isFocused = useIsFocused();
 
+  // camera state
   useEffect(() => {
     const initializeCamera = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
     height: boxSize,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
+  // filter voor camera scan pagina
   scanArea: {
     width: boxSize,
     height: boxSize,
