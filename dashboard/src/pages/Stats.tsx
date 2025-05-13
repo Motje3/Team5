@@ -97,4 +97,21 @@ const statOptions = [
         </LineChart>
       </ResponsiveContainer>
     ),
-}]
+  },
+  {
+    key: 'maandZendingen',
+    label: 'Maandelijkse zendingen',
+    value: mockStats.maandZendingen,
+    graph: (
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart data={maandZendingenData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="maand" stroke="#c7d2fe" />
+          <YAxis stroke="#c7d2fe" />
+          <Tooltip />
+          <Bar dataKey="zendingen" fill="#10b981" />
+        </BarChart>
+      </ResponsiveContainer>
+    ),
+  },
+]
