@@ -49,3 +49,19 @@ const klantenData = [
   { maand: 'Nov', klanten: 580 },
   { maand: 'Dec', klanten: 600 },
 ];
+
+const maandZendingenData = [
+  { maand: 'Jan', zendingen: 4000 },
+  { maand: 'Feb', zendingen: 4200 },
+  { maand: 'Mar', zendingen: 4300 },
+  { maand: 'Apr', zendingen: 4500 },
+  { maand: 'Mei', zendingen: 4700 },
+  { maand: 'Jun', zendingen: 4800 },
+  { maand: 'Jul', zendingen: 5000 },
+  { maand: 'Aug', zendingen: 5200 },
+  { maand: 'Sep', zendingen: 5400 },
+  { maand: 'Okt', zendingen: 5600 },
+  { maand: 'Nov', zendingen: 5800 },
+  { maand: 'Dec', zendingen: 6000 },
+];
+
