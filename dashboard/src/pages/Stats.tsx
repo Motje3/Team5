@@ -65,3 +65,21 @@ const maandZendingenData = [
   { maand: 'Dec', zendingen: 6000 },
 ];
 
+const statOptions = [
+  {
+    key: 'totaalKlanten',
+    label: 'Totaal klanten',
+    value: mockStats.totaalKlanten,
+    graph: (
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart data={klantenData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="maand" stroke="#c7d2fe" />
+          <YAxis stroke="#c7d2fe" />
+          <Tooltip />
+          <Bar dataKey="klanten" fill="#6366f1" />
+        </BarChart>
+      </ResponsiveContainer>
+    ),
+  },
+]
