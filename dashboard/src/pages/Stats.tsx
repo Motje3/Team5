@@ -71,7 +71,7 @@ const statOptions = [
     label: 'Totaal klanten',
     value: mockStats.totaalKlanten,
     graph: (
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart data={klantenData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="maand" stroke="#c7d2fe" />
@@ -87,7 +87,7 @@ const statOptions = [
     label: 'Zendingen vandaag',
     value: mockStats.zendingenVandaag,
     graph: (
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={500}>
         <LineChart data={zendingenData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="dag" stroke="#c7d2fe" />
@@ -103,7 +103,7 @@ const statOptions = [
     label: 'Maandelijkse zendingen',
     value: mockStats.maandZendingen,
     graph: (
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart data={maandZendingenData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="maand" stroke="#c7d2fe" />
@@ -119,7 +119,7 @@ const statOptions = [
     label: 'Jaarlijkse omzet',
     value: `€${mockStats.jaarOmzet}`,
     graph: (
-      <ResponsiveContainer width="100%" height={350}>
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart data={omzetData}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="maand" stroke="#c7d2fe" />
