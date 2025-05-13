@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts'; // Import the Accounts page
 import AccountSettings from './pages/AccountSettings';
 import Shipments from './pages/Shipments'; 
+import Stats from './pages/Stats';
 
 function App() {
   return (
@@ -41,6 +42,13 @@ function App() {
           </DashboardLayout>
         } />
         
+        {/* Stats Route */}
+        <Route path="/stats" element={
+          <DashboardLayout>
+            <Stats />
+          </DashboardLayout>
+        } />
+
         {/* Add more routes as needed */}
       </Routes>
     </Router>
