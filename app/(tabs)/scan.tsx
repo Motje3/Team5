@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { Camera, CameraView } from "expo-camera";
+// torch library
+// import { Torch } from "react-native-torch";
+import { Camera, CameraView, } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useApp } from "../context/AppContext";
@@ -20,7 +22,8 @@ const Scan = () => {
   const [torchOn, setTorchOn] = useState(false);
   const appState = useRef(AppState.currentState);
   const qrLock = useRef(false);
-  // lege var voor camera
+  // lege var voor torch
+  // const flash = useFlash();
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
@@ -67,6 +70,7 @@ const Scan = () => {
       <CameraView
         style={StyleSheet.absoluteFillObject}
         facing="back"
+        // flashlight feature
         // flashMode={torchOn ? 'torch' : 'off'}
         onBarcodeScanned={({ data }) => {
           if (data && !qrLock.current) {
@@ -77,7 +81,6 @@ const Scan = () => {
           }
         }}
       />
-
 
       {/* Overlay */}
       <View style={styles.overlay}>
