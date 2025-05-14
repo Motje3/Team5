@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
                 </Link>
               </li>
               <li>
-                <Link to="/new-shipment" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
+                <Link to="/newshipment" className="flex items-center py-2 px-4 rounded-md text-gray-300 hover:bg-indigo-800">
                   <ShoppingCart size={20} className="mr-3" />
                   <span>Zending maken</span>
                 </Link>
