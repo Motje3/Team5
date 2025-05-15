@@ -50,7 +50,7 @@ const TodaysShipment: React.FC = () => {
   useEffect(() => {
     const fetchShipments = async () => {
       try {
-        const res = await fetch("http://192.168.1.198:5070/api/shipments/me", {
+        const res = await fetch("http://192.168.2.50:5070/api/shipments/me", {
           headers: {
             "Content-Type": "application/json",
             ...(token && { Authorization: `Bearer ${token}` }),

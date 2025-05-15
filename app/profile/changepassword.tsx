@@ -74,7 +74,7 @@ const ChangePassword = () => {
 
     try {
       await axios.post(
-        `http://192.168.1.198:5070/api/profile/${user.id}/change-password`,
+        `http://192.168.2.50:5070/api/profile/${user.id}/change-password`,
         { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -41,7 +41,7 @@ export default function ForgotPassword() {
             return Alert.alert('Controleer je invoer', 'Vul e-mail in en 2x hetzelfde nieuw wachtwoord');
         }
         try {
-            const res = await fetch('http://192.168.1.198:5070/api/PasswordReset', {
+            const res = await fetch('http://192.168.2.50:5070/api/PasswordReset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, newPassword: newPass }),

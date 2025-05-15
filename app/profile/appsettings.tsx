@@ -56,7 +56,7 @@ const AppSettings = () => {
   const handleSave = async () => {
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        `http://192.168.2.50:5070/api/profile/${user.id}/settings`,
         { darkMode, accentColor, notificationsEnabled },
         { headers: { Authorization: `Bearer ${token}` } }
       );

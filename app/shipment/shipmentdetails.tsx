@@ -74,7 +74,7 @@ const ShipmentDetails = () => {
     const fetchShipment = async () => {
       try {
         const id = Array.isArray(qrData) ? qrData[0] : qrData;
-        const res = await fetch(`http://192.168.1.198:5070/api/shipments/${id}`, {
+        const res = await fetch(`http://192.168.2.50:5070/api/shipments/${id}`, {
           headers: {
             "Content-Type": "application/json",
             ...(token && { Authorization: `Bearer ${token}` }),
@@ -95,7 +95,7 @@ const ShipmentDetails = () => {
   const updateStatus = async (newStatus: string) => {
     setStatusModalVisible(false);
     try {
-      const res = await fetch(`http://192.168.1.198:5070/api/shipments/${shipment.id}/status`, {
+      const res = await fetch(`http://192.168.2.50:5070/api/shipments/${shipment.id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -40,7 +40,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       if (user && token) {
         try {
           const res = await axios.get(
-            `http://192.168.1.198:5070/api/profile/${user.id}`,
+            `http://192.168.2.50:5070/api/profile/${user.id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           const data = res.data;
@@ -84,7 +84,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        `http://192.168.2.50:5070/api/profile/${user.id}/settings`,
         { accentColor, darkMode, notificationsEnabled },
         { headers: { Authorization: `Bearer ${token}` } }
       );

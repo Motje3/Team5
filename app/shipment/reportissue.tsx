@@ -79,7 +79,7 @@ export default function ReportIssue() {
     }
     setSubmitting(true);
     try {
-      const res = await fetch('http://192.168.1.198:5070/api/IssueReport', {
+      const res = await fetch('http://192.168.2.50:5070/api/IssueReport', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

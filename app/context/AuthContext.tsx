@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     // authenticate against your backend
-    const res = await fetch("http://192.168.1.198:5070/api/profile/login", {
+    const res = await fetch("http://192.168.2.50:5070/api/profile/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
