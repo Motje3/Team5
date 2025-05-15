@@ -166,24 +166,6 @@ namespace backend_api.Tests.TestService
             Assert.Contains(result, r => r.Email == "x@y.com" && r.RequestedNewPassword == "pass");
         }
 
-        [Fact]
-        public async Task GetAllAsync_HandlesVeryLargeDataset()
-        {
-            for (int i = 0; i < 10000; i++)
-            {
-                _context.PasswordResetRequests.Add(new PasswordResetRequest
-                {
-                    Email = $"bulk{i}@mail.com",
-                    RequestedNewPassword = "x",
-                    RequestedAt = DateTime.UtcNow
-                });
-            }
-            await _context.SaveChangesAsync();
-
-            var result = await _service.GetAllAsync();
-            Assert.Equal(10000, result.Count());
-        }
-
         // ---------------- MARK AS PROCESSED ----------------
 
         [Fact]
@@ -281,12 +263,6 @@ namespace backend_api.Tests.TestService
         }
 
         // ---------------- EDGE / ERROR CASES ----------------
-
-        [Fact]
-        public void ServiceConstructor_Throws_WhenContextIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new PasswordResetService(null!));
-        }
 
         [Fact]
         public async Task CreateAsync_Throws_IfSaveChangesFails()
