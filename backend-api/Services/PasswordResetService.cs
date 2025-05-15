@@ -40,7 +40,6 @@ namespace backend_api.Services
             return req;
         }
 
-
         public async Task<IEnumerable<PasswordResetRequest>> GetAllAsync()
         {
             return await _context.PasswordResetRequests.ToListAsync();
