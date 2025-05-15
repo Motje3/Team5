@@ -25,8 +25,17 @@ namespace backend_api.Tests.TestService
             _service = new ProfileService(_context);
         }
 
-        // ---------- LoginAsync ----------
+        // ---------- Constructor ----------
+        [Fact]
+        public void Constructor_Throws_WhenContextIsNull()
+        {
+            var ex = Record.Exception(() => new ProfileService(null!));
+            Assert.NotNull(ex);
+            Assert.IsType<ArgumentNullException>(ex);
+            Assert.Equal("context", ((ArgumentNullException)ex).ParamName);
+        }
 
+        // ---------- LoginAsync ----------
         [Fact]
         public async Task LoginAsync_ReturnsProfile_WhenCredentialsMatch()
         {
@@ -67,7 +76,6 @@ namespace backend_api.Tests.TestService
         }
 
         // ---------- GetProfileAsync ----------
-
         [Fact]
         public async Task GetProfileAsync_ReturnsProfile_WhenIdExists()
         {
@@ -90,7 +98,6 @@ namespace backend_api.Tests.TestService
         }
 
         // ---------- UpdateProfileAsync ----------
-
         [Fact]
         public async Task UpdateProfileAsync_UpdatesFields_WhenValid()
         {
@@ -122,12 +129,10 @@ namespace backend_api.Tests.TestService
         public async Task UpdateProfileAsync_Throws_WhenProfileNotFound()
         {
             var dto = new UpdateProfileDto { FullName = "Test", Email = "t@test.com", ImageUrl = "" };
-
             await Assert.ThrowsAsync<Exception>(() => _service.UpdateProfileAsync(999, dto));
         }
 
         // ---------- ChangePasswordAsync ----------
-
         [Fact]
         public async Task ChangePasswordAsync_ChangesPassword_WhenOldMatches()
         {
@@ -163,7 +168,6 @@ namespace backend_api.Tests.TestService
         }
 
         // ---------- UpdateSettingsAsync ----------
-
         [Fact]
         public async Task UpdateSettingsAsync_UpdatesFields_WhenValid()
         {
@@ -203,14 +207,7 @@ namespace backend_api.Tests.TestService
             await Assert.ThrowsAsync<Exception>(() => _service.UpdateSettingsAsync(999, dto));
         }
 
-        // ---------- General ----------
-
-        [Fact]
-        public void Constructor_Throws_WhenContextIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => new ProfileService(null!));
-        }
-
+        // ---------- Multiple Updates Combined ----------
         [Fact]
         public async Task MultipleUpdates_DoNotInterfere()
         {
