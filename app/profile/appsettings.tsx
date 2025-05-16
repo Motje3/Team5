@@ -14,6 +14,7 @@ import axios from "axios";
 import { useApp } from "../context/AppContext";
 import { useAuth } from "../context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
+import { API_BASE_URL } from "../config/env";
 
 const accentOptions = ["#7C3AED", "#10B981", "#EC4899", "#3B82F6", "#64748B"];
 
@@ -56,7 +57,7 @@ const AppSettings = () => {
   const handleSave = async () => {
     try {
       await axios.put(
-        `http://192.168.1.198:5070/api/profile/${user.id}/settings`,
+        `${API_BASE_URL}/api/profile/${user.id}/settings`,
         { darkMode, accentColor, notificationsEnabled },
         { headers: { Authorization: `Bearer ${token}` } }
       );
