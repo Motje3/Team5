@@ -7,9 +7,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-// torch library
-// import { Torch } from "react-native-torch";
-import { Camera, CameraView, } from "expo-camera";
+import { Camera, CameraView } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useApp } from "../context/AppContext";
@@ -22,25 +20,36 @@ const Scan = () => {
   const [torchOn, setTorchOn] = useState(false);
   const appState = useRef(AppState.currentState);
   const qrLock = useRef(false);
-  // lege var voor torch
-  // const flash = useFlash();
   const cameraRef = useRef<CameraView>(null);
   const router = useRouter();
   const isFocused = useIsFocused();
 
-  // camera state
+  // Request permissions ONLY on first mount
   useEffect(() => {
-    const initializeCamera = async () => {
+    (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
-    };
+    })();
+  }, []);
 
-    initializeCamera();
+  useEffect(() => {
+    if (!isFocused) {
+      setTorchOn(false);
+    }
+  }, [isFocused]);
 
+  // Refresh permission when app returns from background
+  useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (appState.current.match(/inactive|background/) && nextAppState === "active") {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
         qrLock.current = false;
-        initializeCamera();
+        (async () => {
+          const { status } = await Camera.requestCameraPermissionsAsync();
+          setHasPermission(status === "granted");
+        })();
       }
       appState.current = nextAppState;
     });
@@ -48,12 +57,15 @@ const Scan = () => {
     return () => {
       subscription.remove();
     };
-  }, [darkMode, isFocused]);
+  }, []);
 
+  // Feedback if permission is pending or denied
   if (hasPermission === null) {
     return (
       <View style={styles.container}>
-        <Text style={styles.infoText}>Camera toestemming wordt aangevraagd...</Text>
+        <Text style={styles.infoText}>
+          Camera toestemming wordt aangevraagd...
+        </Text>
       </View>
     );
   }
@@ -68,20 +80,25 @@ const Scan = () => {
 
   return (
     <View style={styles.container}>
-      <CameraView
-        style={StyleSheet.absoluteFillObject}
-        facing="back"
-        // flashlight feature
-        // flashMode={torchOn ? 'torch' : 'off'}
-        onBarcodeScanned={({ data }) => {
-          if (data && !qrLock.current) {
-            qrLock.current = true;
-            setTimeout(() => {
-              router.push(`/shipment/shipmentdetails?qrData=${encodeURIComponent(data)}`);
-            }, 500);
-          }
-        }}
-      />
+      {/* Only mount CameraView if focused */}
+      {isFocused && (
+        <CameraView
+          ref={cameraRef}
+          style={StyleSheet.absoluteFillObject}
+          facing="back"
+          enableTorch={torchOn}
+          onBarcodeScanned={({ data }) => {
+            if (data && !qrLock.current) {
+              qrLock.current = true;
+              setTimeout(() => {
+                router.push(
+                  `/shipment/shipmentdetails?qrData=${encodeURIComponent(data)}`
+                );
+              }, 500);
+            }
+          }}
+        />
+      )}
 
       {/* Overlay */}
       <View style={styles.overlay}>
@@ -101,7 +118,6 @@ const Scan = () => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setTorchOn((prev) => !prev)}>
           <Ionicons
-            // feature voor flashlight
             name={torchOn ? "flashlight" : "flashlight-outline"}
             size={wp(8)}
             color="#fff"

@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Table,
   TableHeader,
@@ -8,8 +8,8 @@ import {
   TableRow,
   TableCell,
   Input,
-  Button
-} from '@nextui-org/react';
+  Button,
+} from "@nextui-org/react";
 
 interface Shipment {
   id: number;
@@ -43,7 +43,10 @@ const CustomDropdown = ({
         className="bg-[#1E1B33] text-white w-full px-4 py-2 rounded flex justify-between items-center"
       >
         {selected || placeholder}
-        <span className="ml-2 transform transition-transform" style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>
+        <span
+          className="ml-2 transform transition-transform"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        >
           ▼
         </span>
       </button>
@@ -70,27 +73,29 @@ const CustomDropdown = ({
 const Shipments = () => {
   const [shipments, setShipments] = useState<Shipment[]>([]);
   const [filtered, setFiltered] = useState<Shipment[]>([]);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
 
-  const uniqueStatuses = [...new Set(shipments.map(s => s.status))];
+  const uniqueStatuses = [...new Set(shipments.map((s) => s.status))];
 
   useEffect(() => {
-    axios.get('http://localhost:5070/api/Shipments')
-      .then(res => {
+    axios
+      .get("http://localhost:5070/api/Shipments")
+      .then((res) => {
         setShipments(res.data);
         setFiltered(res.data);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     const lower = query.toLowerCase();
-    const filteredList = shipments.filter(s =>
-      (s.destination?.toLowerCase().includes(lower) ||
-        s.status?.toLowerCase().includes(lower) ||
-        s.assignedTo?.toLowerCase().includes(lower)) &&
-      (selectedStatus ? s.status === selectedStatus : true)
+    const filteredList = shipments.filter(
+      (s) =>
+        (s.destination?.toLowerCase().includes(lower) ||
+          s.status?.toLowerCase().includes(lower) ||
+          s.assignedTo?.toLowerCase().includes(lower)) &&
+        (selectedStatus ? s.status === selectedStatus : true)
     );
     setFiltered(filteredList);
   }, [query, shipments, selectedStatus]);
@@ -105,7 +110,7 @@ const Shipments = () => {
         <Input
           placeholder="Zoek op status, bestemming of toegewezen persoon"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
           className={`max-w-md ${inputButtonStyle}`}
         />
 
@@ -121,7 +126,7 @@ const Shipments = () => {
             className={`min-w-[200px] ${inputButtonStyle}`}
             variant="light"
             onClick={() => {
-              setQuery('');
+              setQuery("");
               setSelectedStatus(null);
             }}
           >
