@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   topOverlay: {
     flex: 1,
     width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   middleRow: {
     flexDirection: "row",
@@ -161,27 +161,35 @@ const styles = StyleSheet.create({
   sideOverlay: {
     width: (wp(100) - boxSize) / 2,
     height: boxSize,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   // filter voor camera scan pagina
   scanArea: {
-    width: boxSize,
-    height: boxSize,
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
-    borderRadius: wp(0),
-    backgroundColor: "rgba(0,0,0,0.2)",
-  },
+  width: boxSize,
+  height: boxSize,
+  borderWidth: 4,
+  borderColor: "#5D3FD3",       
+  borderRadius: 0,              
+  backgroundColor: "rgba(0, 0, 0, 0.05)", 
+  shadowColor: "transparent",    
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0,
+  shadowRadius: 0,
+  elevation: 0,                  
+  overflow: "visible",           
+},
+
+
   bottomOverlay: {
     flex: 1,
     width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   topBar: {
     position: "absolute",
-    top: Platform.OS === "ios" ? hp(6) : hp(3),
-    left: wp(4),
-    right: wp(4),
+    top: Platform.OS === "ios" ? hp(6) : hp(4),
+    left: wp(6),
+    right: wp(6),
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

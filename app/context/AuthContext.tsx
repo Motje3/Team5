@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Directly send to the login page
     router.replace("/login/loginpage");
   };
-  
 
   useEffect(() => {
     // on app start, try to restore
@@ -85,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
-      {children}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 };

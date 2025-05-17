@@ -6,11 +6,15 @@ import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useRouter } from 'expo-router';
 import { useApp } from '../context/AppContext';
 import { wp, hp } from '../utils/responsive';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from "react";
+
 
 const fallbackImage = require('../../assets/images/default-profile.png');
 
 const Home = () => {
   const router = useRouter();
+  const { user, isLoading } = useAuth();
   const { darkMode, username, accentColor, profileImage } = useApp();
 
   // Merge theme values inline
@@ -19,6 +23,14 @@ const Home = () => {
     text: darkMode ? "#ffffff" : "#0f0D23",
     secondaryText: darkMode ? "#9CA3AF" : "#6B7280",
   };
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace('/login/loginpage');
+    }
+  }, [user, isLoading]);
+
+  if (isLoading || !user) return null;
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.background, paddingHorizontal: wp(6), paddingTop: hp(10) }}>
