@@ -18,6 +18,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import DatePickerFilter from "../filters/DatePickerFilter";
 import LocationFilter from "../filters/LocationFilter";
 import { hp, wp } from "../utils/responsive";
+import { API_BASE_URL } from "../config/env";
 
 const { width } = Dimensions.get("window");
 
@@ -46,7 +47,7 @@ const Stats = () => {
   useEffect(() => {
     const fetchShipments = async () => {
       try {
-        const response = await fetch('http://192.168.2.50:5070/api/shipments/me', {
+        const response = await fetch(`${API_BASE_URL}/api/shipments/me`, {
           headers: {
             'Content-Type': 'application/json',
             ...(token && { Authorization: `Bearer ${token}` }),

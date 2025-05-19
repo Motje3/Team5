@@ -18,6 +18,7 @@ import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
+import { API_BASE_URL } from "../config/env";
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -74,7 +75,7 @@ const ChangePassword = () => {
 
     try {
       await axios.post(
-        `http://192.168.2.50:5070/api/profile/${user.id}/change-password`,
+        `${API_BASE_URL}/api/profile/${user.id}/change-password`,
         { oldPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
