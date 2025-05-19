@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { InteractionManager } from "react-native";
+import { API_BASE_URL } from "../config/env";
 
 type AuthContextType = {
   user: any;
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (username: string, password: string) => {
     // authenticate against your backend
-    const res = await fetch("http://192.168.1.198:5070/api/profile/login", {
+    const res = await fetch(`${API_BASE_URL}/api/profile/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -55,7 +56,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Directly send to the login page
     router.replace("/login/loginpage");
   };
-  
 
   useEffect(() => {
     // on app start, try to restore
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
-      {children}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 };

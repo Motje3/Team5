@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { wp, hp } from "../utils/responsive";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useApp } from "../context/AppContext";
+import { API_BASE_URL } from "../config/env";
 
 const TodaysShipment: React.FC = () => {
   const { token } = useAuth();
@@ -50,7 +51,7 @@ const TodaysShipment: React.FC = () => {
   useEffect(() => {
     const fetchShipments = async () => {
       try {
-        const res = await fetch("http://192.168.1.198:5070/api/shipments/me", {
+        const res = await fetch(`${API_BASE_URL}/api/shipments/me`, {
           headers: {
             "Content-Type": "application/json",
             ...(token && { Authorization: `Bearer ${token}` }),
@@ -137,36 +138,38 @@ const TodaysShipment: React.FC = () => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={{ paddingBottom: hp(6) }}
           renderItem={({ item }) => (
-            <LinearGradient
-              colors={darkMode ? ["#17144F", "#090723"] : ["#ffffff", "#ffffff"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.card}
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onPress={() =>
+                router.push({
+                  pathname: "/shipment/shipmentdetails",
+                  params: { qrData: item.id.toString() },
+                })
+              }
             >
-              <View style={styles.cardContent}>
-                <Ionicons name="cube-outline" size={wp(8)} color={accentColor} />
-                <View style={{ marginLeft: wp(4), flex: 1 }}>
-                  <Text style={[styles.cardTitle, { color: theme.text }]}>#{item.id}</Text>
-                  <Text style={[styles.cardText, { color: theme.secondaryText }]}>
-                    Bestemming: {item.destination}
-                  </Text>
-                  <Text style={[styles.cardText, { color: theme.secondaryText }]}>
-                    Status: {item.status}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push({
-                      pathname: "/shipment/shipmentdetails",
-                      params: { qrData: item.id.toString() },
-                    })
-                  }
-                >
+              <LinearGradient
+                colors={darkMode ? ["#17144F", "#090723"] : ["#ffffff", "#ffffff"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.card}
+              >
+                <View style={styles.cardContent}>
+                  <Ionicons name="cube-outline" size={wp(8)} color={accentColor} />
+                  <View style={{ marginLeft: wp(4), flex: 1 }}>
+                    <Text style={[styles.cardTitle, { color: theme.text }]}>#{item.id}</Text>
+                    <Text style={[styles.cardText, { color: theme.secondaryText }]}>
+                      Bestemming: {item.destination}
+                    </Text>
+                    <Text style={[styles.cardText, { color: theme.secondaryText }]}>
+                      Status: {item.status}
+                    </Text>
+                  </View>
                   <Ionicons name="chevron-forward" size={wp(6)} color={theme.text} />
-                </TouchableOpacity>
-              </View>
-            </LinearGradient>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
           )}
+          
           showsVerticalScrollIndicator={false}
         />
       </View>
