@@ -203,6 +203,97 @@ namespace backend_api.IntegrationTests
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
+        [Fact]
+        public async Task Login_ReturnsBadRequest_WhenDtoIsInvalid()
+        {
+            var loginDto = new UserDto(); // Leeg
+
+            var response = await _client.PostAsJsonAsync("/api/Profile/login", loginDto);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetProfile_ReturnsNotFound_ForNegativeId()
+        {
+            _mockService.Setup(s => s.GetProfileAsync(-1)).ReturnsAsync((Profile?)null);
+
+            var response = await _client.GetAsync("/api/Profile/-1");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateProfile_ReturnsBadRequest_OnException()
+        {
+            var dto = new UpdateProfileDto
+            {
+                FullName = "Crash",
+                Email = "test@fail.com",
+                ImageUrl = "x"
+            };
+
+            _mockService.Setup(s => s.UpdateProfileAsync(3, It.IsAny<UpdateProfileDto>()))
+                        .ThrowsAsync(new Exception("boom"));
+
+            var response = await _client.PutAsJsonAsync("/api/Profile/3", dto);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Login_ReturnsUnauthorized_WhenPasswordIsWrong()
+        {
+            var dto = new LoginDto
+            {
+                Username = "test",
+                Password = "wrongpass"
+            };
+
+            _mockService.Setup(x => x.LoginAsync(dto.Username, dto.Password))
+                        .ReturnsAsync((Profile?)null);
+
+            var response = await _client.PostAsJsonAsync("/api/Profile/login", dto);
+
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Login_ReturnsBadRequest_WhenBodyIsNull()
+        {
+            var response = await _client.PostAsync("/api/Profile/login", null);
+
+            Assert.Equal(HttpStatusCode.UnsupportedMediaType, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task UpdateSettings_ReturnsExpectedAccentColor()
+        {
+            var dto = new UpdateSettingsDto
+            {
+                AccentColor = "lime",
+                DarkMode = true,
+                NotificationsEnabled = false
+            };
+
+            var updated = new Profile
+            {
+                Id = 99,
+                Username = "limeuser",
+                Password = "xxx",
+                FullName = "Lime Guy",
+                AccentColor = "lime",
+                DarkMode = true,
+                NotificationsEnabled = false
+            };
+
+            _mockService.Setup(s => s.UpdateSettingsAsync(99, It.IsAny<UpdateSettingsDto>()))
+                        .ReturnsAsync(updated);
+
+            var response = await _client.PutAsJsonAsync("/api/Profile/99/settings", dto);
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
 
         
         private class LoginResponse
